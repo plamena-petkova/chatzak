@@ -1,5 +1,5 @@
 import { Card, CardCover, Sheet } from "@mui/joy";
-import logo from '../chatzakLogo.png'
+import logo from '../assets/chatzakLogo.png'
 
 
 function Header () {
