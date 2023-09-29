@@ -4,8 +4,12 @@ import { registerRoute } from "../utils/apiRoutes";
 import logo from "../assets/chatzakLogo.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { setUser } from "../store/authReducer";
+import { useDispatch } from "react-redux";
 
 function RegisterView() {
+
+  const dispatch = useDispatch()
 
   const navigate = useNavigate();
 
@@ -35,11 +39,13 @@ function RegisterView() {
       password,
     });
 
+    
+
     if (data.status === false) {
       console.error("User is not created");
     }
     if (data.status === true) {
-      localStorage.setItem('chat-app-user', JSON.stringify(data.user))
+      dispatch(setUser(data.user))
       navigate('/chat');
     }
   };

@@ -1,15 +1,17 @@
 import { Avatar, Tab, TabList } from "@mui/joy";
 
 
-function ContactCard () {
+function ContactCard ({contacts}) {
 
 
 return (
 <>
 <TabList>
-    <Tab sx={{minWidth:270}}><Avatar >PP</Avatar>Contact</Tab>
-    <Tab sx={{minWidth:270}}><Avatar >PP</Avatar>Name</Tab>
-    <Tab sx={{minWidth:270}}><Avatar >PP</Avatar>Name</Tab>
+  
+{contacts.map((contact) => {
+    return  <Tab key={contact._id} sx={{minWidth:270}}><Avatar src={`${contact?.avatarImg}`} >{contact.avatarImg ? contact.avatar : contact.names[0]}</Avatar>{contact.names}</Tab>
+  })}
+
 </TabList>
   </>
 )
@@ -17,3 +19,4 @@ return (
 }
 
 export default ContactCard;
+

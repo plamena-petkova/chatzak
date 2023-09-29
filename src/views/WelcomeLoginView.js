@@ -4,8 +4,12 @@ import logo from "../assets/chatzakLogo.png";
 import axios from "axios";
 import { loginRoute } from "../utils/apiRoutes";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/authReducer";
 
 function WelcomeLoginView () {
+
+  const dispatch = useDispatch()
 
   const navigate = useNavigate();
 
@@ -27,12 +31,17 @@ function WelcomeLoginView () {
           username,
           password,
         });
+
+        
+
+       
     
         if (data.status === false) {
           console.error("User not logged in");
         }
 
        if(data.status === true) {
+        dispatch(setUser(data.user));
         navigate('/chat')
        }
     }
