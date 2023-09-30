@@ -1,10 +1,18 @@
-import { TabPanel, Tabs } from "@mui/joy";
+import { Box } from "@mui/joy";
 import ContactCard from "./ContactCard";
 
-function SideBar({ chatMessage, contacts }) {
-  console.log("COntacts", contacts);
-
+function SideBar({ contacts, message }) {
+  
   return (
+    <Box>
+      <ContactCard contacts={contacts} key={contacts._id} />
+    </Box>
+  );
+}
+
+export default SideBar;
+
+/*
     <Tabs
       aria-label="Vertical tabs"
       orientation="vertical"
@@ -20,7 +28,5 @@ function SideBar({ chatMessage, contacts }) {
         <b>Third</b> tab panel
       </TabPanel>
     </Tabs>
-  );
-}
 
-export default SideBar;
+  */

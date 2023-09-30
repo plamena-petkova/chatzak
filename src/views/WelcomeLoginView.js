@@ -61,7 +61,7 @@ function WelcomeLoginView () {
             <img src={logo} alt="" />
           </CardCover>
         </Card>
-      <Box sx={{maxWidth:400,  minHeight:200, justifyContent:'center'}}>
+      <Box sx={{maxWidth:400, justifyContent:'center'}}>
         <Box sx={{maxWidth:400, display:'flex', justifyContent:'center'}}>
         <Typography sx={{fontSize:25}}>Login</Typography>
         </Box>

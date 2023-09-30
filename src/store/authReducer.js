@@ -13,7 +13,6 @@ export const authSlice = createSlice({
             state.user = action.payload;
         },
         setAllUsers: (state, action) => {
-            console.log('Action payload', action.payload);
             state.allUsers = action.payload;
         }
     }
