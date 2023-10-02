@@ -1,12 +1,46 @@
-import { Box } from "@mui/joy";
+import { TabList, TabPanel, Typography } from "@mui/joy";
 import ContactCard from "./ContactCard";
+import Tabs from "@mui/joy/Tabs";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentChat } from "../store/chatReducer";
 
-function SideBar({ contacts, message }) {
-  
+function SideBar() {
+  const allUsers = useSelector((state) => state.auth.allUsers);
+
+  const dispatch = useDispatch();
+
+  const handleChange = (event, contactId) => {
+    const currentChat = allUsers[contactId];
+    dispatch(setCurrentChat(currentChat));
+  } 
+
+  const messages = useSelector((state) => state.chat.messages);
+
+  console.log('SideBarMessage', messages);
+
   return (
-    <Box>
-      <ContactCard contacts={contacts} key={contacts._id} />
-    </Box>
+    <Tabs
+    onChange={handleChange}
+      aria-label="Vertical tabs"
+      orientation="vertical"
+      sx={{ minWidth: 600, height: 200 }}
+    >
+      <TabList>
+      {allUsers.map((contact) => {
+        return  <ContactCard key={contact._id} contact={contact}/>
+      })}
+     </TabList>
+
+      {allUsers.map((contact, index) => {
+        return (
+          <TabPanel value={index} key={contact._id} >
+          {messages.map((msg) => {
+            return <Typography key={Math.random(msg)}>{msg.message}</Typography>
+          })}
+          </TabPanel>
+        );
+      })}
+    </Tabs>
   );
 }
 

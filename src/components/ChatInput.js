@@ -1,11 +1,8 @@
 import { Box, Button, Input } from "@mui/joy";
 import SendIcon from "@mui/icons-material/Send";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 
 function ChatInput({handleSendMsg}) {
-
-//const currentChat = useSelector((state) => state.chat.currentChat);
 
 const [msg, setMsg] = useState("");
 

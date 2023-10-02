@@ -15,16 +15,18 @@ import {
   initMessageListener,
 } from 'redux-state-sync';
 import persistStore from 'redux-persist/es/persistStore';
+import chatReducer from './chatReducer';
 
 const persistConfig = {
   key: 'root',
   version:1, 
   storage,
-  whitelist: ['auth']
+  whitelist: ['auth', 'chat']
 }
 
 const reducer = combineReducers({
   auth: authReducer,
+  chat: chatReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
