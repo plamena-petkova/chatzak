@@ -11,16 +11,18 @@ export const chatSlice = createSlice({
     initialState,
     reducers:{
         setCurrentChat: (state, action) => {
-            console.log('Action payload', action.payload);
             state.currentChat = action.payload;
         },
         setMessages: (state, action) => {
-            console.log('Action messages', action.payload);
             state.messages = action.payload;
+        },
+        setClearMessages:  (state, action) => {
+            state.messages = [];
+            state.currentChat = {};
         }
     }
 });
 
-export const {  setCurrentChat, setMessages } = chatSlice.actions;
+export const {  setCurrentChat, setMessages, setClearMessages } = chatSlice.actions;
 
 export default chatSlice.reducer;

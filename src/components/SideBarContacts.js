@@ -3,6 +3,7 @@ import ContactCard from "./ContactCard";
 import Tabs from "@mui/joy/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentChat } from "../store/chatReducer";
+import {v4 as uuidv4} from "uuid"
 
 function SideBar() {
   const allUsers = useSelector((state) => state.auth.allUsers);
@@ -16,14 +17,11 @@ function SideBar() {
 
   const messages = useSelector((state) => state.chat.messages);
 
-  console.log('SideBarMessage', messages);
-
-  return (
+  return ( 
     <Tabs
     onChange={handleChange}
       aria-label="Vertical tabs"
       orientation="vertical"
-      sx={{ minWidth: 600, height: 200 }}
     >
       <TabList>
       {allUsers.map((contact) => {
@@ -35,7 +33,7 @@ function SideBar() {
         return (
           <TabPanel value={index} key={contact._id} >
           {messages.map((msg) => {
-            return <Typography key={Math.random(msg)}>{msg.message}</Typography>
+           return <Typography key={uuidv4()}>{msg.message}</Typography>
           })}
           </TabPanel>
         );
@@ -45,22 +43,3 @@ function SideBar() {
 }
 
 export default SideBar;
-
-/*
-    <Tabs
-      aria-label="Vertical tabs"
-      orientation="vertical"
-      sx={{ minWidth: 600, height: 200 }}
-    >
-      <ContactCard contacts={contacts} />
-
-      <TabPanel value={0}>{chatMessage}</TabPanel>
-      <TabPanel value={1}>
-        <b>Second</b> tab panel
-      </TabPanel>
-      <TabPanel value={2}>
-        <b>Third</b> tab panel
-      </TabPanel>
-    </Tabs>
-
-  */

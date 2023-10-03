@@ -4,7 +4,8 @@ import { useState } from "react";
 
 function ChatInput({handleSendMsg}) {
 
-const [msg, setMsg] = useState("");
+const [msg, setMsg] = useState([]);
+
 
 const handleMessage = (event) => {
     setMsg(event.target.value);
