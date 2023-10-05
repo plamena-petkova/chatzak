@@ -1,7 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { Box, Button, TabList, TabPanel, Tabs, Typography } from "@mui/joy";
-import SideBar from "../components/SideBarContacts";
+import {
+  Box,
+  Chip,
+  TabList,
+  TabPanel,
+  Tabs,
+} from "@mui/joy";
 import Header from "../components/Header";
 import { useEffect, useState, useRef } from "react";
 import {
@@ -12,31 +17,57 @@ import {
 } from "../utils/apiRoutes";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, setAllUsers } from "../store/authReducer";
+import { setAllUsers } from "../store/authReducer";
 import {
-  setClearMessages,
   setCurrentChat,
   setMessages,
 } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { io } from "socket.io-client";
-import { useNavigate } from "react-router-dom";
 import ContactCard from "../components/ContactCard";
 import { v4 as uuidv4 } from "uuid";
 
 function ChatView() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const socket = useRef();
 
   const currentChat = useSelector((state) => state.chat.currentChat);
   const currentUser = useSelector((state) => state.auth.user);
   const messages = useSelector((state) => state.chat.messages);
+  const allUsers = useSelector((state) => state.auth.allUsers);
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState(null);
+  //const [value, setValue] = useState(0);
   const scrollRef = useRef();
+
+  const fetchContacts = async () => {
+    const contacts = await axios.get(allUsersRoute);
+    if (contacts.data) {
+      dispatch(setAllUsers(contacts.data.users));
+    }
+  };
+
+  const getAllMessages = async () => {
+    const messages = await axios.post(getAllMessagesRoute, {
+      from: currentUser._id,
+      to: currentChat._id,
+    });
+    if (messages.data) {
+      dispatch(setMessages(messages.data));
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+    
+  }, [])
+
+  useEffect(() => {
+    getAllMessages();
+    console.log('Currentchat', currentChat);
+    console.log('Message', message);
+  }, [currentChat, message]);
 
   const handleSendMsg = async (msg) => {
     await axios.post(sendMessageRoute, {
@@ -57,33 +88,6 @@ function ChatView() {
     setMessage(msgs);
   };
 
-  const fetchContacts = async () => {
-    const contacts = await axios.get(allUsersRoute);
-    if (contacts.data) {
-      dispatch(setAllUsers(contacts.data.users));
-    }
-  };
-
-  const getAllMessages = async () => {
-    const messages = await axios.post(getAllMessagesRoute, {
-      from: currentUser._id,
-      to: currentChat._id,
-    });
-    if (messages.data) {
-      dispatch(setMessages(messages.data));
-    }
-  };
-
-  const triggerLogout = () => {
-    dispatch(logout());
-    dispatch(setClearMessages());
-    navigate("/login");
-  };
-
-  useEffect(() => {
-    getAllMessages();
-  }, [currentChat, message]);
-
   useEffect(() => {
     if (currentUser) {
       socket.current = io(host);
@@ -97,7 +101,7 @@ function ChatView() {
         setArrivalMsg({ fromSelf: false, message: msg });
       });
     }
-    fetchContacts();
+    //fetchContacts();
   }, [arrivalMsg, message]);
 
   useEffect(() => {
@@ -108,7 +112,7 @@ function ChatView() {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
   }, [arrivalMsg]);
 
-  const allUsers = useSelector((state) => state.auth.allUsers);
+  
 
   const handleChange = (event, contactId) => {
     const currentChat = allUsers[contactId];
@@ -127,11 +131,7 @@ function ChatView() {
         }}
       >
         <Header />
-        <Button
-          onClick={triggerLogout}
-          variant="soft"
-          endDecorator={<LogoutIcon />}
-        ></Button>
+
         <Tabs
           onChange={handleChange}
           aria-label="Vertical tabs"
@@ -147,7 +147,31 @@ function ChatView() {
             return (
               <TabPanel value={index} key={contact._id}>
                 {messages.map((msg) => {
-                  return <Typography key={uuidv4()}>{msg.message}</Typography>;
+                  if (msg.fromSelf) {
+                    return (
+                      <Box key={uuidv4()} sx={{display:'flex', flexDirection:'column', mt:2, mb:2, alignItems:'end'}}>
+                        <Chip
+                          label="primary"
+                          color="primary"
+                          variant="outlined"
+                        >
+                          {msg.message}
+                        </Chip>
+                      </Box>
+                    );
+                  } else {
+                    return (
+                    <Box key={uuidv4()} sx={{display:'flex', flexDirection:'column', mt:3, mb:3}}>
+                        <Chip
+                          label="success"
+                          color="success"
+                          variant="outlined"
+                        >
+                          {msg.message}
+                        </Chip>
+                        </Box>
+                    );
+                  }
                 })}
               </TabPanel>
             );
@@ -162,3 +186,4 @@ function ChatView() {
 }
 
 export default ChatView;
+

@@ -1,5 +1,5 @@
 import ChatView from "./views/ChatView";
-import WelcomeLoginView from "./views/WelcomeLoginView";
+import LoginView from "./views/LoginView";
 import '../src/App.css';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -11,7 +11,7 @@ function App() {
      
       <BrowserRouter basename="/">
         <Routes>
-          <Route path="/login" element={<WelcomeLoginView />} />
+          <Route path="/login" element={<LoginView />} />
           <Route path="/register" element={<RegisterView />} />
           <Route path="/chat" element={<ChatView />} />
         </Routes>
