@@ -13,7 +13,7 @@ export const authSlice = createSlice({
             state.user = action.payload;
         },
         setAllUsers: (state, action) => {
-            state.allUsers = action.payload;
+            state.allUsers = action.payload.filter((users) => users._id !== state.user._id);
         },
         logout: (state, action) => {
             state.allUsers = [];
