@@ -23,9 +23,9 @@ const sendChat = (event) => {
   return (
     
     <Box sx={{mt:3, display: 'grid', gridTemplateColumns:'5% auto' }}>
-      <Avatar key={currentUser._id} src={`${currentUser?.avatarImg}`}>
-          {currentUser.avatarImg ? currentUser.avatar : currentUser.names[0]}
-        </Avatar>
+      {currentUser._id && <Avatar key={currentUser?._id} src={`${currentUser?.avatarImg}`}>
+          {(currentUser && currentUser?.avatarImg) ? currentUser?.avatar : currentUser.names[0]}
+        </Avatar>}
       <Input
         onChange={handleMessage}
         value={msg}

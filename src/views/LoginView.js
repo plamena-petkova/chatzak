@@ -1,16 +1,16 @@
 import { Box, Button, Card, CardCover, Input, Typography } from "@mui/joy";
 import { useState } from "react";
 import logo from "../assets/chatzakLogo.png";
-import axios from "axios";
-import { loginRoute } from "../utils/apiRoutes";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setUser } from "../store/authReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/authReducer";
 
 function WelcomeLoginView() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+
+  const isLoading = useSelector((state) => state.auth.isLoading);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,18 +26,13 @@ function WelcomeLoginView() {
   const submitLoginHandler = async (event) => {
     event.preventDefault();
 
-    const { data } = await axios.post(loginRoute, {
-      username,
-      password,
-    });
+    const data = {username, password}
 
-    if (data.status === false) {
-      console.error("User not logged in");
-    }
+    dispatch(login(data));
+    navigate("/chat");
 
-    if (data.status === true) {
-      dispatch(setUser(data.user));
-      navigate("/chat");
+    if(isLoading) {
+      return <Box>is Loading...</Box>
     }
   };
 

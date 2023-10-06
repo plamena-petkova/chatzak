@@ -1,10 +1,8 @@
 import { Box, Button, Card, CardCover, Input, Typography } from "@mui/joy";
 import { useState } from "react";
-import { registerRoute } from "../utils/apiRoutes";
 import logo from "../assets/chatzakLogo.png";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { setUser } from "../store/authReducer";
+import { register } from "../store/authReducer";
 import { useDispatch } from "react-redux";
 
 function RegisterView() {
@@ -30,24 +28,9 @@ function RegisterView() {
   const submitRegisterHandler = async (event) => {
     event.preventDefault();
 
-    const { username, names, password, email } = registerValues;
+    dispatch(register(registerValues));
+    navigate("/chat");
 
-    const { data } = await axios.post(registerRoute, {
-      username,
-      names,
-      email,
-      password,
-    });
-
-    
-
-    if (data.status === false) {
-      console.error("User is not created");
-    }
-    if (data.status === true) {
-      dispatch(setUser(data.user))
-      navigate('/chat');
-    }
   };
 
   return (

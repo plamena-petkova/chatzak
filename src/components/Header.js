@@ -51,12 +51,18 @@ function Header() {
         variant="soft"
         endDecorator={<LogoutIcon />}
       ></Button>
+     <Button
+  variant="contained"
+  component="label"
+>
+  Upload File
+  <input
+    type="file"
+    hidden
+  />
+</Button>
     </Box>
   );
 }
 
 export default Header;
-
-//display:'flex', alignItems:'start', justifyContent:'space-between'
-//linear-gradient(90deg, hsla(220, 78%, 29%, 1) 35%, hsla(221, 45%, 73%, 1) 89%)
-//background:'linear-gradient(90deg, hsla(212, 35%, 58%, 1) 0%, hsla(218, 32%, 80%, 1) 100%)'
