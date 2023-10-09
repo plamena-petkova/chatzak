@@ -38,7 +38,7 @@ export const store = configureStore({
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
   }).concat(createStateSyncMiddleware({
-    blacklist: [PERSIST, REHYDRATE],
+    blacklist: [PERSIST, REHYDRATE, PURGE],
   })),
   devTools: process.env.NODE_ENV !== 'production',
   });

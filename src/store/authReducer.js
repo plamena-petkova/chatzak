@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { allUsersRoute, loginRoute, registerRoute } from "../utils/apiRoutes";
+import {
+  allUsersRoute,
+  loginRoute,
+  registerRoute,
+  updateAvatarRoute,
+} from "../utils/apiRoutes";
 import axios from "axios";
 
 const initialState = {
@@ -7,6 +12,7 @@ const initialState = {
   allUsers: [],
   isLoading: false,
   error: null,
+  avatarUrl: "",
 };
 
 export const fetchUsers = createAsyncThunk("users/fetch", async () => {
@@ -38,10 +44,56 @@ export const register = createAsyncThunk("user/login", async (data) => {
   return response.data.user;
 });
 
+/*
+export const createAvatar = createAsyncThunk("user/create-avatar", async (data) => {
+try {
+  const response = await axios.post(createAvatarRoute, data, {
+    headers: {
+      'Content-Type': `multipart/form-data`,
+      'X-Token':'196b61b29bb442fc9fd97a7b187ea63e'
+    },
+  });
+  console.log('response', response);
+
+return response.data.face.url;
+} catch (e) {
+  console.error('Error', e);
+}
+  
+});
+*/
+export const updateUsersAvatar = createAsyncThunk(
+  "user/update-avatar",
+  async (data) => {
+    try {
+      const { currentUser, avatar } = data;
+      const userId = currentUser._id;
+
+      const newData = { userId, avatar };
+
+      const response = await axios.put(
+        `${updateAvatarRoute}${userId}`,
+        newData
+      );
+
+      console.log("Data", `${updateAvatarRoute}${userId}`, newData);
+
+      console.log("Response", response);
+
+      return response.data.user;
+    } catch (e) {
+      console.error("Error", e);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setAvatar: (state, action) => {
+      state.avatarUrl = action.payload;
+    },
     logout: (state, action) => {
       state.allUsers = [];
       state.user = {};
@@ -83,9 +135,33 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
+    /*
+    builder.addCase(createAvatar.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(createAvatar.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.avatarUrl = action.payload;
+    });
+    builder.addCase(createAvatar.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    */
+    builder.addCase(updateUsersAvatar.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(updateUsersAvatar.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+    });
+    builder.addCase(updateUsersAvatar.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setAvatar } = authSlice.actions;
 
 export default authSlice.reducer;

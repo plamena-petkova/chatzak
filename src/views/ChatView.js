@@ -1,21 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { Box, Chip, TabList, TabPanel, Tabs } from "@mui/joy";
+import {
+  Box,
+  Chip,
+  TabList,
+  TabPanel,
+  Tabs,
+} from "@mui/joy";
 import Header from "../components/Header";
 import { useEffect, useState, useRef } from "react";
-import {
-  getAllMessagesRoute,
-  host,
-  sendMessageRoute,
-} from "../utils/apiRoutes";
+import { host, sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, setAllUsers } from "../store/authReducer";
-import { getAllMessages, setCurrentChat, setMessages } from "../store/chatReducer";
+import { fetchUsers } from "../store/authReducer";
+import {
+  getAllMessages,
+  setCurrentChat,
+} from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
 import { io } from "socket.io-client";
 import ContactCard from "../components/ContactCard";
 import { v4 as uuidv4 } from "uuid";
+
 
 function ChatView() {
   const dispatch = useDispatch();
@@ -29,6 +35,7 @@ function ChatView() {
   const users = allUsers.filter((user) => user._id !== currentUser._id);
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState(null);
+  const [editMessage, setEditMessage] = useState('');
   const scrollRef = useRef();
 
   useEffect(() => {
@@ -39,7 +46,7 @@ function ChatView() {
     const data = {
       from: currentUser._id,
       to: currentChat._id,
-    }
+    };
     dispatch(getAllMessages(data));
   }, [currentChat, message]);
 
@@ -125,6 +132,7 @@ function ChatView() {
                         sx={{
                           display: "flex",
                           flexDirection: "column",
+                          justifyItems: "center",
                           mt: 2,
                           mb: 2,
                           alignItems: "end",
@@ -134,7 +142,7 @@ function ChatView() {
                           label="primary"
                           color="primary"
                           variant="outlined"
-                        >
+                          >
                           {msg.message}
                         </Chip>
                       </Box>

@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setClearMessages } from "../store/chatReducer";
 import { logout } from "../store/authReducer";
 import { useNavigate } from "react-router-dom";
+import InputFileUpload from "./UploadFile";
 
 function Header() {
   const dispatch = useDispatch();
@@ -15,17 +16,24 @@ function Header() {
     dispatch(setClearMessages());
     navigate("/login");
   };
-  
-  
+
   return (
-    <Box sx={{mt:2, mb:2, borderRadius:'7px'}}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        maxWidth: 270,
+        mt: 2,
+        mb: 2,
+        borderRadius: "7px",
+      }}
+    >
       <Sheet
         variant="outlined"
         sx={{
           width: 270,
           overflow: "auto",
           borderRadius: "sm",
-         
         }}
       >
         <Card
@@ -36,31 +44,22 @@ function Header() {
           }}
         >
           <CardCover>
-            <img style={{objectFit:'cover'}}  src={logo} alt="logo" />
+            <img style={{ objectFit: "cover" }} src={logo} alt="logo" />
           </CardCover>
         </Card>
       </Sheet>
       <Button
-       sx={{
-        width: 270,
-        overflow: "auto",
-        borderRadius: "sm",
-       
-      }}
+        sx={{
+          width: 270,
+          overflow: "auto",
+          borderRadius: "sm",
+        }}
         onClick={triggerLogout}
         variant="soft"
         endDecorator={<LogoutIcon />}
       ></Button>
-     <Button
-  variant="contained"
-  component="label"
->
-  Upload File
-  <input
-    type="file"
-    hidden
-  />
-</Button>
+
+      <InputFileUpload />
     </Box>
   );
 }
