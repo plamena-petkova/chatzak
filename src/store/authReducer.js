@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import {
   allUsersRoute,
+  getUserByIdRoute,
   loginRoute,
   registerRoute,
   updateAvatarRoute,
@@ -10,17 +11,13 @@ import axios from "axios";
 const initialState = {
   user: {},
   allUsers: [],
+  contacts: [],
   isLoading: false,
   error: null,
   avatarUrl: "",
 };
 
-export const fetchUsers = createAsyncThunk("users/fetch", async () => {
-  const response = await axios.get(allUsersRoute);
-  return response.data.users;
-});
-
-export const login = createAsyncThunk("user/register", async (data) => {
+export const login = createAsyncThunk("user/login", async (data) => {
   const { username, password } = data;
 
   const response = await axios.post(loginRoute, {
@@ -31,7 +28,7 @@ export const login = createAsyncThunk("user/register", async (data) => {
   return response.data.user;
 });
 
-export const register = createAsyncThunk("user/login", async (data) => {
+export const register = createAsyncThunk("user/register", async (data) => {
   const { username, password, names, email } = data;
 
   const response = await axios.post(registerRoute, {
@@ -42,6 +39,11 @@ export const register = createAsyncThunk("user/login", async (data) => {
   });
 
   return response.data.user;
+});
+
+export const fetchUsers = createAsyncThunk("users/fetch", async () => {
+  const response = await axios.get(allUsersRoute);
+  return response.data.users;
 });
 
 /*
@@ -76,16 +78,22 @@ export const updateUsersAvatar = createAsyncThunk(
         newData
       );
 
-      console.log("Data", `${updateAvatarRoute}${userId}`, newData);
-
-      console.log("Response", response);
-
       return response.data.user;
     } catch (e) {
       console.error("Error", e);
     }
   }
 );
+
+export const getUserById = createAsyncThunk("user/get-user", async (userId) => {
+  try {
+    const response = await axios.get(`${getUserByIdRoute}${userId}`);
+
+    return response.data.user;
+  } catch (e) {
+    console.error("Error", e);
+  }
+});
 
 export const authSlice = createSlice({
   name: "auth",
@@ -97,27 +105,19 @@ export const authSlice = createSlice({
     logout: (state, action) => {
       state.allUsers = [];
       state.user = {};
+      state.contacts = {};
       state.isLoading = false;
+      state.avatarUrl = "";
       state.error = null;
     },
   },
   extraReducers(builder) {
-    builder.addCase(fetchUsers.pending, (state, action) => {
-      state.isLoading = true;
-    });
-    builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.allUsers = action.payload;
-    });
-    builder.addCase(fetchUsers.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error;
-    });
     builder.addCase(login.pending, (state, action) => {
       state.isLoading = true;
     });
     builder.addCase(login.fulfilled, (state, action) => {
       state.isLoading = false;
+      console.log('Action User', action.payload);
       state.user = action.payload;
     });
     builder.addCase(login.rejected, (state, action) => {
@@ -135,6 +135,20 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
+    builder.addCase(fetchUsers.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
+      state.isLoading = false;
+      if(current(state.user)._id) {
+        state.allUsers = action.payload.filter((contact) => contact._id !== current(state.user)._id);
+      }
+    });
+    builder.addCase(fetchUsers.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+
     /*
     builder.addCase(createAvatar.pending, (state, action) => {
       state.isLoading = true;
@@ -159,9 +173,20 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
+    builder.addCase(getUserById.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getUserById.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+    });
+    builder.addCase(getUserById.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
   },
 });
 
-export const { logout, setAvatar } = authSlice.actions;
+export const { logout, setAvatar, setContacts } = authSlice.actions;
 
 export default authSlice.reducer;

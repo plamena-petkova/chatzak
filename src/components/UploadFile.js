@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import { Box } from "@mui/joy";
 //import { setAvatar, updateUsersAvatar } from "../store/authReducer";
 //import axios from "axios";
 
@@ -27,7 +28,7 @@ function InputFileUpload() {
   const avatar = useSelector((state) => state.auth.avatarUrl);
   const currentUser = useSelector((state) => state.auth.user);
 
-  console.log('Avatar', avatar, 'Current', currentUser);
+  //console.log('Avatar', avatar, 'Current', currentUser);
 
   //const dataForUpdate = { currentUser, avatar };
 
@@ -40,7 +41,7 @@ function InputFileUpload() {
       const bodyFormData = new FormData();
       bodyFormData.append("photo", selectedFile);
 
-      console.log('Data', selectedFile);
+      //console.log("Data", selectedFile);
 
       /*
       const response = await axios.post(
@@ -57,36 +58,30 @@ function InputFileUpload() {
 
       //dispatch(setAvatar(response.data.face.url));
       //dispatch(updateUsersAvatar(dataForUpdate));
-      
     } catch (error) {
       console.error("Upload error:", error);
     }
   };
 
-
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedFile) {
       sendPhoto();
-      
     } else {
       alert("Please select a file.");
     }
   };
 
-
   return (
-    <>
-      <Button component="label" variant="contained">
-        {" "}
-        Create or update Avatar
+    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Button component="label" startIcon={<CloudUploadIcon />}>
+        Upload
         <VisuallyHiddenInput onChange={handleFileChange} type="file" />
       </Button>
-      
-
-      <Button onClick={handleSubmit}  startIcon={<CloudUploadIcon />}></Button>
-    </>
+      <Button variant="contained" onClick={handleSubmit}>
+        Get my avatar
+      </Button>
+    </Box>
   );
 }
 

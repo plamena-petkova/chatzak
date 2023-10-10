@@ -1,27 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import {
-  Box,
-  Chip,
-  TabList,
-  TabPanel,
-  Tabs,
-} from "@mui/joy";
+import { Box, Chip, TabList, TabPanel, Tabs } from "@mui/joy";
 import Header from "../components/Header";
 import { useEffect, useState, useRef } from "react";
 import { host, sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../store/authReducer";
-import {
-  getAllMessages,
-  setCurrentChat,
-} from "../store/chatReducer";
+import { getAllMessages, setCurrentChat } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
 import { io } from "socket.io-client";
 import ContactCard from "../components/ContactCard";
 import { v4 as uuidv4 } from "uuid";
-
 
 function ChatView() {
   const dispatch = useDispatch();
@@ -31,24 +21,26 @@ function ChatView() {
   const currentUser = useSelector((state) => state.auth.user);
   const messages = useSelector((state) => state.chat.messages);
   const allUsers = useSelector((state) => state.auth.allUsers);
-  const isLoading = useSelector((state) => state.auth.isLoading);
-  const users = allUsers.filter((user) => user._id !== currentUser._id);
   const [message, setMessage] = useState("");
-  const [arrivalMsg, setArrivalMsg] = useState(null);
-  const [editMessage, setEditMessage] = useState('');
+  const [arrivalMsg, setArrivalMsg] = useState('');
+  const [editMessage, setEditMessage] = useState("");
+  const [value, setValue] = useState(0);
   const scrollRef = useRef();
+
 
   useEffect(() => {
     dispatch(fetchUsers());
-  }, [dispatch, currentUser]);
+  }, [currentUser, dispatch]);
 
   useEffect(() => {
     const data = {
-      from: currentUser._id,
-      to: currentChat._id,
+      from: currentUser?._id,
+      to: currentChat?._id,
     };
+
     dispatch(getAllMessages(data));
-  }, [currentChat, message]);
+
+  }, [currentChat, message, currentUser]);
 
   const handleSendMsg = async (msg) => {
     await axios.post(sendMessageRoute, {
@@ -74,26 +66,29 @@ function ChatView() {
       socket.current = io(host);
       socket.current.emit("add-user", currentUser._id);
     }
-  }, [currentChat]);
+  }, [currentChat, currentUser]);
 
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("msg-receive", (msg) => {
-        setArrivalMsg({ fromSelf: false, message: msg });
-      });
+    if (socket.current) {   
+        socket.current.on("msg-receive", (msg) => {
+          setArrivalMsg({ fromSelf: false, message: msg });
+        });
+  
+     
     }
   }, [arrivalMsg, message]);
 
   useEffect(() => {
     arrivalMsg && setMessage((prev) => [...prev, arrivalMsg]);
-  }, [arrivalMsg]);
+  }, [arrivalMsg, message]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
   }, [arrivalMsg]);
 
-  const handleChange = (event, contactId) => {
-    const currentChat = users[contactId];
+  const handleChange = (event, newValue) => {
+    const currentChat = allUsers[newValue];
+    setValue(newValue);
     dispatch(setCurrentChat(currentChat));
   };
 
@@ -113,17 +108,16 @@ function ChatView() {
         <Tabs
           onChange={handleChange}
           aria-label="Vertical tabs"
+          variant="scrollable"
           orientation="vertical"
+          value={value}
         >
           <TabList>
-            {users.map((contact) => {
+            {allUsers.map((contact) => {
               return <ContactCard key={contact._id} contact={contact} />;
             })}
           </TabList>
-
-          {users.map((contact, index) => {
-            return (
-              <TabPanel value={index} key={contact._id}>
+              <TabPanel value={value} key={uuidv4()}>
                 {messages.map((msg) => {
                   if (msg.fromSelf) {
                     return (
@@ -142,7 +136,7 @@ function ChatView() {
                           label="primary"
                           color="primary"
                           variant="outlined"
-                          >
+                        >
                           {msg.message}
                         </Chip>
                       </Box>
@@ -170,8 +164,8 @@ function ChatView() {
                   }
                 })}
               </TabPanel>
-            );
-          })}
+   
+      
         </Tabs>
       </Box>
       <Box sx={{ mr: 3, ml: 3 }}>

@@ -1,15 +1,18 @@
 import { Box, Button, Card, CardCover, Sheet } from "@mui/joy";
 import logo from "../assets/chatzakLogo.png";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setClearMessages } from "../store/chatReducer";
-import { logout } from "../store/authReducer";
+import { getUserById, logout } from "../store/authReducer";
 import { useNavigate } from "react-router-dom";
 import InputFileUpload from "./UploadFile";
+import { useEffect } from "react";
 
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const avatar = useSelector((state) => state.auth.user?.avatarImg);
 
   const triggerLogout = () => {
     dispatch(logout());
@@ -59,7 +62,7 @@ function Header() {
         endDecorator={<LogoutIcon />}
       ></Button>
 
-      <InputFileUpload />
+      {!avatar ? <InputFileUpload /> : null}
     </Box>
   );
 }
