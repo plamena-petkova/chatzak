@@ -4,6 +4,7 @@ import logo from "../assets/chatzakLogo.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../store/authReducer";
+import { socket } from "../socket";
 
 function WelcomeLoginView() {
   const dispatch = useDispatch();
@@ -26,13 +27,14 @@ function WelcomeLoginView() {
   const submitLoginHandler = async (event) => {
     event.preventDefault();
 
-    const data = {username, password}
+    const data = { username, password };
 
     dispatch(login(data));
+    socket.connect();
     navigate("/chat");
 
-    if(isLoading) {
-      return <Box>is Loading...</Box>
+    if (isLoading) {
+      return <Box>is Loading...</Box>;
     }
   };
 
@@ -50,7 +52,7 @@ function WelcomeLoginView() {
           sx={{
             maxWidth: 400,
             minHeight: 200,
-            borderRadius: "sm",
+            borderRadius: "s m",
           }}
         >
           <CardCover>

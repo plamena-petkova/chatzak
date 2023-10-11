@@ -4,6 +4,7 @@ import logo from "../assets/chatzakLogo.png";
 import { useNavigate } from "react-router-dom";
 import { register } from "../store/authReducer";
 import { useDispatch } from "react-redux";
+import { socket } from "../socket";
 
 function RegisterView() {
 
@@ -29,6 +30,7 @@ function RegisterView() {
     event.preventDefault();
 
     dispatch(register(registerValues));
+    socket.connect();
     navigate("/chat");
 
   };

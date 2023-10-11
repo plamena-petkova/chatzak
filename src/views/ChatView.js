@@ -9,13 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../store/authReducer";
 import { getAllMessages, setCurrentChat } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
-import { io } from "socket.io-client";
 import ContactCard from "../components/ContactCard";
 import { v4 as uuidv4 } from "uuid";
+import { socket } from "../socket";
 
-function ChatView() {
+function ChatView({isConnected}) {
   const dispatch = useDispatch();
-  const socket = useRef();
 
   const currentChat = useSelector((state) => state.chat.currentChat);
   const currentUser = useSelector((state) => state.auth.user);
@@ -26,6 +25,12 @@ function ChatView() {
   const [editMessage, setEditMessage] = useState("");
   const [value, setValue] = useState(0);
   const scrollRef = useRef();
+
+useEffect(() => {
+  if(currentUser._id && !isConnected) {
+    socket.connect();
+  }
+}, [currentUser])
 
 
   useEffect(() => {
@@ -49,7 +54,7 @@ function ChatView() {
       message: msg,
     });
 
-    socket.current.emit("send-msg", {
+    socket.emit("send-msg", {
       to: currentChat._id,
       from: currentUser._id,
       message: msg,
@@ -63,14 +68,13 @@ function ChatView() {
 
   useEffect(() => {
     if (currentUser) {
-      socket.current = io(host);
-      socket.current.emit("add-user", currentUser._id);
+      socket.emit("add-user", currentUser._id);
     }
   }, [currentChat, currentUser]);
 
   useEffect(() => {
-    if (socket.current) {   
-        socket.current.on("msg-receive", (msg) => {
+    if (socket) {   
+        socket.on("msg-receive", (msg) => {
           setArrivalMsg({ fromSelf: false, message: msg });
         });
   

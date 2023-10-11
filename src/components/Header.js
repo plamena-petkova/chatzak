@@ -3,12 +3,12 @@ import logo from "../assets/chatzakLogo.png";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch, useSelector } from "react-redux";
 import { setClearMessages } from "../store/chatReducer";
-import { getUserById, logout } from "../store/authReducer";
+import { logout } from "../store/authReducer";
 import { useNavigate } from "react-router-dom";
 import InputFileUpload from "./UploadFile";
-import { useEffect } from "react";
+import { socket } from "../socket";
 
-function Header() {
+function Header({isConnected}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -17,6 +17,7 @@ function Header() {
   const triggerLogout = () => {
     dispatch(logout());
     dispatch(setClearMessages());
+    socket.disconnect();
     navigate("/login");
   };
 
