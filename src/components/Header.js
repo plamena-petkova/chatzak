@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardCover, Sheet } from "@mui/joy";
+import { Avatar, Box, Button, Card, CardCover, DialogTitle, Modal, ModalDialog, Sheet, Tooltip } from "@mui/joy";
 import logo from "../assets/chatzakLogo.png";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +7,15 @@ import { logout } from "../store/authReducer";
 import { useNavigate } from "react-router-dom";
 import InputFileUpload from "./UploadFile";
 import { socket } from "../socket";
+import { useState } from "react";
 
-function Header({isConnected}) {
+function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const avatar = useSelector((state) => state.auth.user?.avatarImg);
+  const currentUser = useSelector((state) => state.auth.user);
+
+  const [open, setOpen] = useState(false);
 
   const triggerLogout = () => {
     dispatch(logout());
@@ -20,6 +23,10 @@ function Header({isConnected}) {
     socket.disconnect();
     navigate("/login");
   };
+
+  const onModalClose = () => {
+    setOpen(false);
+  }
 
   return (
     <Box
@@ -52,20 +59,32 @@ function Header({isConnected}) {
           </CardCover>
         </Card>
       </Sheet>
+      <Box sx={{display:'flex',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+      <Tooltip title="Create your avatar" variant="soft">
+      <Button variant="soft" onClick={() => setOpen(true)} sx={{ml:0.5}}>{currentUser.names}</Button>
+      </Tooltip>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <ModalDialog>
+          <DialogTitle>Create or Update Avatar</DialogTitle>
+          <InputFileUpload onModalClose={onModalClose} />
+        </ModalDialog>
+      </Modal>
+      {currentUser._id && 
+        <Avatar key={currentUser?._id} src={`${currentUser?.avatarImg}`}>
+          {currentUser._id && currentUser?.avatarImg
+            ? currentUser?.avatar
+            : currentUser.names[0]}
+        </Avatar>
+      }
       <Button
-        sx={{
-          width: 270,
-          overflow: "auto",
-          borderRadius: "sm",
-        }}
         onClick={triggerLogout}
         variant="soft"
         endDecorator={<LogoutIcon />}
-      ></Button>
-
-      {!avatar ? <InputFileUpload /> : null}
+      />
+      </Box>
     </Box>
   );
 }
 
 export default Header;
+

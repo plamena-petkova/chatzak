@@ -20,7 +20,7 @@ const VisuallyHiddenInput = styled("input")({
   minWidth: 265,
 });
 
-function InputFileUpload() {
+function InputFileUpload({onModalClose}) {
   //const dispatch = useDispatch();
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -58,6 +58,9 @@ function InputFileUpload() {
 
       //dispatch(setAvatar(response.data.face.url));
       //dispatch(updateUsersAvatar(dataForUpdate));
+
+      console.log('Send photo');
+
     } catch (error) {
       console.error("Upload error:", error);
     }
@@ -67,6 +70,7 @@ function InputFileUpload() {
     e.preventDefault();
     if (selectedFile) {
       sendPhoto();
+      onModalClose();
     } else {
       alert("Please select a file.");
     }

@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
 import { Box, Chip, TabList, TabPanel, Tabs } from "@mui/joy";
 import Header from "../components/Header";
-import { useEffect, useState, useRef } from "react";
-import { host, sendMessageRoute } from "../utils/apiRoutes";
+import { useEffect, useState} from "react";
+import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../store/authReducer";
@@ -13,7 +12,7 @@ import ContactCard from "../components/ContactCard";
 import { v4 as uuidv4 } from "uuid";
 import { socket } from "../socket";
 
-function ChatView({isConnected}) {
+function ChatView() {
   const dispatch = useDispatch();
 
   const currentChat = useSelector((state) => state.chat.currentChat);
@@ -22,12 +21,10 @@ function ChatView({isConnected}) {
   const allUsers = useSelector((state) => state.auth.allUsers);
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState('');
-  const [editMessage, setEditMessage] = useState("");
   const [value, setValue] = useState(0);
-  const scrollRef = useRef();
 
 useEffect(() => {
-  if(currentUser._id && !isConnected) {
+  if(currentUser._id && !socket.connected) {
     socket.connect();
   }
 }, [currentUser])
@@ -36,6 +33,12 @@ useEffect(() => {
   useEffect(() => {
     dispatch(fetchUsers());
   }, [currentUser, dispatch]);
+
+  useEffect(() => {
+    if(allUsers.length && allUsers[value]) {
+      dispatch(setCurrentChat(allUsers[value]))
+    }
+  }, [allUsers])
 
   useEffect(() => {
     const data = {
@@ -47,10 +50,40 @@ useEffect(() => {
 
   }, [currentChat, message, currentUser]);
 
+  useEffect(() => {
+    if (currentUser) {
+      socket.emit("add-user", currentUser._id);
+    }
+
+  }, [currentChat]);
+
+  useEffect(() => {
+    if (socket) {   
+        socket.on("msg-receive", (msg) => {
+          setArrivalMsg({ fromSelf: false, message: msg });
+        });
+    }
+
+    return () => {
+      socket.off("msg-receive");
+    }
+  }, []);
+
+  useEffect(() => {
+    arrivalMsg && setMessage((prev) => [...prev, arrivalMsg]);
+  }, [arrivalMsg]);
+
+  const handleChangeTab = (event, newValue) => {
+    const currentChat = allUsers[newValue];
+    setValue(newValue);
+    dispatch(setCurrentChat(currentChat));
+  };
+
   const handleSendMsg = async (msg) => {
+
     await axios.post(sendMessageRoute, {
-      from: currentUser._id,
-      to: currentChat._id,
+      from: currentUser?._id,
+      to: currentChat?._id,
       message: msg,
     });
 
@@ -66,38 +99,7 @@ useEffect(() => {
     setMessage(msgs);
   };
 
-  useEffect(() => {
-    if (currentUser) {
-      socket.emit("add-user", currentUser._id);
-    }
-  }, [currentChat, currentUser]);
-
-  useEffect(() => {
-    if (socket) {   
-        socket.on("msg-receive", (msg) => {
-          setArrivalMsg({ fromSelf: false, message: msg });
-        });
-  
-     
-    }
-  }, [arrivalMsg, message]);
-
-  useEffect(() => {
-    arrivalMsg && setMessage((prev) => [...prev, arrivalMsg]);
-  }, [arrivalMsg, message]);
-
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
-  }, [arrivalMsg]);
-
-  const handleChange = (event, newValue) => {
-    const currentChat = allUsers[newValue];
-    setValue(newValue);
-    dispatch(setCurrentChat(currentChat));
-  };
-
   return (
-    <>
       <Box
         sx={{
           display: "flex",
@@ -110,13 +112,17 @@ useEffect(() => {
         <Header />
 
         <Tabs
-          onChange={handleChange}
+        sx={{
+          p: 1,
+          overflowY: 'auto',
+        }}
+          onChange={handleChangeTab}
           aria-label="Vertical tabs"
           variant="scrollable"
           orientation="vertical"
           value={value}
         >
-          <TabList>
+          <TabList sticky={'top'} >
             {allUsers.map((contact) => {
               return <ContactCard key={contact._id} contact={contact} />;
             })}
@@ -168,14 +174,11 @@ useEffect(() => {
                   }
                 })}
               </TabPanel>
-   
-      
         </Tabs>
-      </Box>
-      <Box sx={{ mr: 3, ml: 3 }}>
+        <Box sx={{mt:2}}>
         <ChatInput handleSendMsg={handleSendMsg} />
+        </Box>
       </Box>
-    </>
   );
 }
 
