@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setClearMessages } from "../store/chatReducer";
 import { logout } from "../store/authReducer";
 import { useNavigate } from "react-router-dom";
-import InputFileUpload from "./UploadFile";
 import { socket } from "../socket";
 import { useState } from "react";
+import NewAvatar from "./NewRandomAvatar";
 
 function Header() {
   const dispatch = useDispatch();
@@ -65,8 +65,8 @@ function Header() {
       </Tooltip>
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog>
-          <DialogTitle>Create or Update Avatar</DialogTitle>
-          <InputFileUpload onModalClose={onModalClose} />
+          <DialogTitle>Update Avatar</DialogTitle>
+          <NewAvatar onModalClose={onModalClose} />
         </ModalDialog>
       </Modal>
       {currentUser?._id && 

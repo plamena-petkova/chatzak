@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import {
   allUsersRoute,
+  createAvatarRoute,
   getUserByIdRoute,
   loginRoute,
   registerRoute,
@@ -64,11 +65,29 @@ return response.data.face.url;
   
 });
 */
+
+export const createAvatar = createAsyncThunk("user/create-avatar", async ({currentUser}) => {
+
+    
+  const userId = currentUser._id;
+ 
+  const avatar = `${createAvatarRoute}${currentUser.username}`;
+
+  const newData = { userId, avatar };
+
+  const response = await axios.put(`${updateAvatarRoute}${userId}`, newData);
+
+  return response.data.user;
+  }
+
+);
+
 export const updateUsersAvatar = createAsyncThunk(
   "user/update-avatar",
-  async (data) => {
-    const { currentUser, avatar } = data;
+  async ({currentUser, randomNumber}) => {
+
     const userId = currentUser._id;
+    const avatar = `${createAvatarRoute}${randomNumber}`;
 
     const newData = { userId, avatar };
 
@@ -77,14 +96,6 @@ export const updateUsersAvatar = createAsyncThunk(
     return response.data.user;
   }
 );
-
-/*
-axios.interceptors.response.use(undefined, async (error) => {
-  console.log('Error', error.response.data.msg);
-
-});
-*/
-
 
 export const getUserById = createAsyncThunk("user/get-user", async (userId) => {
   const response = await axios.get(`${getUserByIdRoute}${userId}`);
@@ -146,7 +157,7 @@ export const authSlice = createSlice({
       state.error = action.error;
     });
 
-    /*
+  
     builder.addCase(createAvatar.pending, (state, action) => {
       state.isLoading = true;
     });
@@ -158,7 +169,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
-    */
+    
     builder.addCase(updateUsersAvatar.pending, (state, action) => {
       state.isLoading = true;
     });

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import logo from "../assets/chatzakLogo.png";
 
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "../store/authReducer";
 import { socket } from "../socket";
 import ErrorAlert from "../components/ErrorAlert";
@@ -13,12 +13,11 @@ function WelcomeLoginView() {
 
   const navigate = useNavigate();
 
-  const isLoading = useSelector((state) => state.auth.isLoading);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [credentials, setCredentials] = useState(false);
   const [open, setOpen] = useState(false);
+
 
   const onCloseHandler = () => {
     setOpen(false);
@@ -57,10 +56,6 @@ function WelcomeLoginView() {
           setOpen(true);
           return;
         });
-    }
-
-    if (isLoading) {
-      return <Box>is Loading...</Box>;
     }
   };
 
@@ -117,6 +112,7 @@ function WelcomeLoginView() {
           </Box>
         </Card>
       </Box>
+    
     </>
   );
 }
