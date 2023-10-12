@@ -60,12 +60,13 @@ function Header() {
         </Card>
       </Sheet>
       <Box sx={{display:'flex',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-      <Tooltip title="Create your avatar" variant="soft">
+      
+      <Tooltip title="Update your avatar" variant="soft">
       <Button variant="soft" onClick={() => setOpen(true)} sx={{ml:0.5}}>{currentUser?.names}</Button>
       </Tooltip>
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog>
-          <DialogTitle>Update Avatar</DialogTitle>
+          <DialogTitle sx={{justifyContent:'center'}}>Update Avatar</DialogTitle>
           <NewAvatar onModalClose={onModalClose} />
         </ModalDialog>
       </Modal>

@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Chip, TabList, TabPanel, Tabs } from "@mui/joy";
 import Header from "../components/Header";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { createAvatar, fetchUsers } from "../store/authReducer";
+import { createAvatar, fetchUsers, getUserById } from "../store/authReducer";
 import { getAllMessages, setCurrentChat } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
 import ContactCard from "../components/ContactCard";
@@ -22,6 +22,8 @@ function ChatView() {
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
   const [value, setValue] = useState(0);
+  const [sticky, setSticky] = useState("top");
+  const scrollableContainerRef = useRef(null);
 
   useEffect(() => {
     if (currentUser._id && !socket.connected) {
@@ -34,7 +36,10 @@ function ChatView() {
   }, [currentUser, dispatch]);
 
   useEffect(() => {
-    dispatch(createAvatar({ currentUser }));
+    if (!currentUser.avatarImg)
+      dispatch(createAvatar({ currentUser }))
+        .unwrap()
+        .then(dispatch(getUserById(currentUser._id)));
   }, []);
 
   useEffect(() => {
@@ -99,6 +104,15 @@ function ChatView() {
     setMessage(msgs);
   };
 
+  
+  useEffect(() => {
+    // Scroll to the bottom when the messages state updates
+    scrollableContainerRef.current.scrollTop =
+    scrollableContainerRef.current.scrollHeight;
+  }, [handleSendMsg]);
+
+
+
   return (
     <Box
       sx={{
@@ -113,21 +127,29 @@ function ChatView() {
 
       <Tabs
         sx={{
-          p: 1,
-          overflowY: "auto",
+          overflow: "auto",
+          overflowY:'scroll',
+          height: "60vh",
+          maxHeight:"60vh",
+          "&::-webkit-scrollbar": { display: "none" },
         }}
         onChange={handleChangeTab}
         aria-label="Vertical tabs"
         variant="scrollable"
         orientation="vertical"
         value={value}
+        ref={scrollableContainerRef}
+        
       >
-        <TabList sticky={"top"}>
+        <TabList
+          sticky={sticky}
+          underlinePlacement={{ top: "bottom", bottom: "top" }[sticky]}
+        >
           {allUsers.map((contact) => {
             return <ContactCard key={contact._id} contact={contact} />;
           })}
         </TabList>
-        <TabPanel value={value} key={uuidv4()}>
+        <TabPanel  value={value} key={uuidv4()}>
           {messages.map((msg) => {
             if (msg.fromSelf) {
               return (

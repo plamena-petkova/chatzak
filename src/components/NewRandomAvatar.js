@@ -16,7 +16,7 @@ function NewAvatar({ onModalClose }) {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Box sx={{ display: "flex", justifyContent: "center", }}>
       <Button variant="contained" onClick={handleSubmit}>
         Create my new avatar
       </Button>

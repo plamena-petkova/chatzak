@@ -4,7 +4,7 @@ import { Alert, Box, IconButton } from "@mui/joy";
 
 function ErrorAlert({ onCloseHandler }) {
   return (
-    <Box sx={{ display: "flex", justifyContent: "end" }}>
+    <Box sx={{ display: "flex", justifyContent: "end", mb: 2 }}>
       <Alert
         startDecorator={<WarningIcon />}
         variant="soft"

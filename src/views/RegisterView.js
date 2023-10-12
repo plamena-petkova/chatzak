@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardCover, Input, Typography } from "@mui/joy";
+import { Box, Button, Card, CardCover, Input, Link, Typography } from "@mui/joy";
 import { useState } from "react";
 import logo from "../assets/chatzakLogo.png";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ function RegisterView() {
 
   const navigate = useNavigate();
 
+  const [open, setOpen] = useState(false);
   const [registerValues, setRegisterValues] = useState({
     email: "",
     names: "",
@@ -19,7 +20,7 @@ function RegisterView() {
     password: "",
   });
 
-  const [open, setOpen] = useState(false);
+  const disableButton = (registerValues.email === "" && registerValues.password === "" && registerValues.names === "" && registerValues.username === "");  
 
   const handleChange = (event) => {
     setRegisterValues({
@@ -82,6 +83,7 @@ function RegisterView() {
               placeholder="Email"
               name="email"
               type="email"
+              required
               sx={{ m: 1 }}
               onChange={handleChange}
             />
@@ -96,6 +98,7 @@ function RegisterView() {
               placeholder="Username"
               name="username"
               type="text"
+              required
               sx={{ m: 1 }}
               onChange={handleChange}
             />
@@ -103,14 +106,16 @@ function RegisterView() {
               placeholder="Password"
               name="password"
               type="password"
+              required
               sx={{ m: 1 }}
               onChange={handleChange}
             />
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Button type="submit" >Register</Button>
+              <Button type="submit" disabled={disableButton} >Register</Button>
             </Box>
             </Box>
           </Box>
+          <Link sx={{justifyContent:'center', ml:4, mr:4, fontSize:'sm'}} variant="soft" href="/login" >Return to login</Link>
         </Card>
       </Box>
     </>

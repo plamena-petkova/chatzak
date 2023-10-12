@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardCover, Input, Typography } from "@mui/joy";
+import { Box, Button, Card, CardCover, Input, Typography, Link, } from "@mui/joy";
 import { useEffect, useState } from "react";
 import logo from "../assets/chatzakLogo.png";
 
@@ -109,8 +109,11 @@ function WelcomeLoginView() {
                 </Button>
               </Box>
             </Box>
+           
           </Box>
+          <Link sx={{justifyContent:'center', ml:4, mr:4, fontSize:'sm'}} variant="soft" href="/register" >If you don't have an account, register here!</Link>
         </Card>
+       
       </Box>
     
     </>
