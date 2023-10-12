@@ -17,15 +17,15 @@ const initialState = {
   avatarUrl: "",
 };
 
-export const login = createAsyncThunk("user/login", async (data) => {
+export const login = createAsyncThunk("user/login", async (data, thunkAPI) => {
   const { username, password } = data;
-
   const response = await axios.post(loginRoute, {
     username,
     password,
   });
 
   return response.data.user;
+ 
 });
 
 export const register = createAsyncThunk("user/register", async (data) => {
@@ -67,32 +67,28 @@ return response.data.face.url;
 export const updateUsersAvatar = createAsyncThunk(
   "user/update-avatar",
   async (data) => {
-    try {
-      const { currentUser, avatar } = data;
-      const userId = currentUser._id;
+    const { currentUser, avatar } = data;
+    const userId = currentUser._id;
 
-      const newData = { userId, avatar };
+    const newData = { userId, avatar };
 
-      const response = await axios.put(
-        `${updateAvatarRoute}${userId}`,
-        newData
-      );
+    const response = await axios.put(`${updateAvatarRoute}${userId}`, newData);
 
-      return response.data.user;
-    } catch (e) {
-      console.error("Error", e);
-    }
+    return response.data.user;
   }
 );
 
-export const getUserById = createAsyncThunk("user/get-user", async (userId) => {
-  try {
-    const response = await axios.get(`${getUserByIdRoute}${userId}`);
+/*
+axios.interceptors.response.use(undefined, async (error) => {
+  console.log('Error', error.response.data.msg);
 
-    return response.data.user;
-  } catch (e) {
-    console.error("Error", e);
-  }
+});
+*/
+
+
+export const getUserById = createAsyncThunk("user/get-user", async (userId) => {
+  const response = await axios.get(`${getUserByIdRoute}${userId}`);
+  return response.data.user;
 });
 
 export const authSlice = createSlice({
@@ -139,8 +135,10 @@ export const authSlice = createSlice({
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
       state.isLoading = false;
-      if(current(state.user)._id) {
-        state.allUsers = action.payload.filter((contact) => contact._id !== current(state.user)._id);
+      if (current(state.user)._id) {
+        state.allUsers = action.payload.filter(
+          (contact) => contact._id !== current(state.user)._id
+        );
       }
     });
     builder.addCase(fetchUsers.rejected, (state, action) => {
@@ -186,6 +184,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout, setAvatar, setContacts } = authSlice.actions;
+export const { logout, setAvatar, setContacts, setErrorClear } = authSlice.actions;
 
 export default authSlice.reducer;

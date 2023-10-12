@@ -61,7 +61,7 @@ function Header() {
       </Sheet>
       <Box sx={{display:'flex',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
       <Tooltip title="Create your avatar" variant="soft">
-      <Button variant="soft" onClick={() => setOpen(true)} sx={{ml:0.5}}>{currentUser.names}</Button>
+      <Button variant="soft" onClick={() => setOpen(true)} sx={{ml:0.5}}>{currentUser?.names}</Button>
       </Tooltip>
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog>
@@ -69,7 +69,7 @@ function Header() {
           <InputFileUpload onModalClose={onModalClose} />
         </ModalDialog>
       </Modal>
-      {currentUser._id && 
+      {currentUser?._id && 
         <Avatar key={currentUser?._id} src={`${currentUser?.avatarImg}`}>
           {currentUser._id && currentUser?.avatarImg
             ? currentUser?.avatar

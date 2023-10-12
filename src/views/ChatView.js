@@ -19,6 +19,7 @@ function ChatView() {
   const currentUser = useSelector((state) => state.auth.user);
   const messages = useSelector((state) => state.chat.messages);
   const allUsers = useSelector((state) => state.auth.allUsers);
+  //const error = useSelector((state) => state.auth.error);
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState('');
   const [value, setValue] = useState(0);
