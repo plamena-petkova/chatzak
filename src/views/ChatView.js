@@ -22,6 +22,7 @@ function ChatView() {
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
   const [value, setValue] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [sticky, setSticky] = useState("top");
   const scrollableContainerRef = useRef(null);
 
@@ -104,14 +105,11 @@ function ChatView() {
     setMessage(msgs);
   };
 
-  
   useEffect(() => {
     // Scroll to the bottom when the messages state updates
     scrollableContainerRef.current.scrollTop =
-    scrollableContainerRef.current.scrollHeight;
+      scrollableContainerRef.current.scrollHeight;
   }, [handleSendMsg]);
-
-
 
   return (
     <Box
@@ -128,9 +126,9 @@ function ChatView() {
       <Tabs
         sx={{
           overflow: "auto",
-          overflowY:'scroll',
+          overflowY: "scroll",
           height: "60vh",
-          maxHeight:"60vh",
+          maxHeight: "60vh",
           "&::-webkit-scrollbar": { display: "none" },
         }}
         onChange={handleChangeTab}
@@ -139,7 +137,6 @@ function ChatView() {
         orientation="vertical"
         value={value}
         ref={scrollableContainerRef}
-        
       >
         <TabList
           sticky={sticky}
@@ -149,7 +146,7 @@ function ChatView() {
             return <ContactCard key={contact._id} contact={contact} />;
           })}
         </TabList>
-        <TabPanel  value={value} key={uuidv4()}>
+        <TabPanel value={value} key={uuidv4()}>
           {messages.map((msg) => {
             if (msg.fromSelf) {
               return (
@@ -164,7 +161,12 @@ function ChatView() {
                     alignItems: "end",
                   }}
                 >
-                  <Chip label="primary" color="primary" variant="outlined">
+                  <Chip
+                    variant="outlined"
+                    color="primary"
+                    size="lg"
+                    onClick={() => alert("You clicked the Joy Chip!")}
+                  >
                     {msg.message}
                   </Chip>
                 </Box>
@@ -197,3 +199,9 @@ function ChatView() {
 }
 
 export default ChatView;
+
+/*
+<Chip label="primary" color="primary" variant="outlined">
+{msg.message}
+</Chip>
+*/

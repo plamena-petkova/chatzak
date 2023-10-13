@@ -1,6 +1,6 @@
 import ChatView from "./views/ChatView";
 import LoginView from "./views/LoginView";
-import "../src/App.css";
+import "./App.css";
 import React from "react";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
