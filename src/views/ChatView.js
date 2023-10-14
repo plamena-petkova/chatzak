@@ -1,14 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Chip, TabList, TabPanel, Tabs } from "@mui/joy";
+import { Box, TabList, TabPanel, Tabs, Chip, Button } from "@mui/joy";
 import Header from "../components/Header";
 import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { createAvatar, fetchUsers, getUserById } from "../store/authReducer";
-import { getAllMessages, setCurrentChat } from "../store/chatReducer";
+import {
+  deleteMessage,
+  getAllMessages,
+  setCurrentChat,
+} from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
 import ContactCard from "../components/ContactCard";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { v4 as uuidv4 } from "uuid";
 import { socket } from "../socket";
 
@@ -25,6 +30,9 @@ function ChatView() {
   // eslint-disable-next-line no-unused-vars
   const [sticky, setSticky] = useState("top");
   const scrollableContainerRef = useRef(null);
+  const [showRemoveIcon, setShowRemoveIcon] = useState({ id: "", show: false });
+
+  const [messageDeleted, setMessageDeleted] = useState(false);
 
   useEffect(() => {
     if (currentUser._id && !socket.connected) {
@@ -54,9 +62,8 @@ function ChatView() {
       from: currentUser?._id,
       to: currentChat?._id,
     };
-
     dispatch(getAllMessages(data));
-  }, [currentChat, message, currentUser]);
+  }, [currentChat, message, currentUser, messageDeleted, dispatch]);
 
   useEffect(() => {
     if (currentUser) {
@@ -105,6 +112,15 @@ function ChatView() {
     setMessage(msgs);
   };
 
+  const handleShowRemoveIcon = (messageId) => {
+    setShowRemoveIcon({ id: messageId, show: true });
+  };
+
+  const onDeleteHandler = (messageId) => {
+    dispatch(deleteMessage(messageId));
+    setMessageDeleted(!messageDeleted);
+  };
+
   useEffect(() => {
     // Scroll to the bottom when the messages state updates
     scrollableContainerRef.current.scrollTop =
@@ -147,48 +163,67 @@ function ChatView() {
           })}
         </TabList>
         <TabPanel value={value} key={uuidv4()}>
-          {messages.map((msg) => {
-            if (msg.fromSelf) {
-              return (
-                <Box
-                  key={uuidv4()}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyItems: "center",
-                    mt: 2,
-                    mb: 2,
-                    alignItems: "end",
-                  }}
-                >
-                  <Chip
-                    variant="outlined"
-                    color="primary"
-                    size="lg"
-                    onClick={() => alert("You clicked the Joy Chip!")}
+          {messages.length &&
+            messages.map((msg) => {
+              if (msg.fromSelf) {
+                return (
+                  <Box
+                    key={uuidv4()}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyItems: "center",
+                      mt: 2,
+                      mb: 2,
+                      alignItems: "end",
+                    }}
                   >
-                    {msg.message}
-                  </Chip>
-                </Box>
-              );
-            } else {
-              return (
-                <Box
-                  key={uuidv4()}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    mt: 3,
-                    mb: 3,
-                  }}
-                >
-                  <Chip label="success" color="success" variant="outlined">
-                    {msg.message}
-                  </Chip>
-                </Box>
-              );
-            }
-          })}
+                    <Box sx={{ display: "flex", flexDirection: "row" }}>
+                      <Chip
+                        variant="outlined"
+                        color="primary"
+                        size="lg"
+                        disabled={msg.isRemoved}
+                        onClick={() => handleShowRemoveIcon(msg.id)}
+                      >
+                        {msg.message}
+                      </Chip>
+
+                      {msg.id === showRemoveIcon.id && !msg.isRemoved ? (
+                        <Button
+                          sx={{ zIndex: 100 }}
+                          size="sm"
+                          variant="plain"
+                          onClick={() => onDeleteHandler(msg.id)}
+                        >
+                          <DeleteIcon fontSize="sm" />
+                        </Button>
+                      ) : null}
+                    </Box>
+                  </Box>
+                );
+              } else {
+                return (
+                  <Box
+                    key={uuidv4()}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      mt: 3,
+                      mb: 3,
+                    }}
+                  >
+                    <Chip label="success" color="success" variant="outlined">
+                      {!msg.message.isRemoved ? (
+                        msg.message
+                      ) : (
+                        <div>The message is removed</div>
+                      )}
+                    </Chip>
+                  </Box>
+                );
+              }
+            })}
         </TabPanel>
       </Tabs>
       <Box sx={{ mt: 2 }}>
@@ -199,9 +234,3 @@ function ChatView() {
 }
 
 export default ChatView;
-
-/*
-<Chip label="primary" color="primary" variant="outlined">
-{msg.message}
-</Chip>
-*/

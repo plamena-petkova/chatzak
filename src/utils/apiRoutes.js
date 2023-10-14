@@ -9,3 +9,4 @@ export const createAvatarRoute = `https://api.dicebear.com/7.x/bottts/svg?seed=`
 //export const createAvatarRoute = `https://api.dicebear.com/7.x/adventurer/svg?seed=`
 export const updateAvatarRoute = `${host}/api/auth/users/`;
 export const getUserByIdRoute = `${host}/api/auth/users/`;
+export const deleteMessageRoute = `${host}/api/messages/message/`

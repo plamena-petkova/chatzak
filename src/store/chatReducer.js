@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllMessagesRoute } from "../utils/apiRoutes";
+import { deleteMessageRoute, getAllMessagesRoute } from "../utils/apiRoutes";
 import axios from "axios";
 
 const initialState = {
@@ -13,6 +13,15 @@ export const getAllMessages = createAsyncThunk(
   "chat/messages",
   async (data) => {
     const response = await axios.post(getAllMessagesRoute, data);
+    return response.data;
+  }
+);
+
+export const deleteMessage = createAsyncThunk(
+  "chat/delete-message",
+  async (messageId) => {
+    
+    const response = await axios.put(`${deleteMessageRoute}${messageId}`);
     return response.data;
   }
 );
@@ -38,6 +47,18 @@ export const chatSlice = createSlice({
       state.messages = action.payload;
     });
     builder.addCase(getAllMessages.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(deleteMessage.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(deleteMessage.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.messages = action.payload.message;
+     
+    });
+    builder.addCase(deleteMessage.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });
