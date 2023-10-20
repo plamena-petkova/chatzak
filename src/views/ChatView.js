@@ -114,7 +114,13 @@ function ChatView() {
 
   const handleShowRemoveIcon = (messageId) => {
     setShowRemoveIcon({ id: messageId, show: true });
+    if(messageId === showRemoveIcon.id) {
+      const showIcon = {...showRemoveIcon};
+      showIcon.show = !showIcon.show;
+      setShowRemoveIcon(showIcon);
+    }
   };
+  
 
   const onDeleteHandler = (messageId) => {
     dispatch(deleteMessage(messageId));
@@ -163,7 +169,7 @@ function ChatView() {
           })}
         </TabList>
         <TabPanel value={value} key={uuidv4()}>
-          {messages.length &&
+          {messages.length > 0 &&
             messages.map((msg) => {
               if (msg.fromSelf) {
                 return (
@@ -186,10 +192,10 @@ function ChatView() {
                         disabled={msg.isRemoved}
                         onClick={() => handleShowRemoveIcon(msg.id)}
                       >
-                        {msg.message}
+                        {!msg.message.isRemoved ? msg.message : <Box>IS removed</Box>}
                       </Chip>
 
-                      {msg.id === showRemoveIcon.id && !msg.isRemoved ? (
+                      {msg.id === showRemoveIcon.id && !msg.isRemoved && showRemoveIcon.show ? (
                         <Button
                           sx={{ zIndex: 100 }}
                           size="sm"
@@ -214,11 +220,7 @@ function ChatView() {
                     }}
                   >
                     <Chip label="success" color="success" variant="outlined">
-                      {!msg.message.isRemoved ? (
-                        msg.message
-                      ) : (
-                        <div>The message is removed</div>
-                      )}
+                     {!msg.message.isRemoved ? msg.message : <Box>Is removed</Box>}
                     </Chip>
                   </Box>
                 );
