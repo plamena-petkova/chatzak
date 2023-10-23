@@ -76,10 +76,14 @@ function ChatView() {
       socket.on("msg-receive", (msg) => {
         setArrivalMsg({ fromSelf: false, message: msg });
       });
+      socket.on("msg-edited", (msg) => {
+        setArrivalMsg({ fromSelf: false, message: msg });
+      });
     }
 
     return () => {
       socket.off("msg-receive");
+      socket.off("msg-edited");
     };
   }, []);
 
@@ -114,17 +118,20 @@ function ChatView() {
 
   const handleShowRemoveIcon = (messageId) => {
     setShowRemoveIcon({ id: messageId, show: true });
-    if(messageId === showRemoveIcon.id) {
-      const showIcon = {...showRemoveIcon};
+    if (messageId === showRemoveIcon.id) {
+      const showIcon = { ...showRemoveIcon };
       showIcon.show = !showIcon.show;
       setShowRemoveIcon(showIcon);
     }
   };
-  
 
   const onDeleteHandler = (messageId) => {
     dispatch(deleteMessage(messageId));
     setMessageDeleted(!messageDeleted);
+    socket.emit("edit-msg", {
+      to: currentChat._id,
+      from: currentUser._id,
+    });
   };
 
   useEffect(() => {
@@ -192,10 +199,16 @@ function ChatView() {
                         disabled={msg.isRemoved}
                         onClick={() => handleShowRemoveIcon(msg.id)}
                       >
-                        {!msg.message.isRemoved ? msg.message : <Box>IS removed</Box>}
+                        {!msg.message.isRemoved ? (
+                          msg.message
+                        ) : (
+                          <Box>IS removed</Box>
+                        )}
                       </Chip>
 
-                      {msg.id === showRemoveIcon.id && !msg.isRemoved && showRemoveIcon.show ? (
+                      {msg.id === showRemoveIcon.id &&
+                      !msg.isRemoved &&
+                      showRemoveIcon.show ? (
                         <Button
                           sx={{ zIndex: 100 }}
                           size="sm"
@@ -219,8 +232,17 @@ function ChatView() {
                       mb: 3,
                     }}
                   >
-                    <Chip label="success" color="success" variant="outlined">
-                     {!msg.message.isRemoved ? msg.message : <Box>Is removed</Box>}
+                    <Chip
+                      label="success"
+                      color="success"
+                      variant="outlined"
+                      disabled={msg.isRemoved}
+                    >
+                      {!msg.message.isRemoved ? (
+                        msg.message
+                      ) : (
+                        <Box>Is removed</Box>
+                      )}
                     </Chip>
                   </Box>
                 );
