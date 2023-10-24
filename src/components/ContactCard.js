@@ -1,5 +1,6 @@
 import { Avatar, Tab} from "@mui/joy";
 
+
 function ContactCard({contact}) {
 
   return (

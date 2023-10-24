@@ -9,6 +9,7 @@ import { socket } from "../socket";
 import { useState } from "react";
 import NewAvatar from "./NewRandomAvatar";
 
+
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();

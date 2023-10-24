@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, TabList, TabPanel, Tabs, Chip, Button } from "@mui/joy";
+import {
+  Box,
+  TabList,
+  TabPanel,
+  Tabs,
+  Chip,
+  Button,
+} from "@mui/joy";
 import Header from "../components/Header";
 import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
@@ -31,25 +38,14 @@ function ChatView() {
   const [sticky, setSticky] = useState("top");
   const scrollableContainerRef = useRef(null);
   const [showRemoveIcon, setShowRemoveIcon] = useState({ id: "", show: false });
-
   const [messageDeleted, setMessageDeleted] = useState(false);
 
   useEffect(() => {
     if (currentUser._id && !socket.connected) {
       socket.connect();
     }
-  }, [currentUser]);
-
-  useEffect(() => {
     dispatch(fetchUsers());
   }, [currentUser, dispatch]);
-
-  useEffect(() => {
-    if (!currentUser.avatarImg)
-      dispatch(createAvatar({ currentUser }))
-        .unwrap()
-        .then(dispatch(getUserById(currentUser._id)));
-  }, []);
 
   useEffect(() => {
     if (allUsers.length && allUsers[value]) {
@@ -66,12 +62,6 @@ function ChatView() {
   }, [currentChat, message, currentUser, messageDeleted, dispatch]);
 
   useEffect(() => {
-    if (currentUser) {
-      socket.emit("add-user", currentUser._id);
-    }
-  }, [currentChat]);
-
-  useEffect(() => {
     if (socket) {
       socket.on("msg-receive", (msg) => {
         setArrivalMsg({ fromSelf: false, message: msg });
@@ -81,11 +71,22 @@ function ChatView() {
       });
     }
 
+    if (!currentUser.avatarImg)
+      dispatch(createAvatar({ currentUser }))
+        .unwrap()
+        .then(dispatch(getUserById(currentUser._id)));
+
     return () => {
       socket.off("msg-receive");
       socket.off("msg-edited");
     };
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      socket.emit("add-user", currentUser._id);
+    }
+  }, [currentChat]);
 
   useEffect(() => {
     arrivalMsg && setMessage((prev) => [...prev, arrivalMsg]);
@@ -116,15 +117,6 @@ function ChatView() {
     setMessage(msgs);
   };
 
-  const handleShowRemoveIcon = (messageId) => {
-    setShowRemoveIcon({ id: messageId, show: true });
-    if (messageId === showRemoveIcon.id) {
-      const showIcon = { ...showRemoveIcon };
-      showIcon.show = !showIcon.show;
-      setShowRemoveIcon(showIcon);
-    }
-  };
-
   const onDeleteHandler = (messageId) => {
     dispatch(deleteMessage(messageId));
     setMessageDeleted(!messageDeleted);
@@ -134,8 +126,16 @@ function ChatView() {
     });
   };
 
+  const handleShowRemoveIcon = (messageId) => {
+    setShowRemoveIcon({ id: messageId, show: true });
+    if (messageId === showRemoveIcon.id) {
+      const showIcon = { ...showRemoveIcon };
+      showIcon.show = !showIcon.show;
+      setShowRemoveIcon(showIcon);
+    }
+  };
+
   useEffect(() => {
-    // Scroll to the bottom when the messages state updates
     scrollableContainerRef.current.scrollTop =
       scrollableContainerRef.current.scrollHeight;
   }, [handleSendMsg]);
@@ -199,11 +199,7 @@ function ChatView() {
                         disabled={msg.isRemoved}
                         onClick={() => handleShowRemoveIcon(msg.id)}
                       >
-                        {!msg.message.isRemoved ? (
-                          msg.message
-                        ) : (
-                          <Box>IS removed</Box>
-                        )}
+                        {msg.message}
                       </Chip>
 
                       {msg.id === showRemoveIcon.id &&
@@ -238,11 +234,7 @@ function ChatView() {
                       variant="outlined"
                       disabled={msg.isRemoved}
                     >
-                      {!msg.message.isRemoved ? (
-                        msg.message
-                      ) : (
-                        <Box>Is removed</Box>
-                      )}
+                      {msg.message}
                     </Chip>
                   </Box>
                 );
