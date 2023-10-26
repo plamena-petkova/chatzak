@@ -16,6 +16,7 @@ const initialState = {
   isLoading: false,
   error: null,
   avatarUrl: "",
+  onlineUsers:{},
 };
 
 export const login = createAsyncThunk("user/login", async (data, thunkAPI) => {
@@ -109,6 +110,9 @@ export const authSlice = createSlice({
     setAvatar: (state, action) => {
       state.avatarUrl = action.payload;
     },
+    setOnlineUsers: (state, action) => {
+      state.onlineUsers = action.payload;
+    },
     logout: (state, action) => {
       state.allUsers = [];
       state.user = {};
@@ -195,6 +199,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout, setAvatar, setContacts, setErrorClear } = authSlice.actions;
+export const { logout, setAvatar, setContacts, setErrorClear, setOnlineUsers } = authSlice.actions;
 
 export default authSlice.reducer;

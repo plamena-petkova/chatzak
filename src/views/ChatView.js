@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { createAvatar, fetchUsers, getUserById } from "../store/authReducer";
+import { createAvatar, fetchUsers, getUserById, setOnlineUsers } from "../store/authReducer";
 import {
   deleteMessage,
   getAllMessages,
@@ -69,8 +69,12 @@ function ChatView() {
       socket.on("msg-edited", (msg) => {
         setArrivalMsg({ fromSelf: false, message: msg });
       });
+      socket.on('update-users', (users) => {
+        console.log('Users', users)
+        dispatch(setOnlineUsers(users));
+      })
     }
-
+  
     if (!currentUser.avatarImg)
       dispatch(createAvatar({ currentUser }))
         .unwrap()
@@ -79,6 +83,8 @@ function ChatView() {
     return () => {
       socket.off("msg-receive");
       socket.off("msg-edited");
+      socket.off("update-users");
+      socket.disconnect();
     };
   }, []);
 
@@ -87,6 +93,7 @@ function ChatView() {
       socket.emit("add-user", currentUser._id);
     }
   }, [currentChat]);
+
 
   useEffect(() => {
     arrivalMsg && setMessage((prev) => [...prev, arrivalMsg]);
