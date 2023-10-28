@@ -7,6 +7,7 @@ const initialState = {
   messages: [],
   isLoading: false,
   error: null,
+  newMessageIndicator: {show:false, id: ''},
 };
 
 export const getAllMessages = createAsyncThunk(
@@ -37,6 +38,9 @@ export const chatSlice = createSlice({
       state.messages = [];
       state.currentChat = {};
     },
+    setNewMessageIndicator: (state, action) => {
+      state.newMessageIndicator = action.payload;
+    }
   },
   extraReducers(builder) {
     builder.addCase(getAllMessages.pending, (state, action) => {
@@ -49,7 +53,7 @@ export const chatSlice = createSlice({
     builder.addCase(getAllMessages.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
-    });
+    }); 
     builder.addCase(deleteMessage.pending, (state, action) => {
       state.isLoading = true;
     });
@@ -65,7 +69,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentChat, setMessages, setClearMessages } =
+export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator } =
   chatSlice.actions;
 
 export default chatSlice.reducer;

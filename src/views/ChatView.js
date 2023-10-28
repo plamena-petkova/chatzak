@@ -17,6 +17,7 @@ import {
   deleteMessage,
   getAllMessages,
   setCurrentChat,
+  setNewMessageIndicator,
 } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
 import ContactCard from "../components/ContactCard";
@@ -31,6 +32,7 @@ function ChatView() {
   const currentUser = useSelector((state) => state.auth.user);
   const messages = useSelector((state) => state.chat.messages);
   const allUsers = useSelector((state) => state.auth.allUsers);
+  const newMessageIndicator = useSelector((state) => state.chat.newMessageIndicator);
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
   const [value, setValue] = useState(0);
@@ -39,6 +41,7 @@ function ChatView() {
   const scrollableContainerRef = useRef(null);
   const [showRemoveIcon, setShowRemoveIcon] = useState({ id: "", show: false });
   const [messageDeleted, setMessageDeleted] = useState(false);
+  const [dataMessage, setDataMessage] = useState({});
 
   useEffect(() => {
     if (currentUser._id && !socket.connected) {
@@ -62,15 +65,24 @@ function ChatView() {
   }, [currentChat, message, currentUser, messageDeleted, dispatch]);
 
   useEffect(() => {
+    if(currentChat?._id === newMessageIndicator?.chatId) {
+        dispatch(setNewMessageIndicator({show: false, chatId:''}));
+    }
+    if(currentChat._id !== dataMessage.from) {
+        dispatch(setNewMessageIndicator({show:true, chatId:dataMessage.from}));
+    }
+  }, [currentChat, setDataMessage, dataMessage]);
+
+  useEffect(() => {
     if (socket) {
-      socket.on("msg-receive", (msg) => {
-        setArrivalMsg({ fromSelf: false, message: msg });
+      socket.on("msg-receive", (data) => {
+        setDataMessage(data);
+        setArrivalMsg({ fromSelf: false, message: data.message });
       });
-      socket.on("msg-edited", (msg) => {
-        setArrivalMsg({ fromSelf: false, message: msg });
+      socket.on("msg-edited", (data) => {
+        setArrivalMsg({ fromSelf: false, message: data.message });
       });
       socket.on('update-users', (users) => {
-        console.log('Users', users)
         dispatch(setOnlineUsers(users));
       })
     }
