@@ -65,12 +65,20 @@ function ChatView() {
   }, [currentChat, message, currentUser, messageDeleted, dispatch]);
 
   useEffect(() => {
-    if(currentChat?._id === newMessageIndicator?.chatId) {
-        dispatch(setNewMessageIndicator({show: false, chatId:''}));
-    }
     if(currentChat._id !== dataMessage.from) {
-        dispatch(setNewMessageIndicator({show:true, chatId:dataMessage.from}));
+      dispatch(setNewMessageIndicator({chatId:dataMessage.from, show:true }));
+  }
+    if(currentChat._id === newMessageIndicator[currentChat._id]?.chatId && newMessageIndicator[currentChat._id]?.show === true) {
+        dispatch(setNewMessageIndicator({ chatId: currentChat._id, show: false}));
     }
+    if(dataMessage.from && newMessageIndicator[currentChat._id].show === true) {
+      dispatch(setNewMessageIndicator({ chatId: currentChat._id, show: false}));
+      setDataMessage({});
+    }
+    if(dataMessage.from === currentChat._id) {
+      setDataMessage({});
+    }
+   
   }, [currentChat, setDataMessage, dataMessage]);
 
   useEffect(() => {

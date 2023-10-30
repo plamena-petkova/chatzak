@@ -39,7 +39,14 @@ export const chatSlice = createSlice({
       state.currentChat = {};
     },
     setNewMessageIndicator: (state, action) => {
-      state.newMessageIndicator = action.payload;
+      console.log('Action', action.payload);
+      if (action.payload) {
+        const chatId = action.payload.chatId;
+
+        if (chatId) {
+          state.newMessageIndicator[chatId] = action.payload;
+        }
+      }
     }
   },
   extraReducers(builder) {

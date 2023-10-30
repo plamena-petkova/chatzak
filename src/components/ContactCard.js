@@ -32,7 +32,7 @@ function ContactCard({ contact }) {
         </Avatar>
       )}
 
-      {contact.names}{(contact._id === newMessageIndicator?.chatId && newMessageIndicator?.show) ? <ChatBubbleOutlineOutlinedIcon sx={{ml:1, color:'red'}} fontSize="sm" /> : null}
+      {contact.names}{(contact._id === newMessageIndicator[contact._id]?.chatId && newMessageIndicator[contact._id].show === true) ? <ChatBubbleOutlineOutlinedIcon sx={{ml:1, color:'red'}} fontSize="sm" /> : null}
     </Tab>
   );
 }
