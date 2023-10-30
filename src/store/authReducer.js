@@ -48,25 +48,6 @@ export const fetchUsers = createAsyncThunk("users/fetch", async () => {
   return response.data.users;
 });
 
-/*
-export const createAvatar = createAsyncThunk("user/create-avatar", async (data) => {
-try {
-  const response = await axios.post(createAvatarRoute, data, {
-    headers: {
-      'Content-Type': `multipart/form-data`,
-      'X-Token':'196b61b29bb442fc9fd97a7b187ea63e'
-    },
-  });
-  console.log('response', response);
-
-return response.data.face.url;
-} catch (e) {
-  console.error('Error', e);
-}
-  
-});
-*/
-
 export const createAvatar = createAsyncThunk("user/create-avatar", async ({currentUser}) => {
 
     

@@ -39,7 +39,6 @@ export const chatSlice = createSlice({
       state.currentChat = {};
     },
     setNewMessageIndicator: (state, action) => {
-      console.log('Action', action.payload);
       if (action.payload) {
         const chatId = action.payload.chatId;
 
