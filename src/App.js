@@ -5,23 +5,21 @@ import React from "react";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RegisterView from "./views/RegisterView";
+import PrivateRoutes from "./components/PrivateRoutes";
+import HomeView from "./views/HomeView";
 
 function App() {
-
-
   return (
-    <div className="background">
       <BrowserRouter basename="/">
         <Routes>
+          <Route path="/" element={<HomeView />} />
           <Route path="/login" element={<LoginView />} />
           <Route path="/register" element={<RegisterView />} />
-          <Route
-            path="/chat"
-            element={<ChatView />}
-          />
+          <Route element={<PrivateRoutes />}>
+            <Route path="/chat" element={<ChatView />} />
+          </Route>
         </Routes>
       </BrowserRouter>
-    </div>
   );
 }
 export default App;

@@ -1,17 +1,19 @@
 import { Avatar, Badge, Tab } from "@mui/joy";
 import { useSelector } from "react-redux";
-import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 
 function ContactCard({ contact }) {
   const onlineUsers = useSelector((state) => state.auth.onlineUsers);
   const onlineUser = Object.values(onlineUsers).includes(contact._id);
-  const newMessageIndicator = useSelector((state) => state.chat.newMessageIndicator);
+  const newMessageIndicator = useSelector(
+    (state) => state.chat.newMessageIndicator
+  );
 
   return (
     <Tab key={contact._id} sx={{ minWidth: 270 }}>
       {onlineUser ? (
         <Badge
-        badgeInset="14%"
+          badgeInset="14%"
           anchorOrigin={{
             vertical: "top",
             horizontal: "right",
@@ -32,7 +34,14 @@ function ContactCard({ contact }) {
         </Avatar>
       )}
 
-      {contact.names}{(contact._id === newMessageIndicator[contact._id]?.chatId && newMessageIndicator[contact._id].show === true) ? <ChatBubbleOutlineOutlinedIcon sx={{ml:1, color:'red'}} fontSize="sm" /> : null}
+      {contact.names}
+      {contact._id === newMessageIndicator[contact._id]?.chatId &&
+      newMessageIndicator[contact._id].show === true ? (
+        <ChatBubbleOutlineOutlinedIcon
+          sx={{ ml: 1, color: "red" }}
+          fontSize="sm"
+        />
+      ) : null}
     </Tab>
   );
 }

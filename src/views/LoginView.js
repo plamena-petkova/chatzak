@@ -8,7 +8,7 @@ import { login } from "../store/authReducer";
 import { socket } from "../socket";
 import ErrorAlert from "../components/ErrorAlert";
 
-function WelcomeLoginView() {
+function LoginView() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -75,11 +75,11 @@ function WelcomeLoginView() {
             sx={{
               maxWidth: 400,
               minHeight: 200,
-              borderRadius: "s m",
+              borderRadius: "sm"
             }}
           >
             <CardCover>
-              <img src={logo} alt="" />
+              <img src={logo} alt="logo" />
             </CardCover>
           </Card>
           <Box sx={{ maxWidth: 400, justifyContent: "center" }}>
@@ -120,4 +120,4 @@ function WelcomeLoginView() {
   );
 }
 
-export default WelcomeLoginView;
+export default LoginView;

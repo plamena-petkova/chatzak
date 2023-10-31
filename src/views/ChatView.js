@@ -42,6 +42,7 @@ function ChatView() {
   const [showRemoveIcon, setShowRemoveIcon] = useState({ id: "", show: false });
   const [messageDeleted, setMessageDeleted] = useState(false);
   const [dataMessage, setDataMessage] = useState({});
+  const [doScroll, setDoScroll] = useState(true);
 
   useEffect(() => {
     if (currentUser._id && !socket.connected) {
@@ -151,6 +152,7 @@ function ChatView() {
       to: currentChat._id,
       from: currentUser._id,
     });
+    setDoScroll(true);
   };
 
   const handleShowRemoveIcon = (messageId) => {
@@ -160,11 +162,15 @@ function ChatView() {
       showIcon.show = !showIcon.show;
       setShowRemoveIcon(showIcon);
     }
+    setDoScroll(false);
   };
 
   useEffect(() => {
-    scrollableContainerRef.current.scrollTop =
+    if(doScroll) {
+      scrollableContainerRef.current.scrollTop =
       scrollableContainerRef.current.scrollHeight;
+    }
+   
   }, [handleSendMsg]);
 
   return (
