@@ -24,6 +24,7 @@ import ContactCard from "../components/ContactCard";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { v4 as uuidv4 } from "uuid";
 import { socket } from "../socket";
+import { useMediaQuery } from "@mui/material";
 
 function ChatView() {
   const dispatch = useDispatch();
@@ -43,6 +44,8 @@ function ChatView() {
   const [messageDeleted, setMessageDeleted] = useState(false);
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
+
+  const isSmallScreen = useMediaQuery("(max-width:899px)");
 
   useEffect(() => {
     if (currentUser._id && !socket.connected) {
@@ -72,7 +75,7 @@ function ChatView() {
     if(currentChat._id === newMessageIndicator[currentChat._id]?.chatId && newMessageIndicator[currentChat._id]?.show === true) {
         dispatch(setNewMessageIndicator({ chatId: currentChat._id, show: false}));
     }
-    if(dataMessage.from && newMessageIndicator[currentChat._id].show === true) {
+    if(dataMessage.from && newMessageIndicator[currentChat._id]?.show === true) {
       dispatch(setNewMessageIndicator({ chatId: currentChat._id, show: false}));
       setDataMessage({});
     }
@@ -196,7 +199,7 @@ function ChatView() {
         onChange={handleChangeTab}
         aria-label="Vertical tabs"
         variant="scrollable"
-        orientation="vertical"
+        orientation={isSmallScreen ? "horizontal" : "vertical"}
         value={value}
         ref={scrollableContainerRef}
       >

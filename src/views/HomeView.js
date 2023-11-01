@@ -96,7 +96,7 @@ function HomeView() {
                 component="a"
                 variant="solid"
                 sx={{ mr: 4, mt: 2 }}
-                href="/register"
+                href="/login"
               >
                 Login
               </Button>
