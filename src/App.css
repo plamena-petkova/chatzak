@@ -1,7 +1,19 @@
 
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    max-height: 95vh;
+}
+
 aside {
     position: absolute;
-    top: -490px;
-    z-index: 100;
+    z-index: 1000;
     max-width: 270px;
+    top: -415px;
+    left: 62px;
 }

@@ -10,10 +10,9 @@ import HomeView from "./views/HomeView";
 
 function App() {
   return (
-      <BrowserRouter basename="/">
+    <BrowserRouter basename="/">
         <Routes>
           <Route path="/" element={<HomeView />} />
-         
           <Route path="/login" element={<LoginView />} />
           <Route path="/register" element={<RegisterView />} />
           <Route element={<PrivateRoutes />}>
