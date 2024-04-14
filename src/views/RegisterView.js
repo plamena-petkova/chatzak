@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Card,
   CardCover,
   Input,
@@ -14,6 +13,7 @@ import { register } from "../store/authReducer";
 import { useDispatch } from "react-redux";
 import { socket } from "../socket";
 import ErrorAlert from "../components/ErrorAlert";
+import { LoadingButton } from "@mui/lab";
 
 function RegisterView() {
   const dispatch = useDispatch();
@@ -28,6 +28,8 @@ function RegisterView() {
     username: "",
     password: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const disableButton =
     registerValues.email === "" &&
@@ -44,6 +46,8 @@ function RegisterView() {
 
   const submitRegisterHandler = async (event) => {
     event.preventDefault();
+
+    setLoading(true);
 
     dispatch(register(registerValues))
       .unwrap()
@@ -131,9 +135,11 @@ function RegisterView() {
                 onChange={handleChange}
               />
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Button type="submit" disabled={disableButton}>
+                <LoadingButton variant="contained" type="submit" disabled={disableButton}
+                  loading={loading}
+                  >
                   Register
-                </Button>
+                </LoadingButton>
               </Box>
             </Box>
           </Box>

@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardCover, Input, Typography, Link, } from "@mui/joy";
+import { Box, Card, CardCover, Input, Typography, Link } from "@mui/joy";
 import { useEffect, useState } from "react";
 import logo from "../assets/chatzakLogo.png";
 
@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../store/authReducer";
 import { socket } from "../socket";
 import ErrorAlert from "../components/ErrorAlert";
+import { LoadingButton } from "@mui/lab";
 
 function LoginView() {
   const dispatch = useDispatch();
@@ -17,8 +18,9 @@ function LoginView() {
   const [password, setPassword] = useState("");
   const [credentials, setCredentials] = useState(false);
   const [open, setOpen] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
+  const [loading, setLoading] = useState(false);
 
   const onCloseHandler = () => {
     setOpen(false);
@@ -42,6 +44,7 @@ function LoginView() {
 
   const submitLoginHandler = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     const data = { username, password };
 
@@ -54,8 +57,8 @@ function LoginView() {
         })
         .catch((error) => {
           console.error("Error", error.message);
-          if(error.message === 'Request failed with status code 404') {
-            setErrorMsg('Incorrect username or password');
+          if (error.message === "Request failed with status code 404") {
+            setErrorMsg("Incorrect username or password");
           } else {
             setErrorMsg(error.message);
           }
@@ -67,13 +70,15 @@ function LoginView() {
 
   return (
     <>
-      {open && <ErrorAlert message={errorMsg} onCloseHandler={onCloseHandler} />}
+      {open && (
+        <ErrorAlert message={errorMsg} onCloseHandler={onCloseHandler} />
+      )}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          minHeight:"100vh",
+          minHeight: "100vh",
         }}
       >
         <Card sx={{ minWidth: 400, minHeight: 200 }}>
@@ -81,7 +86,7 @@ function LoginView() {
             sx={{
               maxWidth: 400,
               minHeight: 200,
-              borderRadius: "sm"
+              borderRadius: "sm",
             }}
           >
             <CardCover>
@@ -110,18 +115,26 @@ function LoginView() {
                 value={password}
               />
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Button type="submit" disabled={!credentials}>
+                <LoadingButton
+                  variant="contained"
+                  type="submit"
+                  disabled={!credentials}
+                  loading={loading}
+                >
                   Login
-                </Button>
+                </LoadingButton>
               </Box>
             </Box>
-           
           </Box>
-          <Link sx={{justifyContent:'center', ml:4, mr:4, fontSize:'sm'}} variant="soft" href="/register" >If you don't have an account, register here!</Link>
+          <Link
+            sx={{ justifyContent: "center", ml: 4, mr: 4, fontSize: "sm" }}
+            variant="soft"
+            href="/register"
+          >
+            If you don't have an account, register here!
+          </Link>
         </Card>
-       
       </Box>
-    
     </>
   );
 }
