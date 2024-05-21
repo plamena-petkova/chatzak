@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import {
   allUsersRoute,
   createAvatarRoute,
+  deleteUserByIdRoute,
+  editUserByIdRoute,
   getUserByIdRoute,
   loginRoute,
   registerRoute,
@@ -82,6 +84,23 @@ export const updateUsersAvatar = createAsyncThunk(
 export const getUserById = createAsyncThunk("user/get-user", async (userId) => {
   const response = await axios.get(`${getUserByIdRoute}${userId}`);
   return response.data.user;
+});
+
+export const editUserById = createAsyncThunk("user/edit-user", async (data) => {
+
+  const userId = data.currentUser._id;
+  const newData = data.updatedField;
+
+  const response = await axios.put(`${editUserByIdRoute}${userId}`, newData);
+
+  return response.data.user;
+});
+
+export const deleteUserById = createAsyncThunk("user/delete-user", async (userId) => {
+
+  const response = await axios.delete(`${deleteUserByIdRoute}${userId}`,);
+
+  return response.status;
 });
 
 export const authSlice = createSlice({
@@ -174,6 +193,28 @@ export const authSlice = createSlice({
       state.user = action.payload;
     });
     builder.addCase(getUserById.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(editUserById.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(editUserById.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = null;
+    });
+    builder.addCase(editUserById.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(deleteUserById.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(deleteUserById.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+    });
+    builder.addCase(deleteUserById.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });

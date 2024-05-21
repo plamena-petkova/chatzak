@@ -23,8 +23,7 @@ function MessageComponent({
   };
 
   const editHandler = (messageId, event) => {
-    setNewMessage(event.target.value);
-    
+    setNewMessage(event.target.value); 
   };
 
   const onSubmitHandler = (event, messageId) => {

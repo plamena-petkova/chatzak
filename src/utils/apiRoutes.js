@@ -10,3 +10,5 @@ export const createAvatarRoute = `https://api.dicebear.com/7.x/bottts/svg?seed=`
 export const updateAvatarRoute = `${host}/api/auth/users/`;
 export const getUserByIdRoute = `${host}/api/auth/users/`;
 export const deleteMessageRoute = `${host}/api/messages/message/`
+export const editUserByIdRoute = `${host}/api/auth/users/edit/`
+export const deleteUserByIdRoute = `${host}/api/auth/users/delete/`
