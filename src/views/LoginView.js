@@ -40,7 +40,10 @@ function LoginView() {
     if (username !== "" && password !== "") {
       setCredentials(true);
     }
-  }, [username, password]);
+    if(errorMsg) {
+      setLoading(false);
+    }
+  }, [username, password, errorMsg, setLoading]);
 
   const submitLoginHandler = async (event) => {
     event.preventDefault();
