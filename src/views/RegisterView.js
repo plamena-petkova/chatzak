@@ -82,9 +82,10 @@ function RegisterView() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          minHeight: "100vh",
         }}
       >
-        <Card sx={{ minWidth: 400 }}>
+        <Card sx={{ minWidth: 400, minHeight: 200  }}>
           <Card
             sx={{
               maxWidth: 400,
@@ -93,7 +94,7 @@ function RegisterView() {
             }}
           >
             <CardCover>
-              <img src={logo} alt="" />
+              <img src={logo} alt="logo" />
             </CardCover>
           </Card>
           <Box sx={{ maxWidth: 400, justifyContent: "center" }}>
