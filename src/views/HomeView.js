@@ -39,6 +39,7 @@ function HomeView() {
                 variant="outlined"
                 sx={{ mr: 4, mt: 2 }}
                 href="/login"
+                data-testid="button"
               >
                 Login
               </Button>
@@ -47,6 +48,7 @@ function HomeView() {
                 variant="outlined"
                 sx={{ mr: 4, mt: 2 }}
                 href="/register"
+                data-testid="button"
               >
                 Sign Up
               </Button>
