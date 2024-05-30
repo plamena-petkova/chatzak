@@ -9,3 +9,11 @@ test('it shows that there is heading', () => {
 });
 
 
+test('has signUp button and logo', () => {
+  render(<HomeView />);
+  const signUpBtn = screen.getByRole('link', {name: /sign up/i});
+  const logo = screen.getByRole('img', { name: /logo/i })
+  //screen.logTestingPlaygroundURL();
+  expect(signUpBtn).toBeInTheDocument();
+  expect(logo).toBeInTheDocument();
+});
