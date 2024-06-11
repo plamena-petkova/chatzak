@@ -1,5 +1,5 @@
 import {  render, screen } from '@testing-library/react';
-import HomeView from './views/HomeView';
+import HomeView from '../views/HomeView';
 import '@testing-library/jest-dom/extend-expect'; 
   
 
