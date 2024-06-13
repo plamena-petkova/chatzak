@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Avatar, Box } from "@mui/joy";
 import { updateUsersAvatar } from "../store/authReducer";
 
-function NewAvatar({ onModalClose }) {
+function NewAvatar() {
   const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.auth.user);

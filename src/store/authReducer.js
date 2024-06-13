@@ -201,7 +201,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(editUserById.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.user = null;
+      state.user = action.payload;
     });
     builder.addCase(editUserById.rejected, (state, action) => {
       state.isLoading = false;

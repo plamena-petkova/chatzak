@@ -32,7 +32,6 @@ function ProfileModal({ open, onCloseHandler }) {
   });
   const [openAlert, setOpenAlert] = useState(false);
 
-
   useEffect(() => {
     if (open) {
       setOpenModal(true);
@@ -43,18 +42,19 @@ function ProfileModal({ open, onCloseHandler }) {
   }, [open, setOpenModal, onCloseHandler, openModal]);
 
   const handleOpenAlert = () => {
-    setOpenAlert(true)
+    setOpenAlert(true);
   };
 
-  const updateField = (e) => {
-    e.preventDefault();
-
+  const updateField = (event) => {
+    event.preventDefault();
     const data = {
       currentUser,
       updatedField,
     };
+
     dispatch(editUserById(data));
-    setUpdatedField("");
+
+    setUpdatedField({ username: "", email: "", names: "" });
     if (editUsername) {
       setEditUsername(false);
     }
@@ -67,147 +67,142 @@ function ProfileModal({ open, onCloseHandler }) {
   };
 
   const onCloseAlert = () => {
-    setOpenAlert(false)
-  }
+    setOpenAlert(false);
+  };
+
 
   return (
-      <Modal open={openModal} onClose={() => setOpenModal(!openModal)}>
-        <ModalDialog sx={{ minWidth: "50%", minHeight: "55%" }}>
-          <NewAvatar />
-          <DialogTitle
-            sx={{ justifyContent: "space-between", alignItems: "center" }}
-          >
-            Username:
-            {editUsername ? (
-              <Input
-                placeholder="Type new username"
-                type="text"
-                onChange={(value) =>
-                  setUpdatedField({ username: value.target.value })
-                }
-                endDecorator={
-                  <Button onClick={updateField} variant="soft">
-                    <CheckIcon font="sm" />
-                  </Button>
-                }
-                startDecorator={
-                  <Button onClick={() => setEditUsername(false)} variant="soft">
-                    <ClearIcon font="sm" />
-                  </Button>
-                }
-              />
-            ) : (
-              <Typography>{currentUser.username}</Typography>
-            )}
-            {!editUsername && (
-              <Button
-                sx={{ zIndex: 100 }}
-                size="sm"
-                variant="plain"
-                onClick={() => setEditUsername(true)}
-              >
-                <EditIcon fontSize="sm" />{" "}
-              </Button>
-            )}
-          </DialogTitle>
-
-          <DialogTitle
-            sx={{ justifyContent: "space-between", alignItems: "center" }}
-          >
-            Names:
-            {editNames ? (
-              <Input
-                placeholder="Type your names"
-                type="text"
-                onChange={(value) =>
-                  setUpdatedField({ names: value.target.value })
-                }
-                endDecorator={
-                  <Button
-                    onClick={(event) => updateField(event.target.value)}
-                    variant="soft"
-                  >
-                    <CheckIcon font="sm" />
-                  </Button>
-                }
-                startDecorator={
-                  <Button onClick={() => setEditNames(false)} variant="soft">
-                    <ClearIcon font="sm" />
-                  </Button>
-                }
-              />
-            ) : (
-              <Typography>{currentUser.names}</Typography>
-            )}
-            {!editNames && (
-              <Button
-                sx={{ zIndex: 100 }}
-                size="sm"
-                variant="plain"
-                onClick={() => setEditNames(true)}
-              >
-                <EditIcon fontSize="sm" />{" "}
-              </Button>
-            )}
-          </DialogTitle>
-
-          <DialogTitle
-            sx={{ justifyContent: "space-between", alignItems: "center" }}
-          >
-            Email:
-            {editEmail ? (
-              <Input
-                placeholder="Type your new email"
-                type="text"
-                onChange={(value) =>
-                  setUpdatedField({ email: value.target.value })
-                }
-                endDecorator={
-                  <Button
-                    onClick={(event) => updateField(event.target.value)}
-                    variant="soft"
-                  >
-                    <CheckIcon font="sm" />
-                  </Button>
-                }
-                startDecorator={
-                  <Button onClick={() => setEditEmail(false)} variant="soft">
-                    <ClearIcon font="sm" />
-                  </Button>
-                }
-              />
-            ) : (
-              <Typography>{currentUser.email}</Typography>
-            )}
-            {!editEmail && (
-              <Button
-                sx={{ zIndex: 100 }}
-                size="sm"
-                variant="plain"
-                onClick={() => setEditEmail(true)}
-              >
-                <EditIcon fontSize="sm" />
-              </Button>
-            )}
-          </DialogTitle>
-
-          <DialogTitle
-            sx={{ justifyContent: "space-between", alignItems: "center" }}
-          >
-            Delete account:
+    <Modal open={openModal} onClose={() => setOpenModal(!openModal)}>
+      <ModalDialog sx={{ minWidth: "50%", minHeight: "55%" }}>
+        <NewAvatar />
+        <DialogTitle
+          sx={{ justifyContent: "space-between", alignItems: "center" }}
+        >
+          Username:
+          {editUsername ? (
+            <Input
+              placeholder="Type new username"
+              type="text"
+              onChange={(value) =>
+                setUpdatedField({ username: value.target.value })
+              }
+              endDecorator={
+                <Button onClick={updateField} variant="soft">
+                  <CheckIcon font="sm" />
+                </Button>
+              }
+              startDecorator={
+                <Button onClick={() => setEditUsername(false)} variant="soft">
+                  <ClearIcon font="sm" />
+                </Button>
+              }
+            />
+          ) : (
             <Typography>{currentUser.username}</Typography>
+          )}
+          {!editUsername && (
             <Button
               sx={{ zIndex: 100 }}
               size="sm"
               variant="plain"
-              onClick={handleOpenAlert}
+              onClick={() => setEditUsername(true)}
             >
-              <DeleteIcon fontSize="sm" />
+              <EditIcon fontSize="sm" />{" "}
             </Button>
-          </DialogTitle>
-          {openAlert && <AlertDeleteComponent onClose={onCloseAlert} />}
-        </ModalDialog>
-      </Modal>
+          )}
+        </DialogTitle>
+
+        <DialogTitle
+          sx={{ justifyContent: "space-between", alignItems: "center" }}
+        >
+          Names:
+          {editNames ? (
+            <Input
+              placeholder="Type your names"
+              type="text"
+              onChange={(value) =>
+                setUpdatedField({ names: value.target.value })
+              }
+              endDecorator={
+                <Button onClick={updateField} variant="soft">
+                  <CheckIcon font="sm" />
+                </Button>
+              }
+              startDecorator={
+                <Button onClick={() => setEditNames(false)} variant="soft">
+                  <ClearIcon font="sm" />
+                </Button>
+              }
+            />
+          ) : (
+            <Typography>{currentUser.names}</Typography>
+          )}
+          {!editNames && (
+            <Button
+              sx={{ zIndex: 100 }}
+              size="sm"
+              variant="plain"
+              onClick={() => setEditNames(true)}
+            >
+              <EditIcon fontSize="sm" />{" "}
+            </Button>
+          )}
+        </DialogTitle>
+
+        <DialogTitle
+          sx={{ justifyContent: "space-between", alignItems: "center" }}
+        >
+          Email:
+          {editEmail ? (
+            <Input
+              placeholder="Type your new email"
+              type="text"
+              onChange={(value) =>
+                setUpdatedField({ email: value.target.value })
+              }
+              endDecorator={
+                <Button onClick={updateField} variant="soft">
+                  <CheckIcon font="sm" />
+                </Button>
+              }
+              startDecorator={
+                <Button onClick={() => setEditEmail(false)} variant="soft">
+                  <ClearIcon font="sm" />
+                </Button>
+              }
+            />
+          ) : (
+            <Typography>{currentUser.email}</Typography>
+          )}
+          {!editEmail && (
+            <Button
+              sx={{ zIndex: 100 }}
+              size="sm"
+              variant="plain"
+              onClick={() => setEditEmail(true)}
+            >
+              <EditIcon fontSize="sm" />
+            </Button>
+          )}
+        </DialogTitle>
+
+        <DialogTitle
+          sx={{ justifyContent: "space-between", alignItems: "center" }}
+        >
+          Delete account:
+          <Typography>{currentUser.username}</Typography>
+          <Button
+            sx={{ zIndex: 100 }}
+            size="sm"
+            variant="plain"
+            onClick={handleOpenAlert}
+          >
+            <DeleteIcon fontSize="sm" />
+          </Button>
+        </DialogTitle>
+        {openAlert && <AlertDeleteComponent onClose={onCloseAlert} />}
+      </ModalDialog>
+    </Modal>
   );
 }
 
