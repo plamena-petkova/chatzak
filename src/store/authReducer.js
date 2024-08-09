@@ -28,7 +28,7 @@ export const login = createAsyncThunk("user/login", async (data, thunkAPI) => {
     password,
   });
 
-  return response.data.user;
+  return response.data.sessionUser;
  
 });
 
@@ -42,7 +42,7 @@ export const register = createAsyncThunk("user/register", async (data) => {
     email,
   });
 
-  return response.data.user;
+  return response.data.sessionUser;
 });
 
 export const fetchUsers = createAsyncThunk("users/fetch", async () => {
