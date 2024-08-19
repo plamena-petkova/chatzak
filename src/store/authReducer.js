@@ -19,6 +19,7 @@ const initialState = {
   error: null,
   avatarUrl: "",
   onlineUsers:{},
+  accessToken:""
 };
 
 export const login = createAsyncThunk("user/login", async (data, thunkAPI) => {
@@ -129,6 +130,7 @@ export const authSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       state.isLoading = false;
       state.user = action.payload;
+      state.accessToken = action.payload.accessToken;
     });
     builder.addCase(login.rejected, (state, action) => {
       state.isLoading = false;
