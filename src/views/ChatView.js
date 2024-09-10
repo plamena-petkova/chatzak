@@ -1,15 +1,10 @@
-import { TabList, TabPanel, Tabs, Tab } from "@mui/joy";
+import { Box, TabPanel } from "@mui/joy";
 import ChatComponent from "../components/ChatComponent";
 import Header from "../components/Header";
 import SnackbarComponent from "../components/SnackbarComponent";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import PersonPinIcon from "@mui/icons-material/PersonPin";
-import ListItemDecorator from '@mui/joy/ListItemDecorator';
-import ContactsIcon from '@mui/icons-material/Contacts';
-
-
+import SideBarComponent from "../components/SideBarComponent";
 
 function ChatView() {
   const newMessageIndicator = useSelector(
@@ -28,9 +23,39 @@ function ChatView() {
     setOpenNewSnack(false);
   };
 
+  const tabPanel = (
+    <>
+      <TabPanel value={1}>
+        <ChatComponent />
+      </TabPanel>
+      <TabPanel value={2}>Users</TabPanel>
+      <TabPanel value={3}>Favorites</TabPanel>
+      <TabPanel value={4}>Favorites</TabPanel>
+      <TabPanel value={5}>Favorites</TabPanel>
+    </>
+  );
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "row" }}>
+      <SideBarComponent children={tabPanel} />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          mr: 4,
+          ml: 4,
+          maxHeight: "90vh",
+        }}
+      >
+        <SnackbarComponent open={openNewSnack} handleClose={handleCloseSnack} />
+      </Box>
+    </Box>
+  );
+
+  /*
+  =========================
+      <>
     <Header />
     <SnackbarComponent open={openNewSnack} handleClose={handleCloseSnack} />
     <Tabs aria-label="Icon tabs" defaultValue={0}>
@@ -67,9 +92,8 @@ function ChatView() {
       </TabPanel>
   </Tabs>
   </>
-  );
+  =======================================
 
-  /*
   return (
     <Box
       sx={{

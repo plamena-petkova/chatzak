@@ -16,7 +16,7 @@ function App() {
           <Route path="/login" element={<LoginView />} />
           <Route path="/register" element={<RegisterView />} />
           <Route element={<PrivateRoutes />}>
-            <Route path="/chat" element={<ChatView />} />
+          <Route path="/chat" element={<ChatView />} />
           </Route>
         </Routes>
       </BrowserRouter>
