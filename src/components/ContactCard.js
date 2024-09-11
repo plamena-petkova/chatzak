@@ -1,4 +1,4 @@
-import { Avatar, Badge, Tab } from "@mui/joy";
+import { Avatar, Badge, Box, Button, ListItem, Tab } from "@mui/joy";
 import { useSelector } from "react-redux";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import { useMediaQuery } from "@mui/material";
@@ -11,11 +11,14 @@ function ContactCard({ contact }) {
   );
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
+  //sx={isSmallScreen ? { maxWidth: 140, padding:'20px' } : { minWidth: 270, padding:'25px' }}
 
   return (
-    <Tab
+    <Button
+      sx={{alignContent:'start', justifyContent:'start', width:'30vw'}}
+      variant="plain"
       key={contact._id}
-      sx={isSmallScreen ? { maxWidth: 140, padding:'20px' } : { minWidth: 270, padding:'25px' }}
+      
     >
       {onlineUser ? (
         <Badge
@@ -48,7 +51,7 @@ function ContactCard({ contact }) {
           fontSize="sm"
         />
       ) : null}
-    </Tab>
+    </Button>
   );
 }
 

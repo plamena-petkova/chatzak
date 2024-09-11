@@ -5,6 +5,8 @@ import SnackbarComponent from "../components/SnackbarComponent";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import SideBarComponent from "../components/SideBarComponent";
+import { ChatSharp } from "@mui/icons-material";
+import ChatsComponent from "../components/ChatsComponent";
 
 function ChatView() {
   const newMessageIndicator = useSelector(
@@ -25,13 +27,11 @@ function ChatView() {
 
   const tabPanel = (
     <>
-      <TabPanel value={1}>
-        <ChatComponent />
+      <TabPanel sx={{height:'90vh'}} value={1}>
+       <ChatsComponent />
       </TabPanel>
       <TabPanel value={2}>Users</TabPanel>
       <TabPanel value={3}>Favorites</TabPanel>
-      <TabPanel value={4}>Favorites</TabPanel>
-      <TabPanel value={5}>Favorites</TabPanel>
     </>
   );
 
