@@ -5,6 +5,7 @@ import axios from "axios";
 const initialState = {
   currentChat: {},
   messages: [],
+  lastMessage:[],
   isLoading: false,
   error: null,
   newMessageIndicator: {},
@@ -54,7 +55,17 @@ export const chatSlice = createSlice({
           state.newMessageIndicator[chatId] = action.payload;
         }
       }
-    }
+    },
+    setLastMessage: (state, action) => {
+      if (action.payload) {
+        console.log('ActionPayload', action.payload)
+        const currentChatId = action.payload.currentChatId;
+
+        if (currentChatId) {
+          state.lastMessage[currentChatId] = action.payload;
+        }
+      }
+    },
   },
   extraReducers(builder) {
     builder.addCase(getAllMessages.pending, (state, action) => {
@@ -95,7 +106,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator } =
+export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator, setLastMessage } =
   chatSlice.actions;
 
 export default chatSlice.reducer;
