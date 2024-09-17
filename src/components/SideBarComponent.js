@@ -22,7 +22,7 @@ export default function SideBarComponent({ children }) {
     <Tabs
       orientation="vertical"
       aria-label="tabs"
-      defaultValue={0}
+      defaultValue={1}
       sx={{ bgcolor: "transparent", minHeight: "100vh" }}
     >
       <TabList
@@ -31,10 +31,10 @@ export default function SideBarComponent({ children }) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          p: 1.5,
-          gap: 1.5,
-          pt:10,
-          pb:10,
+          p: 1,
+          gap: 1,
+          pt:7,
+          pb:7,
           bgcolor: "background.level1",
           [`& .${tabClasses.root}[aria-selected="true"]`]: {
             boxShadow: "sm",
@@ -42,7 +42,7 @@ export default function SideBarComponent({ children }) {
           },
         }}
       >
-        <Button variant="plain" disableIndicator>
+        <Button variant="plain">
           <ListItemDecorator sx={{ justifyContent: "center" }}>
             <AspectRatio ratio="1" sx={{ minWidth: 30, borderRadius: "50%" }}>
               <img
@@ -55,13 +55,13 @@ export default function SideBarComponent({ children }) {
         </Button>
    <Box >
           <Tab value={1} disableIndicator>
-            <ListItemDecorator sx={{ justifyContent: "center", pb:6, pt:6}}>
+            <ListItemDecorator sx={{ justifyContent: "center", pb:5, pt:5}}>
               <QuestionAnswerIcon />
             </ListItemDecorator>
           </Tab>
           <Tab value={2} disableIndicator>
             {" "}
-            <ListItemDecorator sx={{ justifyContent: "center", pb:6, pt:6 }}>
+            <ListItemDecorator sx={{ justifyContent: "center", pb:5, pt:5 }}>
               <GroupIcon />
             </ListItemDecorator>
           </Tab>
@@ -72,7 +72,7 @@ export default function SideBarComponent({ children }) {
             </ListItemDecorator>
           </Tab>
           </Box>
-          <Button variant="plain" disableIndicator>
+          <Button variant="plain" >
             {" "}
             <ListItemDecorator sx={{ justifyContent: "center" }}>
               <Avatar key={currentUser?._id} src={`${currentUser?.avatarImg}`}>

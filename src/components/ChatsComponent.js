@@ -2,7 +2,7 @@ import { Box, Input, List, ListItem, Typography } from "@mui/joy";
 import ContactCard from "./ContactCard";
 import { useSelector } from "react-redux";
 
-function ChatsComponent({heightComponent}) {
+function ChatsComponent() {
   const allUsers = useSelector((state) => state.auth.allUsers);
 
   return (

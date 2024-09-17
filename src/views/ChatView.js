@@ -1,11 +1,8 @@
 import { Box, TabPanel } from "@mui/joy";
-import ChatComponent from "../components/ChatComponent";
-import Header from "../components/Header";
 import SnackbarComponent from "../components/SnackbarComponent";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import SideBarComponent from "../components/SideBarComponent";
-import { ChatSharp } from "@mui/icons-material";
 import ChatsComponent from "../components/ChatsComponent";
 
 function ChatView() {
