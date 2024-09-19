@@ -281,7 +281,7 @@ function ChatComponent() {
               <ContactCard
                 key={contact._id}
                 contact={contact}
-                lastMessage={lastMessage[contact._id]?.message?.text}
+                lastMessage={lastMessage ? lastMessage[contact._id]?.message?.text : null}
               />
             );
           })}
