@@ -4,21 +4,20 @@ import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutline
 import { useMediaQuery } from "@mui/material";
 
 
-function ContactCard({ contact }) {
+
+function ContactCard({ contact, lastMessage }) {
 
   const onlineUsers = useSelector((state) => state.auth.onlineUsers);
+
+
   const onlineUser = Object.values(onlineUsers).includes(contact._id);
-  const currentChat = useSelector((state) => state.chat.currentChat);
   const newMessageIndicator = useSelector(
     (state) => state.chat.newMessageIndicator
   );
-  const lastMessageChat = useSelector((state) => state.chat.lastMessage);
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
-
-  //const statusMessage = lastMessageChat[contact.id]?.lastMessage?.message || lastMessageChat[currentChat._id]?.lastMessage?.message;
-
+  
   return (
     <Tab
       key={contact._id}
@@ -59,15 +58,16 @@ function ContactCard({ contact }) {
             fontSize="sm"
           />
         ) : null}
-        
+        <Box>
+          <Typography sx={{ fontSize: "12px" }}>{ lastMessage}</Typography>
+        </Box>
       </Box>
+      
     </Tab>
   );
 }
 
 export default ContactCard;
 /*
-<Box>
-          <Typography sx={{ fontSize: "12px" }}>{ lastMessageChat ? lastMessageChat[contact.id]?.lastMessage?.message: null}</Typography>
-        </Box>
+
 */

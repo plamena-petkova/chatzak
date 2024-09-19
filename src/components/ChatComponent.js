@@ -14,8 +14,8 @@ import {
   deleteMessage,
   editMessage,
   getAllMessages,
+  getLastMessages,
   setCurrentChat,
-  setLastMessage,
   setNewMessageIndicator,
 } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
@@ -34,6 +34,7 @@ function ChatComponent() {
   const newMessageIndicator = useSelector(
     (state) => state.chat.newMessageIndicator
   );
+  const lastMessage = useSelector((state) => state.chat.lastMessage);
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
@@ -51,12 +52,11 @@ function ChatComponent() {
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
 
-  const arrayForSort = [...messages];
-
-  arrayForSort.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-  const lastMessageFromUser = messages[messages.length - 1];
-
+  useEffect(() => {
+    if (currentUser) {
+      dispatch(getLastMessages({ userId: currentUser._id }));
+    }
+  }, [currentChat, arrivalMsg, message]);
 
   useEffect(() => {
     if (currentUser._id && !socket.connected) {
@@ -185,7 +185,6 @@ function ChatComponent() {
     const msgs = [...msg];
     msgs.push({ fromSelf: true, message: msg });
     setMessage(msgs);
-    dispatch(setLastMessage({currentUserId: currentUser._id, currentChatId:currentChat._id, lastMessage:lastMessageFromUser}))
   };
 
   const onDeleteHandler = (messageId) => {
@@ -278,7 +277,13 @@ function ChatComponent() {
           underlinePlacement={{ top: "bottom", bottom: "top" }["top"]}
         >
           {allUsers.map((contact) => {
-            return <ContactCard key={contact._id} contact={contact} lastMessage={lastMessageFromUser} />;
+            return (
+              <ContactCard
+                key={contact._id}
+                contact={contact}
+                lastMessage={lastMessage[contact._id]?.message?.text}
+              />
+            );
           })}
         </TabList>
         <TabPanel sx={{ maxWidth: "70vw" }} value={value} key={uuidv4()}>

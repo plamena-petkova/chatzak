@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { deleteMessageRoute, getAllMessagesRoute } from "../utils/apiRoutes";
+import { deleteMessageRoute, getAllMessagesRoute, getLastMessagesRoute } from "../utils/apiRoutes";
 import axios from "axios";
 
 const initialState = {
   currentChat: {},
   messages: [],
-  lastMessage:[],
+  lastMessage:{},
   isLoading: false,
   error: null,
   newMessageIndicator: {},
@@ -15,6 +15,14 @@ export const getAllMessages = createAsyncThunk(
   "chat/messages",
   async (data) => {
     const response = await axios.post(getAllMessagesRoute, data);
+    return response.data;
+  }
+);
+
+export const getLastMessages = createAsyncThunk(
+  "chat/last-message",
+  async (data) => {
+    const response = await axios.post(getLastMessagesRoute, data);
     return response.data;
   }
 );
@@ -56,16 +64,6 @@ export const chatSlice = createSlice({
         }
       }
     },
-    setLastMessage: (state, action) => {
-      if (action.payload) {
-        console.log('ActionPayload', action.payload)
-        const currentChatId = action.payload.currentChatId;
-
-        if (currentChatId) {
-          state.lastMessage[currentChatId] = action.payload;
-        }
-      }
-    },
   },
   extraReducers(builder) {
     builder.addCase(getAllMessages.pending, (state, action) => {
@@ -76,6 +74,17 @@ export const chatSlice = createSlice({
       state.messages = action.payload;
     });
     builder.addCase(getAllMessages.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    }); 
+    builder.addCase(getLastMessages.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getLastMessages.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.lastMessage = action.payload;
+    });
+    builder.addCase(getLastMessages.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     }); 
