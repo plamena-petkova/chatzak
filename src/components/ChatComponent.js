@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, TabList, TabPanel, Tabs } from "@mui/joy";
+import { Box, Grid, TabList, TabPanel, Tabs } from "@mui/joy";
 import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
@@ -238,13 +238,13 @@ function ChatComponent() {
   }, [handleSendMsg, doScroll]);
 
   return (
-    <Box>
+    <Grid container direction={'column'} maxHeight={'100vh'}  >
       <Tabs
         sx={{
           overflow: "auto",
           overflowY: "scroll",
-          height: "60vh",
-          maxHeight: "60vh",
+          height: "90vh",
+          maxHeight: "90vh",
           "&::-webkit-scrollbar": { width: "4px" },
           "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
             borderRadius: 6,
@@ -319,7 +319,7 @@ function ChatComponent() {
       <Box sx={{ mt: 1 }}>
         <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
       </Box>
-    </Box>
+    </Grid>
   );
 }
 

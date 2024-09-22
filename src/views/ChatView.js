@@ -25,8 +25,10 @@ useEffect(() => {
     setOpenNewSnack(false);
   };
 
-  return (
-    <Box
+ 
+    return (
+     
+       <Box
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -42,7 +44,9 @@ useEffect(() => {
 
       <ChatComponent />
     </Box>
-  );
-}
+  
+    );
+  }
+  
 
 export default ChatView;
