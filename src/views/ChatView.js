@@ -1,9 +1,8 @@
 import { Box } from "@mui/joy";
-import ChatComponent from "../components/ChatComponent";
-import Header from "../components/Header";
 import SnackbarComponent from "../components/SnackbarComponent";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import SideBarComponent from "../components/SideBarComponent";
 
 function ChatView() {
   const newMessageIndicator = useSelector(
@@ -12,41 +11,31 @@ function ChatView() {
   const newMessageObject = Object.values(newMessageIndicator);
   const [openNewSnack, setOpenNewSnack] = useState(false);
 
-
-useEffect(() => {
-    if(newMessageObject.map(item => item.show).includes(true)) {
-        setOpenNewSnack(true);
+  useEffect(() => {
+    if (newMessageObject.map((item) => item.show).includes(true)) {
+      setOpenNewSnack(true);
     }
-
-}, [openNewSnack, newMessageObject])
-
+  }, [openNewSnack, newMessageObject]);
 
   const handleCloseSnack = () => {
     setOpenNewSnack(false);
   };
 
- 
-    return (
-     
-       <Box
+  return (
+    <Box
       sx={{
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        mr: 4,
-        ml: 4,
+
         maxHeight: "90vh",
       }}
     >
-      <Header />
+      <SideBarComponent />
 
       <SnackbarComponent open={openNewSnack} handleClose={handleCloseSnack} />
-
-      <ChatComponent />
     </Box>
-  
-    );
-  }
-  
+  );
+}
 
 export default ChatView;

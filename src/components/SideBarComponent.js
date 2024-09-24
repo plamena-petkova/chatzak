@@ -25,7 +25,7 @@ export default function SideBarComponent() {
       orientation="vertical"
       aria-label="tabs"
       defaultValue={1}
-      sx={{ bgcolor: "transparent", minHeight: "100vh", minWidth: "100vw" }}
+      sx={{ bgcolor: "transparent", minHeight: "100vh",  }}
     >
       <Grid item xs={2} md={1} sx={{ minHeight: "100vh" }}>
         <TabList

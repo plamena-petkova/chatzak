@@ -238,7 +238,7 @@ function ChatComponent() {
   }, [handleSendMsg, doScroll]);
 
   return (
-    <Grid container direction={'column'} maxHeight={'100vh'}  >
+    <Grid container direction={'column'} maxHeight={'100vh'} minWidth={'90vw'}  >
       <Tabs
         sx={{
           overflow: "auto",
