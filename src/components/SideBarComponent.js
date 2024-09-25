@@ -6,26 +6,47 @@ import {
   AspectRatio,
   Avatar,
   Button,
+  Dropdown,
   Grid,
   ListItemDecorator,
+  Menu,
+  MenuButton,
+  MenuItem,
   TabPanel,
 } from "@mui/joy";
 import logoSmall from "../assets/logoSmall.png";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import GroupIcon from "@mui/icons-material/Group";
 import ChatComponent from "./ChatComponent";
+import ProfileModal from "./ProfileModal";
+import { setClearMessages } from "../store/chatReducer";
+import { logout } from "../store/authReducer";
+import { useNavigate } from "react-router-dom";
+import { socket } from "../socket";
 
 export default function SideBarComponent() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const currentUser = useSelector((state) => state.auth.user);
+
+  const [openProfile, setOpenProfile] = React.useState(false);
+
+  const triggerLogout = () => {
+    dispatch(logout());
+    dispatch(setClearMessages());
+    socket.disconnect();
+    navigate("/login");
+  };
 
   return (
     <Tabs
       orientation="vertical"
       aria-label="tabs"
       defaultValue={1}
-      sx={{ bgcolor: "transparent", minHeight: "100vh",  }}
+      sx={{ bgcolor: "transparent", minHeight: "100vh" }}
     >
       <Grid item xs={2} md={1} sx={{ minHeight: "100vh" }}>
         <TabList
@@ -75,17 +96,25 @@ export default function SideBarComponent() {
               <ManageAccountsIcon />
             </ListItemDecorator>
           </Tab>
-
-          <Button variant="plain">
-            {" "}
-            <ListItemDecorator sx={{ justifyContent: "center" }}>
-              <Avatar key={currentUser?._id} src={`${currentUser?.avatarImg}`}>
-                {currentUser._id && currentUser?.avatarImg
-                  ? currentUser?.avatar
-                  : currentUser.names[0]}
-              </Avatar>
-            </ListItemDecorator>
-          </Button>
+          <Dropdown>
+          <ProfileModal open={openProfile} onCloseHandler={() => setOpenProfile(false)}/>
+            <MenuButton>
+              <ListItemDecorator sx={{ justifyContent: "center" }}>
+                <Avatar
+                  key={currentUser?._id}
+                  src={`${currentUser?.avatarImg}`}
+                >
+                  {currentUser._id && currentUser?.avatarImg
+                    ? currentUser?.avatar
+                    : currentUser.names[0]}
+                </Avatar>
+              </ListItemDecorator>
+            </MenuButton>
+            <Menu>
+              <MenuItem onClick={() => setOpenProfile(true)}>Profile</MenuItem>
+              <MenuItem onClick={triggerLogout}>Logout</MenuItem>
+            </Menu>
+          </Dropdown>
         </TabList>
       </Grid>
       <Grid item xs={12} md={12}>
