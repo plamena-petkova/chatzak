@@ -26,7 +26,7 @@ import { logout } from "../store/authReducer";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../socket";
 
-export default function SideBarComponent() {
+function SideBarComponent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -48,7 +48,7 @@ export default function SideBarComponent() {
       defaultValue={1}
       sx={{ bgcolor: "transparent", minHeight: "100vh" }}
     >
-      <Grid item xs={2} md={1} sx={{ minHeight: "100vh" }}>
+      <Grid xs={2} md={1} sx={{ minHeight: "100vh" }}>
         <TabList
           disableUnderline
           sx={{
@@ -98,7 +98,7 @@ export default function SideBarComponent() {
           </Tab>
           <Dropdown>
           <ProfileModal open={openProfile} onCloseHandler={() => setOpenProfile(false)}/>
-            <MenuButton>
+            <MenuButton variant="soft">
               <ListItemDecorator sx={{ justifyContent: "center" }}>
                 <Avatar
                   key={currentUser?._id}
@@ -117,7 +117,7 @@ export default function SideBarComponent() {
           </Dropdown>
         </TabList>
       </Grid>
-      <Grid item xs={12} md={12}>
+      <Grid xs={12} md={12}>
         <TabPanel value={1}>
           <ChatComponent />
         </TabPanel>
@@ -127,3 +127,5 @@ export default function SideBarComponent() {
     </Tabs>
   );
 }
+
+export default SideBarComponent;

@@ -1,17 +1,14 @@
 import { Box, Button, Typography, Input } from "@mui/joy";
 import { FormControl, Paper } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
+import PositionedMenu from "./PositionedMenu";
 
 function MessageComponent({
   msg,
-  handleShowRemoveIcon,
   onDeleteHandler,
   onEditHandler,
-  showRemoveIcon,
   alignItems,
 }) {
   const [editMessage, setEditMessage] = useState(false);
@@ -63,14 +60,13 @@ function MessageComponent({
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         {editMessage && 
           editMessageInput}
-        
+           
           <Paper
-            onClick={() => handleShowRemoveIcon(msg.id)}
             variant="outlined"
             sx={{
               whiteSpace: "normal",
               maxWidth: 700,
-              borderRadius: "18px",
+              borderRadius: "10px",
               p: 0.5,
               cursor: "pointer",
             }}
@@ -83,7 +79,7 @@ function MessageComponent({
                   ml: 1,
                   color: "lightgrey",
                   fontWeight: "lg",
-                  fontSize: "sm",
+                  fontSize: "md",
                   wordBreak: "break-word",
                 }}
               >
@@ -105,7 +101,7 @@ function MessageComponent({
                   ml: 1,
                   color: "green",
                   fontWeight: "lg",
-                  fontSize: "sm",
+                  fontSize: "md",
                   wordBreak: "break-word",
                 }}
               >
@@ -122,30 +118,7 @@ function MessageComponent({
               </Typography>
             )}
           </Paper>
-
-        {msg.id === showRemoveIcon.id &&
-        !msg.isRemoved &&
-        msg.fromSelf &&
-        showRemoveIcon.show ? (
-          <>
-            <Button
-              sx={{ zIndex: 100 }}
-              size="sm"
-              variant="plain"
-              onClick={() => onDeleteHandler(msg.id)}
-            >
-              <DeleteIcon fontSize="sm" />
-            </Button>
-            <Button
-              sx={{ zIndex: 100 }}
-              size="sm"
-              variant="plain"
-              onClick={onEditMode}
-            >
-              <EditIcon fontSize="sm" />
-            </Button>
-          </>
-        ) : null}
+          {(msg.fromSelf && !msg.isRemoved) ? <PositionedMenu message={msg} onDelete={() => onDeleteHandler(msg.id)}  onEdit={() => onEditMode()} /> : null}
       </Box>
     </Box>
   );

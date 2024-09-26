@@ -40,7 +40,6 @@ function ChatComponent() {
   const [arrivalMsg, setArrivalMsg] = useState("");
   const [value, setValue] = useState(0);
   const scrollableContainerRef = useRef(null);
-  const [showRemoveIcon, setShowRemoveIcon] = useState({ id: "", show: false });
   const [messageDeleted, setMessageDeleted] = useState({
     id: "",
     deleted: true,
@@ -210,25 +209,9 @@ function ChatComponent() {
     };
     socket.emit("edit-msg", data);
 
-    setShowRemoveIcon({ id: messageId, show: true });
-    if (messageId === showRemoveIcon.id) {
-      const showIcon = { ...showRemoveIcon };
-      showIcon.show = !showIcon.show;
-      setShowRemoveIcon(showIcon);
-    }
-
     setDoScroll(true);
   };
 
-  const handleShowRemoveIcon = (messageId) => {
-    setDoScroll(false);
-    setShowRemoveIcon({ id: messageId, show: true });
-    if (messageId === showRemoveIcon.id) {
-      const showIcon = { ...showRemoveIcon };
-      showIcon.show = !showIcon.show;
-      setShowRemoveIcon(showIcon);
-    }
-  };
 
   useEffect(() => {
     if (scrollableContainerRef.current && doScroll) {
@@ -293,8 +276,6 @@ function ChatComponent() {
                 return (
                   <MessageComponent
                     key={uuidv4()}
-                    handleShowRemoveIcon={handleShowRemoveIcon}
-                    showRemoveIcon={showRemoveIcon}
                     msg={msg}
                     onDeleteHandler={onDeleteHandler}
                     onEditHandler={onEditHandler}
@@ -305,8 +286,6 @@ function ChatComponent() {
                 return (
                   <MessageComponent
                     key={uuidv4()}
-                    handleShowRemoveIcon={handleShowRemoveIcon}
-                    showRemoveIcon={showRemoveIcon}
                     msg={msg}
                     onDeleteHandler={onDeleteHandler}
                     alignItems={"start"}
