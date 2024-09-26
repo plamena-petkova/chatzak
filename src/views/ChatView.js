@@ -27,7 +27,6 @@ function ChatView() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-
         maxHeight: "90vh",
       }}
     >
