@@ -27,7 +27,7 @@ function ChatView() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        maxHeight: "90vh",
+        minHeight: "100vh",
       }}
     >
       <SideBarComponent />

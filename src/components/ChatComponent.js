@@ -295,7 +295,7 @@ function ChatComponent() {
             })}
         </TabPanel>
       </Tabs>
-      <Box sx={{ mt: 1 }}>
+      <Box >
         <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
       </Box>
     </Grid>

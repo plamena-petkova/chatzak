@@ -73,7 +73,7 @@ function ProfileModal({ open, onCloseHandler }) {
 
   return (
     <Modal open={openModal} onClose={() => setOpenModal(!openModal)}>
-      <ModalDialog sx={{ minWidth: "50%", minHeight: "55%" }}>
+      <ModalDialog sx={{ maxWidth: "50%", maxHeight: "55%" }}>
         <NewAvatar />
         <DialogTitle
           sx={{ justifyContent: "space-between", alignItems: "center" }}
@@ -115,7 +115,7 @@ function ProfileModal({ open, onCloseHandler }) {
         <DialogTitle
           sx={{ justifyContent: "space-between", alignItems: "center" }}
         >
-          Names:
+          Name:
           {editNames ? (
             <Input
               placeholder="Type your names"
@@ -187,7 +187,7 @@ function ProfileModal({ open, onCloseHandler }) {
         </DialogTitle>
 
         <DialogTitle
-          sx={{ justifyContent: "space-between", alignItems: "center" }}
+          sx={{ justifyContent: "space-between", alignItems: "center", color:'red' }}
         >
           Delete account:
           <Typography>{currentUser.username}</Typography>
