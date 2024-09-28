@@ -256,6 +256,7 @@ function ChatComponent() {
               minWidth: 3,
               border: "none",
             },
+            minWidth:"35vw"
           }}
           underlinePlacement={{ top: "bottom", bottom: "top" }["top"]}
         >
@@ -295,7 +296,7 @@ function ChatComponent() {
             })}
         </TabPanel>
       </Tabs>
-      <Box >
+      <Box>
         <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
       </Box>
     </Grid>

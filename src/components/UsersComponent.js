@@ -67,6 +67,7 @@ function UsersComponent() {
                         alignContent: "start",
                         justifyContent: "start",
                         width: "30vw",
+                        color:'black'
                       }}
                       variant="plain"
                       key={contact?._id}
