@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Grid, TabList, TabPanel, Tabs} from "@mui/joy";
+import { Grid, TabList, TabPanel, Tabs } from "@mui/joy";
 import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
@@ -212,7 +212,6 @@ function ChatComponent() {
     setDoScroll(true);
   };
 
-
   useEffect(() => {
     if (scrollableContainerRef.current && doScroll) {
       scrollableContainerRef.current.scrollTop =
@@ -221,84 +220,88 @@ function ChatComponent() {
   }, [handleSendMsg, doScroll]);
 
   return (
-    <Grid container direction={'column'} maxHeight={'100vh'} minWidth={'90vw'}  >
-      <Tabs
-        sx={{
-          overflow: "auto",
-          overflowY: "scroll",
-          height: "90vh",
-          maxHeight: "90vh",
-          "&::-webkit-scrollbar": { width: "4px" },
-          "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
-            borderRadius: 6,
-            backgroundColor: "#DDE7EE",
-            minHeight: 24,
-            border: "none",
-          },
-        }}
-        onChange={handleChangeTab}
-        aria-label="Vertical tabs"
-        variant="scrollable"
-        orientation="vertical"
-        value={value}
-        ref={scrollableContainerRef}
-      >
-        <TabList
-          sticky="top"
+    <Grid container sx={{ flexGrow: 1, height: "100%", width:'100%' }}>
+      <Grid item xs={12} md={12}>
+        <Tabs
           sx={{
             overflow: "auto",
-            scrollSnapType: "x mandatory",
-            "&::-webkit-scrollbar": { maxWidth: "4px", maxHeight: "1px" },
+            height: "95vh",
+            overflowY: "scroll",
+            "&::-webkit-scrollbar": { width: "4px" },
             "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
               borderRadius: 6,
               backgroundColor: "#DDE7EE",
-              minHeight: 3,
-              minWidth: 3,
+              minHeight: 24,
               border: "none",
             },
-            minWidth:"35vw"
           }}
-          underlinePlacement={{ top: "bottom", bottom: "top" }["top"]}
+          onChange={handleChangeTab}
+          aria-label="Vertical tabs"
+          variant="scrollable"
+          orientation="vertical"
+          value={value}
+          ref={scrollableContainerRef}
         >
-          {allUsers.map((contact) => {
-            return (
-              <ContactCard
-                key={contact._id}
-                contact={contact}
-                lastMessage={lastMessage ? lastMessage[contact._id]?.message?.text : null}
-              />
-            );
-          })}
-        </TabList>
-        <TabPanel sx={{ maxWidth: "70vw" }} value={value} key={uuidv4()}>
-          {messages.length > 0 &&
-            messages.map((msg) => {
-              if (msg.fromSelf) {
-                return (
-                  <MessageComponent
-                    key={uuidv4()}
-                    msg={msg}
-                    onDeleteHandler={onDeleteHandler}
-                    onEditHandler={onEditHandler}
-                    alignItems={"end"}
-                  />
-                );
-              } else {
-                return (
-                  <MessageComponent
-                    key={uuidv4()}
-                    msg={msg}
-                    onDeleteHandler={onDeleteHandler}
-                    alignItems={"start"}
-                  />
-                );
-              }
+          <TabList
+            sticky="top"
+            sx={{
+              overflow: "auto",
+              scrollSnapType: "x mandatory",
+              "&::-webkit-scrollbar": { maxWidth: "4px", maxHeight: "1px" },
+              "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
+                borderRadius: 6,
+                backgroundColor: "#DDE7EE",
+                minHeight: 3,
+                minWidth: 3,
+                border: "none",
+              },
+             
+            }}
+            underlinePlacement={{ top: "bottom", bottom: "top" }["top"]}
+          >
+            {allUsers.map((contact) => {
+              return (
+                <ContactCard
+                  key={contact._id}
+                  contact={contact}
+                  lastMessage={
+                    lastMessage ? lastMessage[contact._id]?.message?.text : null
+                  }
+                />
+              );
             })}
-        </TabPanel>
-      </Tabs>
-      <Box>
+          </TabList>
+          <TabPanel sx={{ maxWidth: "70vw" }} value={value} key={uuidv4()}>
+            {messages.length > 0 &&
+              messages.map((msg) => {
+                if (msg.fromSelf) {
+                  return (
+                    <MessageComponent
+                      key={uuidv4()}
+                      msg={msg}
+                      onDeleteHandler={onDeleteHandler}
+                      onEditHandler={onEditHandler}
+                      alignItems={"end"}
+                    />
+                  );
+                } else {
+                  return (
+                    <MessageComponent
+                      key={uuidv4()}
+                      msg={msg}
+                      onDeleteHandler={onDeleteHandler}
+                      alignItems={"start"}
+                    />
+                  );
+                }
+              })}
+          </TabPanel>
+        </Tabs>
+      </Grid>
+
+      <Grid item xs={12} md={12}>
         <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
-      </Box>
+      </Grid>
     </Grid>
   );
 }

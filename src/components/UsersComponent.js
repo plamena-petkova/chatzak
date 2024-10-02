@@ -33,9 +33,11 @@ function UsersComponent() {
       user?.name?.toLowerCase().includes(searchQuery)
   );
 
+  console.log("Current", currentContact);
+
   return (
-    <Grid container width={"85vw"}>
-      <Grid size={4} md={4}>
+    <Grid container sx={{height:'100%'}}>
+      <Grid item xs={12} md={4} sx={{p:1}}>
         <Typography sx={{ fontSize: "xl", fontWeight: "700", mb: 2.5 }}>
           Users
         </Typography>
@@ -46,7 +48,7 @@ function UsersComponent() {
         />
         <Box
           sx={{
-            height: "80vh",
+            height: "85vh",
             overflow: "auto",
             "&::-webkit-scrollbar": { width: "4px" },
             "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
@@ -66,8 +68,8 @@ function UsersComponent() {
                       sx={{
                         alignContent: "start",
                         justifyContent: "start",
-                        width: "30vw",
-                        color:'black'
+
+                        color: "black",
                       }}
                       variant="plain"
                       key={contact?._id}
@@ -98,11 +100,7 @@ function UsersComponent() {
           )}
         </Box>
       </Grid>
-      <Grid
-        size={8}
-        md={8}
-        sx={{ justifyContent: "center", alignItems: "center" }}
-      >
+      <Grid item xs={12} md={8}>
         <Box
           sx={{
             display: "flex",
@@ -114,10 +112,9 @@ function UsersComponent() {
           }}
         >
           <Avatar
-            sx={{ marginBottom: 2, width:'180px', height:'190px' }}
+            sx={{ marginBottom: 2, width: "180px", height: "190px" }}
             key={currentContact._id}
             src={`${currentContact.avatarImg}`}
-            
           >
             {currentContact && currentContact.avatarImg
               ? currentContact?.avatar
@@ -137,31 +134,67 @@ function UsersComponent() {
             marginLeft: 3,
           }}
         >
-          <Box sx={{display:'flex', flexDirection:'row', justifyContent:'start', alignItems:'center'}}>
-          <PersonIcon sx={{marginRight:1}} />
-          <Typography sx={{ fontSize: "xl", fontWeight: 700 }}>
-            About
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "start",
+              alignItems: "center",
+            }}
+          >
+            <PersonIcon sx={{ marginRight: 1 }} />
+            <Typography sx={{ fontSize: "xl", fontWeight: 700 }}>
+              About
+            </Typography>
           </Box>
-          <Box sx={{display:'flex', flexDirection:'column', justifyContent:'start', marginTop:1, marginBottom:1}}>
-          <Typography sx={{ fontSize: "md", fontWeight: 300 }}>Name</Typography>
-          <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
-            {currentContact.names}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "start",
+              marginTop: 1,
+              marginBottom: 1,
+            }}
+          >
+            <Typography sx={{ fontSize: "md", fontWeight: 300 }}>
+              Name
+            </Typography>
+            <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
+              {currentContact.names}
+            </Typography>
           </Box>
-          <Box sx={{display:'flex', flexDirection:'column', justifyContent:'start', marginTop:1, marginBottom:1}}>
-          <Typography sx={{ fontSize: "md", fontWeight: 300 }}>Username</Typography>
-          <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
-            {currentContact.username}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "start",
+              marginTop: 1,
+              marginBottom: 1,
+            }}
+          >
+            <Typography sx={{ fontSize: "md", fontWeight: 300 }}>
+              Username
+            </Typography>
+            <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
+              {currentContact.username}
+            </Typography>
           </Box>
-          <Box sx={{display:'flex', flexDirection:'column', justifyContent:'start', marginTop:1, marginBottom:1}}>
-          <Typography sx={{ fontSize: "md", fontWeight: 300 }}>Email</Typography>
-          <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
-            {currentContact.email}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "start",
+              marginTop: 1,
+              marginBottom: 1,
+            }}
+          >
+            <Typography sx={{ fontSize: "md", fontWeight: 300 }}>
+              Email
+            </Typography>
+            <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
+              {currentContact.email}
+            </Typography>
           </Box>
-       
         </Box>
       </Grid>
     </Grid>
