@@ -23,7 +23,7 @@ function ContactCard({ contact, lastMessage }) {
       key={contact._id}
       sx={
         isSmallScreen
-          ? { maxWidth: 140, padding: "20px" }
+          ? { flex: 'none', scrollSnapAlign: 'start' }
           : { minWidth: 270, padding: "25px" }
       }
     >

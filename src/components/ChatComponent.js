@@ -23,6 +23,8 @@ import ContactCard from "../components/ContactCard";
 import { v4 as uuidv4 } from "uuid";
 import { socket } from "../socket";
 import MessageComponent from "./MessageComponent";
+import { useMediaQuery } from "@mui/material";
+import HeaderChatProfileUser from "./HeaderChatProfileUser";
 
 function ChatComponent() {
   const dispatch = useDispatch();
@@ -50,6 +52,8 @@ function ChatComponent() {
   });
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
+
+  const isSmallScreen = useMediaQuery("(max-width:899px)");
 
   useEffect(() => {
     if (currentUser) {
@@ -220,12 +224,20 @@ function ChatComponent() {
   }, [handleSendMsg, doScroll]);
 
   return (
-    <Grid container sx={{ flexGrow: 1, height: "100%", width:'100%' }}>
+    <Grid
+      container
+      direction={isSmallScreen ? "column" : "row"}
+      sx={{ height: "100%", width: "100%", flexGrow:1, overflow:'hidden' }}
+    >
+      <Grid item xs={12} md={12}>
+        <HeaderChatProfileUser chat={currentChat} />
+      </Grid>
       <Grid item xs={12} md={12}>
         <Tabs
           sx={{
             overflow: "auto",
-            height: "95vh",
+            maxHeight: isSmallScreen ? "100vh" : "80vh",
+            minHeight: isSmallScreen ? "100vh" : null,
             overflowY: "scroll",
             "&::-webkit-scrollbar": { width: "4px" },
             "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
@@ -238,7 +250,7 @@ function ChatComponent() {
           onChange={handleChangeTab}
           aria-label="Vertical tabs"
           variant="scrollable"
-          orientation="vertical"
+          orientation={isSmallScreen ? "horizontal" : "vertical"}
           value={value}
           ref={scrollableContainerRef}
         >
@@ -247,6 +259,7 @@ function ChatComponent() {
             sx={{
               overflow: "auto",
               scrollSnapType: "x mandatory",
+              minHeight: isSmallScreen ? "20vh" : null,
               "&::-webkit-scrollbar": { maxWidth: "4px", maxHeight: "1px" },
               "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
                 borderRadius: 6,
@@ -255,7 +268,6 @@ function ChatComponent() {
                 minWidth: 3,
                 border: "none",
               },
-             
             }}
             underlinePlacement={{ top: "bottom", bottom: "top" }["top"]}
           >
@@ -271,7 +283,7 @@ function ChatComponent() {
               );
             })}
           </TabList>
-          <TabPanel sx={{ maxWidth: "70vw" }} value={value} key={uuidv4()}>
+          <TabPanel value={value} key={uuidv4()}>
             {messages.length > 0 &&
               messages.map((msg) => {
                 if (msg.fromSelf) {
@@ -298,7 +310,6 @@ function ChatComponent() {
           </TabPanel>
         </Tabs>
       </Grid>
-
       <Grid item xs={12} md={12}>
         <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
       </Grid>
