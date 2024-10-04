@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Grid, TabList, TabPanel, Tabs } from "@mui/joy";
+import { Box, Grid, TabList, TabPanel, Tabs } from "@mui/joy";
 import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
@@ -227,16 +227,13 @@ function ChatComponent() {
     <Grid
       container
       direction={isSmallScreen ? "column" : "row"}
-      sx={{ height: "100%", width: "100%", flexGrow:1, overflow:'hidden' }}
+      sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "hidden" }}
     >
-      <Grid item xs={12} md={12}>
-        <HeaderChatProfileUser chat={currentChat} />
-      </Grid>
       <Grid item xs={12} md={12}>
         <Tabs
           sx={{
             overflow: "auto",
-            maxHeight: isSmallScreen ? "100vh" : "80vh",
+            maxHeight: "100vh",
             minHeight: isSmallScreen ? "100vh" : null,
             overflowY: "scroll",
             "&::-webkit-scrollbar": { width: "4px" },
@@ -252,7 +249,6 @@ function ChatComponent() {
           variant="scrollable"
           orientation={isSmallScreen ? "horizontal" : "vertical"}
           value={value}
-          ref={scrollableContainerRef}
         >
           <TabList
             sticky="top"
@@ -260,6 +256,7 @@ function ChatComponent() {
               overflow: "auto",
               scrollSnapType: "x mandatory",
               minHeight: isSmallScreen ? "20vh" : null,
+              bgcolor: "#F1F4F8",
               "&::-webkit-scrollbar": { maxWidth: "4px", maxHeight: "1px" },
               "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
                 borderRadius: 6,
@@ -284,34 +281,67 @@ function ChatComponent() {
             })}
           </TabList>
           <TabPanel value={value} key={uuidv4()}>
-            {messages.length > 0 &&
-              messages.map((msg) => {
-                if (msg.fromSelf) {
-                  return (
-                    <MessageComponent
-                      key={uuidv4()}
-                      msg={msg}
-                      onDeleteHandler={onDeleteHandler}
-                      onEditHandler={onEditHandler}
-                      alignItems={"end"}
-                    />
-                  );
-                } else {
-                  return (
-                    <MessageComponent
-                      key={uuidv4()}
-                      msg={msg}
-                      onDeleteHandler={onDeleteHandler}
-                      alignItems={"start"}
-                    />
-                  );
-                }
-              })}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                minHeight: "97vh",
+              }}
+            >
+              {!isSmallScreen && (
+                <Box item xs={12} md={12}>
+                  <HeaderChatProfileUser chat={currentChat} />
+                </Box>
+              )}
+              <Box
+                ref={scrollableContainerRef}
+                item
+                xs={12}
+                md={12}
+                sx={{
+                  height: isSmallScreen ? "90vh" : "80vh",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": { maxWidth: "4px", maxHeight: "1px" },
+                  "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
+                    borderRadius: 6,
+                    backgroundColor: "#DDE7EE",
+                    minHeight: 3,
+                    minWidth: 3,
+                    border: "none",
+                  },
+                }}
+              >
+                {messages.length > 0 &&
+                  messages.map((msg) => {
+                    if (msg.fromSelf) {
+                      return (
+                        <MessageComponent
+                          key={uuidv4()}
+                          msg={msg}
+                          onDeleteHandler={onDeleteHandler}
+                          onEditHandler={onEditHandler}
+                          alignItems={"end"}
+                        />
+                      );
+                    } else {
+                      return (
+                        <MessageComponent
+                          key={uuidv4()}
+                          msg={msg}
+                          onDeleteHandler={onDeleteHandler}
+                          alignItems={"start"}
+                        />
+                      );
+                    }
+                  })}
+              </Box>
+              <Box item xs={12} md={12}>
+                <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
+              </Box>
+            </Box>
           </TabPanel>
         </Tabs>
-      </Grid>
-      <Grid item xs={12} md={12}>
-        <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
       </Grid>
     </Grid>
   );

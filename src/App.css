@@ -6,10 +6,6 @@
     box-sizing: border-box;
 }
 
-body {
-    max-height: 100vh;
-}
-
 aside {
     position: absolute;
     z-index: 1000;

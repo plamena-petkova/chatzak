@@ -43,7 +43,7 @@ function ChatView() {
             gap: 1,
             pt: 7,
             pb: 7,
-            bgcolor: "background.level1",
+            bgcolor: "#FBFCFE",
             [`& .${tabClasses.root}[aria-selected="true"]`]: {
               boxShadow: "sm",
               bgcolor: "background.surface",

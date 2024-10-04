@@ -69,6 +69,7 @@ function MessageComponent({
               borderRadius: "10px",
               p: 0.5,
               cursor: "pointer",
+              bgcolor:alignItems.includes('start') ? '#465CA2' : 'white',
             }}
             disabled={msg.isRemoved}
           >
@@ -99,7 +100,7 @@ function MessageComponent({
                 sx={{
                   mr: 1,
                   ml: 1,
-                  color: "green",
+                  color:alignItems.includes('start') ? '#FBFCFE' : '#32383E',
                   fontWeight: "lg",
                   fontSize: "md",
                   wordBreak: "break-word",
