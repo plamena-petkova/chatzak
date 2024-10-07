@@ -67,6 +67,7 @@ function ChatInput({ handleSendMsg, socket }) {
   }, [handleSendMsg, msg]);
 
   const handleFileChange = (e) => {
+    console.log(e.target.files[0]);
     const file = e.target.files[0];
     if(e.target.files[0].size > 99000) {
       setError(true);

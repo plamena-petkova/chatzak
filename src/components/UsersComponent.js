@@ -13,6 +13,7 @@ import { useMediaQuery } from "@mui/material";
 import { useState } from "react";
 import Divider from "@mui/joy/Divider";
 import PersonIcon from "@mui/icons-material/Person";
+import useCurrentAddress from "../hooks/useCurrentAddress";
 
 function UsersComponent() {
   const allUsers = useSelector((state) => state.auth.allUsers);
@@ -20,6 +21,8 @@ function UsersComponent() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentContact, setCurrentContact] = useState(allUsers[0]);
+
+  const { address, error } = useCurrentAddress();
 
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
@@ -33,7 +36,8 @@ function UsersComponent() {
       user?.name?.toLowerCase().includes(searchQuery)
   );
 
-  console.log("Current", currentContact);
+  console.log('Address', address);
+
 
   return (
     <Grid container sx={{height:'100%'}}>
@@ -48,7 +52,7 @@ function UsersComponent() {
         />
         <Box
           sx={{
-            height: "85vh",
+            height: isSmallScreen ? "20vh" : "85vh",
             overflow: "auto",
             "&::-webkit-scrollbar": { width: "4px" },
             "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
@@ -60,7 +64,7 @@ function UsersComponent() {
           }}
         >
           {filteredUsers ? (
-            <List sx={{ mt: 5 }}>
+            <List orientation={isSmallScreen ? "horizontal" : "vertical" } sx={{ mt: 5 }}>
               {filteredUsers.map((contact) => {
                 return (
                   <ListItem variant="plain" key={contact._id}>
@@ -193,6 +197,22 @@ function UsersComponent() {
             </Typography>
             <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
               {currentContact.email}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "start",
+              marginTop: 1,
+              marginBottom: 1,
+            }}
+          >
+            <Typography sx={{ fontSize: "md", fontWeight: 300 }}>
+              Address
+            </Typography>
+            <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
+              { !error ? `${address.city}, ${address.country}` : 'No address provided'}
             </Typography>
           </Box>
         </Box>

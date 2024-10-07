@@ -68,7 +68,6 @@ function ChatView() {
             onClick={() =>
               setMenuOpen({ chat: true, contacts: false, setting: false })
             }
-            disableIndicator
           >
             <ListItemDecorator sx={{ justifyContent: "center" }}>
               <QuestionAnswerIcon />
@@ -80,7 +79,6 @@ function ChatView() {
             onClick={() =>
               setMenuOpen({ chat: false, contacts: true, setting: false })
             }
-            disableIndicator
           >
             {" "}
             <ListItemDecorator sx={{ justifyContent: "center" }}>
@@ -93,7 +91,6 @@ function ChatView() {
             onClick={() =>
               setMenuOpen({ chat: false, contacts: false, setting: true })
             }
-            disableIndicator
           >
             {" "}
             <ListItemDecorator sx={{ justifyContent: "center" }}>
