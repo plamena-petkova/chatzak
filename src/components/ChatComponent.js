@@ -229,7 +229,7 @@ function ChatComponent() {
       direction={isSmallScreen ? "column" : "row"}
       sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "hidden" }}
     >
-      <Grid item xs={12} md={12}>
+      <Grid xs={12} md={12}>
         <Tabs
           sx={{
             overflow: "auto",
@@ -290,13 +290,12 @@ function ChatComponent() {
               }}
             >
               {!isSmallScreen && (
-                <Box item xs={12} md={12}>
+                <Box xs={12} md={12}>
                   <HeaderChatProfileUser chat={currentChat} />
                 </Box>
               )}
               <Box
                 ref={scrollableContainerRef}
-                item
                 xs={12}
                 md={12}
                 sx={{
@@ -336,7 +335,7 @@ function ChatComponent() {
                     }
                   })}
               </Box>
-              <Box item xs={12} md={12}>
+              <Box xs={12} md={12}>
                 <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
               </Box>
             </Box>

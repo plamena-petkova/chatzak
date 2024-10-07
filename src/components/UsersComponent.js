@@ -13,7 +13,6 @@ import { useMediaQuery } from "@mui/material";
 import { useState } from "react";
 import Divider from "@mui/joy/Divider";
 import PersonIcon from "@mui/icons-material/Person";
-import useCurrentAddress from "../hooks/useCurrentAddress";
 
 function UsersComponent() {
   const allUsers = useSelector((state) => state.auth.allUsers);
@@ -22,7 +21,6 @@ function UsersComponent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentContact, setCurrentContact] = useState(allUsers[0]);
 
-  const { address, error } = useCurrentAddress();
 
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
@@ -36,12 +34,9 @@ function UsersComponent() {
       user?.name?.toLowerCase().includes(searchQuery)
   );
 
-  console.log('Address', address);
-
-
   return (
     <Grid container sx={{height:'100%'}}>
-      <Grid item xs={12} md={4} sx={{p:1}}>
+      <Grid xs={12} md={4} sx={{p:1}}>
         <Typography sx={{ fontSize: "xl", fontWeight: "700", mb: 2.5 }}>
           Users
         </Typography>
@@ -104,7 +99,7 @@ function UsersComponent() {
           )}
         </Box>
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid xs={12} md={8}>
         <Box
           sx={{
             display: "flex",
@@ -197,22 +192,6 @@ function UsersComponent() {
             </Typography>
             <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
               {currentContact.email}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "start",
-              marginTop: 1,
-              marginBottom: 1,
-            }}
-          >
-            <Typography sx={{ fontSize: "md", fontWeight: 300 }}>
-              Address
-            </Typography>
-            <Typography sx={{ fontSize: "md", fontWeight: 500 }}>
-              { !error ? `${address.city}, ${address.country}` : 'No address provided'}
             </Typography>
           </Box>
         </Box>

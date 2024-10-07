@@ -29,9 +29,8 @@ function ChatView() {
 
   return (
     <Grid container sx={{ height: "100%", width:'100%' }}>
-      <Grid item xs={12} md={0.75} sx={{flexWrap:'wrap'}}>
+      <Grid xs={12} md={0.75} sx={{flexWrap:'wrap'}}>
         <List
-          disableUnderline
           sx={{
             minHeight: isSmallScreen ? null : "100vh",
             maxHeight: isSmallScreen ? "25vh" : null,
@@ -100,7 +99,7 @@ function ChatView() {
           <MenuButtonProfile />
         </List>
       </Grid>
-      <Grid item xs={12} md={11.25}>
+      <Grid xs={12} md={11.25}>
         {menuOpen.chat === true && <ChatComponent />}
         {menuOpen.contacts === true && <UsersComponent />}
       </Grid>
