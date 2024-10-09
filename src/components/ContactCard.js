@@ -1,11 +1,11 @@
-import { Avatar, Badge, Box, Tab, Typography } from "@mui/joy";
+import { Avatar, Badge, Box, Button, Typography } from "@mui/joy";
 import { useSelector } from "react-redux";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import { useMediaQuery } from "@mui/material";
 
 
 
-function ContactCard({ contact, lastMessage }) {
+function ContactCard({ contact, lastMessage, selectedUser, selected }) {
 
   const onlineUsers = useSelector((state) => state.auth.onlineUsers);
 
@@ -15,17 +15,23 @@ function ContactCard({ contact, lastMessage }) {
     (state) => state.chat.newMessageIndicator
   );
 
+
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
-  
   return (
-    <Tab
+    <Button
+    sx={{
+      alignContent: "start",
+      justifyContent: "start",
+      color: "black",
+      background: (selected?._id === contact?._id) ? "#CADEF6" : "transparent",
+    }}
+    variant="plain"
       key={contact._id}
-      sx={
-        isSmallScreen
-          ? { flex: 'none', scrollSnapAlign: 'start' }
-          : { minWidth: 270, padding: "25px" }
-      }
+      onClick={() => {
+        selectedUser(contact);
+      }}
+
     >
       {onlineUser ? (
         <Badge
@@ -41,7 +47,7 @@ function ContactCard({ contact, lastMessage }) {
             src={`${contact?.avatarImg}`}
             sx={{ mr: 1 }}
           >
-            {contact.avatarImg ? contact.avatar : contact.names[0]}
+            {contact?.avatarImg ? contact.avatar : contact.names[0]}
           </Avatar>
         </Badge>
       ) : (
@@ -49,25 +55,23 @@ function ContactCard({ contact, lastMessage }) {
           {contact.avatarImg ? contact.avatar : contact.names[0]}
         </Avatar>
       )}
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        {isSmallScreen ? contact.names.split(" ")[0] : contact.names}
-        {contact._id === newMessageIndicator[contact._id]?.chatId &&
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems:'flex-start'}}>
+        <Typography>{isSmallScreen ? contact.names.split(" ")[0] : contact.names}</Typography>
+       
+        <Box sx={{display:'flex', flexDirection:'row', justifyContent:'start', width:'70%'}}>
+          <Typography noWrap sx={{ fontSize: "12px" }}>{lastMessage}</Typography>
+          {contact._id === newMessageIndicator[contact._id]?.chatId &&
         newMessageIndicator[contact._id].show === true ? (
           <ChatBubbleOutlineOutlinedIcon
-            sx={{ ml: 1, color: "red" }}
+            sx={{ color: "red" }}
             fontSize="sm"
           />
         ) : null}
-        <Box>
-          <Typography sx={{ fontSize: "12px" }}>{ lastMessage}</Typography>
         </Box>
       </Box>
       
-    </Tab>
+    </Button>
   );
 }
 
 export default ContactCard;
-/*
-
-*/

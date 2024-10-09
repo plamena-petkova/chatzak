@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Grid, TabList, TabPanel, Tabs } from "@mui/joy";
+import { Box, Grid, List } from "@mui/joy";
 import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
@@ -40,7 +40,6 @@ function ChatComponent() {
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
-  const [value, setValue] = useState(0);
   const scrollableContainerRef = useRef(null);
   const [messageDeleted, setMessageDeleted] = useState({
     id: "",
@@ -54,6 +53,54 @@ function ChatComponent() {
   const [doScroll, setDoScroll] = useState(true);
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
+
+  const handleSendMsg = async (msg) => {
+    await axios.post(sendMessageRoute, {
+      from: currentUser?._id,
+      to: currentChat?._id,
+      message: msg,
+    });
+
+    socket.emit("send-msg", {
+      to: currentChat._id,
+      from: currentUser._id,
+      message: msg,
+    });
+
+    const msgs = [...msg];
+    msgs.push({ fromSelf: true, message: msg });
+    setMessage(msgs);
+  };
+
+  const onDeleteHandler = (messageId) => {
+    setMessageDeleted({ id: messageId, deleted: true });
+    dispatch(deleteMessage(messageId));
+    const data = {
+      from: currentUser._id,
+      to: currentChat._id,
+      message: "Removed message",
+    };
+    socket.emit("edit-msg", data);
+
+    setDoScroll(true);
+  };
+
+  const onEditHandler = (messageId, newMessage) => {
+    setMessageEdited({ id: messageId, edited: true });
+    dispatch(editMessage({ messageId, newMessage }));
+    const data = {
+      from: currentUser._id,
+      to: currentChat._id,
+      message: newMessage,
+    };
+    socket.emit("edit-msg", data);
+
+    setDoScroll(true);
+  };
+
+  const handleChangeUser = (data) => {
+    dispatch(setCurrentChat(data));
+  }
 
   useEffect(() => {
     if (currentUser) {
@@ -69,15 +116,16 @@ function ChatComponent() {
   }, [currentUser, dispatch]);
 
   useEffect(() => {
-    if (allUsers && allUsers[value]) {
-      dispatch(setCurrentChat(allUsers[value]));
+    if (!currentChat?._id) {
+      dispatch(setCurrentChat(allUsers[0]));
     }
   }, []);
 
   useEffect(() => {
-    if (currentChat?._id === allUsers[value]?._id) {
+    if (currentChat._id) {
       dispatch(getAllMessages({ from: currentUser._id, to: currentChat._id }));
     }
+    /*
     if (
       messageDeleted.deleted === true &&
       currentChat?._id === allUsers[value]?._id
@@ -90,14 +138,13 @@ function ChatComponent() {
     ) {
       dispatch(getAllMessages({ from: currentUser._id, to: currentChat._id }));
     }
+      */
   }, [
     currentChat,
     message,
     currentUser,
     dispatch,
-    doScroll,
     messageDeleted,
-    value,
     messageEdited,
   ]);
 
@@ -166,56 +213,6 @@ function ChatComponent() {
     arrivalMsg && setMessage((prev) => [...prev, arrivalMsg]);
   }, [arrivalMsg]);
 
-  const handleChangeTab = (event, newValue) => {
-    const currentChat = allUsers[newValue];
-    setValue(newValue);
-    dispatch(setCurrentChat(currentChat));
-  };
-
-  const handleSendMsg = async (msg) => {
-    await axios.post(sendMessageRoute, {
-      from: currentUser?._id,
-      to: currentChat?._id,
-      message: msg,
-    });
-
-    socket.emit("send-msg", {
-      to: currentChat._id,
-      from: currentUser._id,
-      message: msg,
-    });
-
-    const msgs = [...msg];
-    msgs.push({ fromSelf: true, message: msg });
-    setMessage(msgs);
-  };
-
-  const onDeleteHandler = (messageId) => {
-    setMessageDeleted({ id: messageId, deleted: true });
-    dispatch(deleteMessage(messageId));
-    const data = {
-      from: currentUser._id,
-      to: currentChat._id,
-      message: "Removed message",
-    };
-    socket.emit("edit-msg", data);
-
-    setDoScroll(true);
-  };
-
-  const onEditHandler = (messageId, newMessage) => {
-    setMessageEdited({ id: messageId, edited: true });
-    dispatch(editMessage({ messageId, newMessage }));
-    const data = {
-      from: currentUser._id,
-      to: currentChat._id,
-      message: newMessage,
-    };
-    socket.emit("edit-msg", data);
-
-    setDoScroll(true);
-  };
-
   useEffect(() => {
     if (scrollableContainerRef.current && doScroll) {
       scrollableContainerRef.current.scrollTop =
@@ -227,37 +224,61 @@ function ChatComponent() {
     <Grid
       container
       direction={isSmallScreen ? "column" : "row"}
-      sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "hidden" }}
+      sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "auto" }}
     >
-      <Grid xs={12} md={12}>
-        <Tabs
+      <Grid xs={12} md={3}>
+        <List
+          orientation={isSmallScreen ? "horizontal" : "vertical"}
           sx={{
+            width:isSmallScreen ? '100vw' :'auto',
             overflow: "auto",
-            maxHeight: "100vh",
-            minHeight: isSmallScreen ? "100vh" : null,
-            overflowY: "scroll",
-            "&::-webkit-scrollbar": { width: "4px" },
+            bgcolor: "#F1F4F8",
+            "&::-webkit-scrollbar": { maxWidth: "6px", maxHeight: "4px" },
             "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
-              borderRadius: 6,
               backgroundColor: "#DDE7EE",
-              minHeight: 24,
-              border: "none",
+              minHeight: 3,
+              minWidth: 3,
             },
           }}
-          onChange={handleChangeTab}
-          aria-label="Vertical tabs"
-          variant="scrollable"
-          orientation={isSmallScreen ? "horizontal" : "vertical"}
-          value={value}
         >
-          <TabList
-            sticky="top"
+          {allUsers.map((contact) => {
+            return (
+              <ContactCard
+                key={contact._id}
+                contact={contact}
+                lastMessage={
+                  lastMessage ? lastMessage[contact._id]?.message?.text : null
+                }
+                selectedUser={handleChangeUser}
+                selected={currentChat}
+              />
+            );
+          })}
+        </List>
+      </Grid>
+      <Grid xs={12} md={9}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            minHeight: "97vh",
+          }}
+        >
+          {!isSmallScreen && (
+            <Box>
+              <HeaderChatProfileUser chat={currentChat} />
+            </Box>
+          )}
+          <Box
+            ref={scrollableContainerRef}
             sx={{
+              height: isSmallScreen ? "90vh" : "80vh",
               overflow: "auto",
-              scrollSnapType: "x mandatory",
-              minHeight: isSmallScreen ? "20vh" : null,
-              bgcolor: "#F1F4F8",
-              "&::-webkit-scrollbar": { maxWidth: "4px", maxHeight: "1px" },
+              "&::-webkit-scrollbar": {
+                maxWidth: "4px",
+                maxHeight: "1px",
+              },
               "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
                 borderRadius: 6,
                 backgroundColor: "#DDE7EE",
@@ -266,81 +287,35 @@ function ChatComponent() {
                 border: "none",
               },
             }}
-            underlinePlacement={{ top: "bottom", bottom: "top" }["top"]}
           >
-            {allUsers.map((contact) => {
-              return (
-                <ContactCard
-                  key={contact._id}
-                  contact={contact}
-                  lastMessage={
-                    lastMessage ? lastMessage[contact._id]?.message?.text : null
-                  }
-                />
-              );
-            })}
-          </TabList>
-          <TabPanel value={value} key={uuidv4()}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                minHeight: "97vh",
-              }}
-            >
-              {!isSmallScreen && (
-                <Box xs={12} md={12}>
-                  <HeaderChatProfileUser chat={currentChat} />
-                </Box>
-              )}
-              <Box
-                ref={scrollableContainerRef}
-                xs={12}
-                md={12}
-                sx={{
-                  height: isSmallScreen ? "90vh" : "80vh",
-                  overflow: "auto",
-                  "&::-webkit-scrollbar": { maxWidth: "4px", maxHeight: "1px" },
-                  "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
-                    borderRadius: 6,
-                    backgroundColor: "#DDE7EE",
-                    minHeight: 3,
-                    minWidth: 3,
-                    border: "none",
-                  },
-                }}
-              >
-                {messages.length > 0 &&
-                  messages.map((msg) => {
-                    if (msg.fromSelf) {
-                      return (
-                        <MessageComponent
-                          key={uuidv4()}
-                          msg={msg}
-                          onDeleteHandler={onDeleteHandler}
-                          onEditHandler={onEditHandler}
-                          alignItems={"end"}
-                        />
-                      );
-                    } else {
-                      return (
-                        <MessageComponent
-                          key={uuidv4()}
-                          msg={msg}
-                          onDeleteHandler={onDeleteHandler}
-                          alignItems={"start"}
-                        />
-                      );
-                    }
-                  })}
-              </Box>
-              <Box xs={12} md={12}>
-                <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
-              </Box>
-            </Box>
-          </TabPanel>
-        </Tabs>
+            {messages.length > 0 &&
+              messages.map((msg) => {
+                if (msg.fromSelf) {
+                  return (
+                    <MessageComponent
+                      key={uuidv4()}
+                      msg={msg}
+                      onDeleteHandler={onDeleteHandler}
+                      onEditHandler={onEditHandler}
+                      alignItems={"end"}
+                    />
+                  );
+                } else {
+                  return (
+                    <MessageComponent
+                      key={uuidv4()}
+                      msg={msg}
+                      onDeleteHandler={onDeleteHandler}
+                      alignItems={"start"}
+                    />
+                  );
+                }
+              })}
+          </Box>
+          <Box>
+            <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
+          </Box>
+        </Box>
       </Grid>
     </Grid>
   );

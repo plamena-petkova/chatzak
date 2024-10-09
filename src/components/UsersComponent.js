@@ -20,7 +20,7 @@ function UsersComponent() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentContact, setCurrentContact] = useState(allUsers[0]);
-
+  const [selectedContact, setSelectedContact] = useState(null);
 
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
@@ -35,8 +35,8 @@ function UsersComponent() {
   );
 
   return (
-    <Grid container sx={{height:'100%'}}>
-      <Grid xs={12} md={4} sx={{p:1}}>
+    <Grid container sx={{ height: "100%" }}>
+      <Grid xs={12} md={4} sx={{ p: 1 }}>
         <Typography sx={{ fontSize: "xl", fontWeight: "700", mb: 2.5 }}>
           Users
         </Typography>
@@ -59,20 +59,27 @@ function UsersComponent() {
           }}
         >
           {filteredUsers ? (
-            <List orientation={isSmallScreen ? "horizontal" : "vertical" } sx={{ mt: 5 }}>
+            <List
+              orientation={isSmallScreen ? "horizontal" : "vertical"}
+              sx={{ mt: 5 }}
+            >
               {filteredUsers.map((contact) => {
+                const isSelected = selectedContact?._id === contact._id;
                 return (
                   <ListItem variant="plain" key={contact._id}>
                     <Button
                       sx={{
                         alignContent: "start",
                         justifyContent: "start",
-
+                        width: "100%",
                         color: "black",
+                        background: isSelected ? "#CADEF6" : "transparent",
+                        
                       }}
                       variant="plain"
                       key={contact?._id}
                       onClick={() => {
+                        setSelectedContact(contact);
                         setCurrentContact(contact);
                       }}
                     >

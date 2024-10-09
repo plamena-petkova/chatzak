@@ -7,6 +7,7 @@ const initialState = {
   messages: [],
   lastMessage:{},
   isLoading: false,
+  isLoadingMessages:false,
   error: null,
   newMessageIndicator: {},
 };
@@ -67,14 +68,14 @@ export const chatSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(getAllMessages.pending, (state, action) => {
-      state.isLoading = true;
+      state.isLoadingMessages = true;
     });
     builder.addCase(getAllMessages.fulfilled, (state, action) => {
-      state.isLoading = false;
+      state.isLoadingMessages = false;
       state.messages = action.payload;
     });
     builder.addCase(getAllMessages.rejected, (state, action) => {
-      state.isLoading = false;
+      state.isLoadingMessages = false;
       state.error = action.error;
     }); 
     builder.addCase(getLastMessages.pending, (state, action) => {

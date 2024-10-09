@@ -19,7 +19,7 @@ function HeaderChatProfileUser({ chat }) {
         )}
 
         <Typography sx={{ fontSize: 16, fontWeight: "bold" }}>
-          {chat.names}
+          {chat?.names}
         </Typography>
       </Box>
       <Divider />
