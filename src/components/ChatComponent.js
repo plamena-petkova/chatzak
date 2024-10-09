@@ -116,7 +116,7 @@ function ChatComponent() {
   }, [currentUser, dispatch]);
 
   useEffect(() => {
-    if (!currentChat?._id) {
+    if (!currentChat) {
       dispatch(setCurrentChat(allUsers[0]));
     }
   }, []);
@@ -226,11 +226,12 @@ function ChatComponent() {
       direction={isSmallScreen ? "column" : "row"}
       sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "auto" }}
     >
-      <Grid xs={12} md={3}>
+      <Grid xs={12} md={4}>
         <List
           orientation={isSmallScreen ? "horizontal" : "vertical"}
           sx={{
             width:isSmallScreen ? '100vw' :'auto',
+            height:isSmallScreen ? 'auto' :'100vh',
             overflow: "auto",
             bgcolor: "#F1F4F8",
             "&::-webkit-scrollbar": { maxWidth: "6px", maxHeight: "4px" },
@@ -239,6 +240,7 @@ function ChatComponent() {
               minHeight: 3,
               minWidth: 3,
             },
+            padding:2
           }}
         >
           {allUsers.map((contact) => {
@@ -256,13 +258,13 @@ function ChatComponent() {
           })}
         </List>
       </Grid>
-      <Grid xs={12} md={9}>
+      <Grid xs={12} md={8} sx={{pl:2, pr:2}}>
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            minHeight: "97vh",
+            minHeight: "100vh",
           }}
         >
           {!isSmallScreen && (

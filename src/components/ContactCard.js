@@ -25,6 +25,7 @@ function ContactCard({ contact, lastMessage, selectedUser, selected }) {
       justifyContent: "start",
       color: "black",
       background: (selected?._id === contact?._id) ? "#CADEF6" : "transparent",
+      padding:4
     }}
     variant="plain"
       key={contact._id}
