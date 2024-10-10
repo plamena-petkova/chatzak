@@ -37,21 +37,13 @@ function ChatComponent() {
     (state) => state.chat.newMessageIndicator
   );
   const lastMessage = useSelector((state) => state.chat.lastMessage);
+  const isLoadingDeleteEditMessage = useSelector((state) => state.chat.isLoadingDeleteMessage);
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
   const scrollableContainerRef = useRef(null);
-  const [messageDeleted, setMessageDeleted] = useState({
-    id: "",
-    deleted: true,
-  });
-  const [messageEdited, setMessageEdited] = useState({
-    id: "",
-    edited: true,
-  });
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
-
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
   const handleSendMsg = async (msg) => {
@@ -70,10 +62,11 @@ function ChatComponent() {
     const msgs = [...msg];
     msgs.push({ fromSelf: true, message: msg });
     setMessage(msgs);
+
+    setDoScroll(true);
   };
 
   const onDeleteHandler = (messageId) => {
-    setMessageDeleted({ id: messageId, deleted: true });
     dispatch(deleteMessage(messageId));
     const data = {
       from: currentUser._id,
@@ -81,12 +74,10 @@ function ChatComponent() {
       message: "Removed message",
     };
     socket.emit("edit-msg", data);
-
-    setDoScroll(true);
+    setDoScroll(false);
   };
 
   const onEditHandler = (messageId, newMessage) => {
-    setMessageEdited({ id: messageId, edited: true });
     dispatch(editMessage({ messageId, newMessage }));
     const data = {
       from: currentUser._id,
@@ -94,8 +85,7 @@ function ChatComponent() {
       message: newMessage,
     };
     socket.emit("edit-msg", data);
-
-    setDoScroll(true);
+    setDoScroll(false);
   };
 
   const handleChangeUser = (data) => {
@@ -123,29 +113,16 @@ function ChatComponent() {
 
   useEffect(() => {
     if (currentChat._id) {
+      setDoScroll(true);
       dispatch(getAllMessages({ from: currentUser._id, to: currentChat._id }));
     }
-    /*
-    if (
-      messageDeleted.deleted === true &&
-      currentChat?._id === allUsers[value]?._id
-    ) {
-      dispatch(getAllMessages({ from: currentUser._id, to: currentChat._id }));
-    }
-    if (
-      messageEdited.edited === true &&
-      currentChat?._id === allUsers[value]?._id
-    ) {
-      dispatch(getAllMessages({ from: currentUser._id, to: currentChat._id }));
-    }
-      */
   }, [
     currentChat,
-    message,
     currentUser,
     dispatch,
-    messageDeleted,
-    messageEdited,
+    message, 
+    isLoadingDeleteEditMessage, 
+    doScroll
   ]);
 
   useEffect(() => {
@@ -211,10 +188,11 @@ function ChatComponent() {
 
   useEffect(() => {
     arrivalMsg && setMessage((prev) => [...prev, arrivalMsg]);
+    setDoScroll(true)
   }, [arrivalMsg]);
 
   useEffect(() => {
-    if (scrollableContainerRef.current && doScroll) {
+    if (scrollableContainerRef.current  && doScroll) {
       scrollableContainerRef.current.scrollTop =
         scrollableContainerRef.current.scrollHeight;
     }

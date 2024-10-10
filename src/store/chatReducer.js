@@ -8,6 +8,7 @@ const initialState = {
   lastMessage:{},
   isLoading: false,
   isLoadingMessages:false,
+  isLoadingDeleteEditMessage:false,
   error: null,
   newMessageIndicator: {},
 };
@@ -86,31 +87,50 @@ export const chatSlice = createSlice({
       state.lastMessage = action.payload;
     });
     builder.addCase(getLastMessages.rejected, (state, action) => {
-      state.isLoading = false;
+      state.isLoadingDeleteEditMessage = false;
       state.error = action.error;
     }); 
     builder.addCase(deleteMessage.pending, (state, action) => {
-      state.isLoading = true;
+      state.isLoadingDeleteEditMessage = true;
     });
     builder.addCase(deleteMessage.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.messages = action.payload.message;
-     
-    });
+      state.isLoadingDeleteEditMessage = false;
+
+      const { id, text } = action.payload.message.message;
+      
+      const index = state.messages.findIndex(msg => msg.id === id);
+      
+      if (index !== -1) {
+        state.messages[index] = {
+          ...state.messages[index],
+          text: text,
+        };
+    }
+  });
     builder.addCase(deleteMessage.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });
     builder.addCase(editMessage.pending, (state, action) => {
-      state.isLoading = true;
+      state.isLoadingDeleteEditMessage = true;
     });
     builder.addCase(editMessage.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.messages = action.payload.message;
+      state.isLoadingDeleteEditMessage = false;
+
+      const { id, text } = action.payload.message.message;
+      
+      const index = state.messages.findIndex(msg => msg.id === id);
+      
+      if (index !== -1) {
+        state.messages[index] = {
+          ...state.messages[index],
+          text: text,
+        };
+    }
      
     });
     builder.addCase(editMessage.rejected, (state, action) => {
-      state.isLoading = false;
+      state.isLoadingDeleteEditMessage = false;
       state.error = action.error;
     });
   },

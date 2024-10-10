@@ -5,12 +5,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
 import PositionedMenu from "./PositionedMenu";
 
-function MessageComponent({
-  msg,
-  onDeleteHandler,
-  onEditHandler,
-  alignItems,
-}) {
+function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
   const [editMessage, setEditMessage] = useState(false);
   const [newMessage, setNewMessage] = useState("");
 
@@ -20,7 +15,7 @@ function MessageComponent({
   };
 
   const editHandler = (messageId, event) => {
-    setNewMessage(event.target.value); 
+    setNewMessage(event.target.value);
   };
 
   const onSubmitHandler = (event, messageId) => {
@@ -37,7 +32,10 @@ function MessageComponent({
         defaultValue={newMessage}
         onBlur={(event) => editHandler(msg.id, event)}
         endDecorator={
-          <Button onClick={(event) => onSubmitHandler(event, msg.id)} variant="soft">
+          <Button
+            onClick={(event) => onSubmitHandler(event, msg.id)}
+            variant="soft"
+          >
             <CheckIcon font="sm" />
           </Button>
         }
@@ -58,68 +56,73 @@ function MessageComponent({
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "row" }}>
-        {editMessage && 
-          editMessageInput}
-           
-          <Paper
-            variant="outlined"
-            sx={{
-              whiteSpace: "normal",
-              maxWidth: 700,
-              borderRadius: "10px",
-              p: 0.5,
-              cursor: "pointer",
-              bgcolor:alignItems.includes('start') ? '#465CA2' : 'white',
-            }}
-            disabled={msg.isRemoved}
-          >
-            {msg.isRemoved ? (
-              <Typography
-                sx={{
-                  mr: 1,
-                  ml: 1,
-                  color: "lightgrey",
-                  fontWeight: "lg",
-                  fontSize: "md",
-                  wordBreak: "break-word",
-                }}
-              >
-                {msg.message.includes("data:image") ? (
-                  <img
-                    height={"150px"}
-                    width={"auto"}
-                    alt="imageSend"
-                    src={msg.message}
-                  />
-                ) : (
-                  msg.message
-                )}
-              </Typography>
-            ) : (
-              <Typography
-                sx={{
-                  mr: 1,
-                  ml: 1,
-                  color:alignItems.includes('start') ? '#FBFCFE' : '#32383E',
-                  fontWeight: "lg",
-                  fontSize: "md",
-                  wordBreak: "break-word",
-                }}
-              >
-                {msg.message.includes("data:image") ? (
-                  <img
-                    height={"150px"}
-                    width={"auto"}
-                    alt="imageSend"
-                    src={msg.message}
-                  />
-                ) : (
-                  msg.message
-                )}
-              </Typography>
-            )}
-          </Paper>
-          {(msg.fromSelf && !msg.isRemoved) ? <PositionedMenu message={msg} onDelete={() => onDeleteHandler(msg.id)}  onEdit={() => onEditMode()} /> : null}
+        {editMessage && editMessageInput}
+
+        <Paper
+          variant="outlined"
+          sx={{
+            whiteSpace: "normal",
+            maxWidth: 700,
+            borderRadius: "10px",
+            p: 0.5,
+            cursor: "pointer",
+            bgcolor: alignItems.includes("start") ? "#465CA2" : "white",
+          }}
+          disabled={msg.isRemoved}
+        >
+          {msg.isRemoved ? (
+            <Typography
+              sx={{
+                mr: 1,
+                ml: 1,
+                color: "lightgrey",
+                fontWeight: "lg",
+                fontSize: "md",
+                wordBreak: "break-word",
+              }}
+            >
+              {msg.message.includes("data:image") ? (
+                <img
+                  height={"150px"}
+                  width={"auto"}
+                  alt="imageSend"
+                  src={msg.message}
+                />
+              ) : (
+                msg.message
+              )}
+            </Typography>
+          ) : (
+            <Typography
+              sx={{
+                mr: 1,
+                ml: 1,
+                color: alignItems.includes("start") ? "#FBFCFE" : "#32383E",
+                fontWeight: "lg",
+                fontSize: "md",
+                wordBreak: "break-word",
+              }}
+            >
+              {msg.message.includes("data:image") ? (
+                <img
+                  height={"150px"}
+                  width={"auto"}
+                  alt="imageSend"
+                  src={msg.message}
+                />
+              ) : (
+                msg.message
+              )}
+            </Typography>
+          )}
+        </Paper>
+        {msg.fromSelf && !msg.isRemoved ? (
+          <PositionedMenu
+            message={msg}
+            onDelete={() => onDeleteHandler(msg.id)}
+            onEdit={() => onEditMode()}
+          />
+        ) : null}
       </Box>
     </Box>
   );
