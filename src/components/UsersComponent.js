@@ -42,7 +42,7 @@ function UsersComponent() {
         </Typography>
         <Input
           onChange={(e) => handleSearch(e)}
-          placeholder="Search in users..."
+          placeholder="Search..."
           variant="soft"
         />
         <Box

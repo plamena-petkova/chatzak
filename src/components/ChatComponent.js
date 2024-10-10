@@ -221,18 +221,18 @@ function ChatComponent() {
     >
       <Grid xs={12} md={4}>
       <Typography sx={{ fontSize: "xl", fontWeight: "700", mb: 2.5 }}>
-          Users
+          Chats
         </Typography>
         <Input
           onChange={(e) => handleSearch(e)}
-          placeholder="Search in users..."
+          placeholder="Search..."
           variant="outlined"
         />
         {filteredUsers ? (<List
           orientation={isSmallScreen ? "horizontal" : "vertical"}
           sx={{
             width:isSmallScreen ? '100vw' :'auto',
-            height:isSmallScreen ? 'auto' :'100vh',
+            height:isSmallScreen ? 'auto' :'87vh',
             overflow: "auto",
             bgcolor: "#F1F4F8",
             "&::-webkit-scrollbar": { maxWidth: "6px", maxHeight: "4px" },
