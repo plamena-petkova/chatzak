@@ -37,7 +37,7 @@ function ChatComponent() {
     (state) => state.chat.newMessageIndicator
   );
   const lastMessage = useSelector((state) => state.chat.lastMessage);
-  const isLoadingDeleteEditMessage = useSelector((state) => state.chat.isLoadingDeleteMessage);
+  const isLoadingDeleteEditMessage = useSelector((state) => state.chat.isLoadingDeleteEditMessage);
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
@@ -116,7 +116,6 @@ function ChatComponent() {
 
   useEffect(() => {
     if (currentChat._id) {
-      setDoScroll(true);
       dispatch(getAllMessages({ from: currentUser._id, to: currentChat._id }));
     }
   }, [

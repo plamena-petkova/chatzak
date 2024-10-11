@@ -6,7 +6,7 @@ import {
   ListItemDecorator,
   tabClasses,
 } from "@mui/joy";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UsersComponent from "../components/UsersComponent";
 import logoSmall from "../assets/logoSmall.png";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
@@ -15,6 +15,8 @@ import GroupIcon from "@mui/icons-material/Group";
 import MenuButtonProfile from "../components/MenuButtonProfile";
 import ChatComponent from "../components/ChatComponent";
 import { useMediaQuery } from "@mui/material";
+import { useSelector } from "react-redux";
+import SnackbarComponent from "../components/SnackbarComponent";
 
 function ChatView() {
 
@@ -26,10 +28,27 @@ function ChatView() {
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
+  const newMessageIndicator = useSelector(
+    (state) => state.chat.newMessageIndicator
+  );
+  const newMessageObject = Object.values(newMessageIndicator);
+  const [openNewSnack, setOpenNewSnack] = useState(false);
+
+  useEffect(() => {
+    if (newMessageObject.map((item) => item.show).includes(true)) {
+      setOpenNewSnack(true);
+    }
+  }, [newMessageObject]);
+
+  const handleCloseSnack = () => {
+    setOpenNewSnack(false);
+  };
+
 
   return (
     <Grid container sx={{ height: "100%", width:'100%' }}>
       <Grid xs={12} md={0.75} sx={{flexWrap:'wrap'}}>
+      <SnackbarComponent messageFromUser={newMessageObject} open={openNewSnack} handleClose={handleCloseSnack} />
         <List
           sx={{
             minHeight: isSmallScreen ? null : "100vh",

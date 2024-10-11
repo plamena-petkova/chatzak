@@ -4,7 +4,9 @@ import { Stack } from '@mui/joy';
 import Alert from '@mui/material/Alert';
 
 
-function SnackbarComponent({handleClose, open}) {
+function SnackbarComponent({handleClose, open, messageFromUser}) {
+
+  console.log('Message', messageFromUser);
 
 return(
     <Stack spacing={2} sx={{ width: '100%' }}>

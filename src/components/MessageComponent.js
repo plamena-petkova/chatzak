@@ -2,6 +2,7 @@ import { Box, Button, Typography, Input } from "@mui/joy";
 import { FormControl, Paper } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from '@mui/icons-material/Close';
 import { useState } from "react";
 import PositionedMenu from "./PositionedMenu";
 
@@ -38,6 +39,14 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
           >
             <CheckIcon font="sm" />
           </Button>
+        }
+        startDecorator={
+          <Button
+          onClick={() => setEditMessage(false)}
+          variant="soft"
+        >
+          <CloseIcon font="sm" />
+        </Button>
         }
       />
     </FormControl>
@@ -81,16 +90,9 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
                 wordBreak: "break-word",
               }}
             >
-              {msg.message.includes("data:image") ? (
-                <img
-                  height={"150px"}
-                  width={"auto"}
-                  alt="imageSend"
-                  src={msg.message}
-                />
-              ) : (
-                msg.message
-              )}
+       
+                {msg.message}
+          
             </Typography>
           ) : (
             <Typography
