@@ -34,21 +34,26 @@ function ChatView() {
   const newMessageObject = Object.values(newMessageIndicator);
   const [openNewSnack, setOpenNewSnack] = useState(false);
 
+  const messageForSnack = newMessageObject.find((item) => item.show === true);
+
   useEffect(() => {
-    if (newMessageObject.map((item) => item.show).includes(true)) {
+    if (messageForSnack) {
       setOpenNewSnack(true);
     }
-  }, [newMessageObject]);
+  }, [messageForSnack]);
 
   const handleCloseSnack = () => {
     setOpenNewSnack(false);
   };
 
+  const onCloseHandler = () => {
+    setOpenNewSnack(false);
+  }
 
   return (
     <Grid container sx={{ height: "100%", width:'100%' }}>
       <Grid xs={12} md={0.75} sx={{flexWrap:'wrap'}}>
-      <SnackbarComponent messageFromUser={newMessageObject} open={openNewSnack} handleClose={handleCloseSnack} />
+      <SnackbarComponent messageFromUser={messageForSnack} onCloseHandler={onCloseHandler} open={openNewSnack} handleClose={handleCloseSnack} />
         <List
           sx={{
             minHeight: isSmallScreen ? null : "100vh",
@@ -128,23 +133,3 @@ function ChatView() {
 
 export default ChatView;
 
-/*
-  const newMessageIndicator = useSelector(
-    (state) => state.chat.newMessageIndicator
-  );
-  const newMessageObject = Object.values(newMessageIndicator);
-  const [openNewSnack, setOpenNewSnack] = useState(false);
-
-  useEffect(() => {
-    if (newMessageObject.map((item) => item.show).includes(true)) {
-      setOpenNewSnack(true);
-    }
-  }, [openNewSnack, newMessageObject]);
-
-  <SnackbarComponent open={openNewSnack} handleClose={handleCloseSnack} />
-
-   const handleCloseSnack = () => {
-    setOpenNewSnack(false);
-  };
-
-*/

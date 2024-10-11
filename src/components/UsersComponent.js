@@ -49,12 +49,11 @@ function UsersComponent() {
           sx={{
             height: isSmallScreen ? "20vh" : "85vh",
             overflow: "auto",
-            "&::-webkit-scrollbar": { width: "4px" },
+            "&::-webkit-scrollbar": { maxWidth: "6px", maxHeight: "4px" },
             "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
-              borderRadius: 6,
               backgroundColor: "#DDE7EE",
-              minHeight: 24,
-              border: "none",
+              minHeight: 3,
+              minWidth: 3,
             },
           }}
         >

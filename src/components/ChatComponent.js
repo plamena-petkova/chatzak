@@ -130,7 +130,7 @@ function ChatComponent() {
   useEffect(() => {
     if (currentChat._id !== dataMessage.from) {
       dispatch(
-        setNewMessageIndicator({ chatId: dataMessage.from, show: true })
+        setNewMessageIndicator({ chatId: dataMessage.from, show: true, messageObj: dataMessage })
       );
     }
     if (

@@ -136,7 +136,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator, setLastMessage } =
+export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator } =
   chatSlice.actions;
 
 export default chatSlice.reducer;

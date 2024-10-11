@@ -15,8 +15,6 @@ function ChatInput({ handleSendMsg, socket }) {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-  console.log('Message', msg)
-
   const handleEmojiClick = (event, emojiObject) => {
     let message = msg;
     message += event.emoji;
