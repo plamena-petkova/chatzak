@@ -37,7 +37,9 @@ function ChatComponent() {
     (state) => state.chat.newMessageIndicator
   );
   const lastMessage = useSelector((state) => state.chat.lastMessage);
-  const isLoadingDeleteEditMessage = useSelector((state) => state.chat.isLoadingDeleteEditMessage);
+  const isLoadingDeleteEditMessage = useSelector(
+    (state) => state.chat.isLoadingDeleteEditMessage
+  );
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
@@ -93,7 +95,7 @@ function ChatComponent() {
 
   const handleChangeUser = (data) => {
     dispatch(setCurrentChat(data));
-  }
+  };
 
   useEffect(() => {
     if (currentUser) {
@@ -122,15 +124,19 @@ function ChatComponent() {
     currentChat,
     currentUser,
     dispatch,
-    message, 
-    isLoadingDeleteEditMessage, 
-    doScroll
+    message,
+    isLoadingDeleteEditMessage,
+    doScroll,
   ]);
 
   useEffect(() => {
     if (currentChat._id !== dataMessage.from) {
       dispatch(
-        setNewMessageIndicator({ chatId: dataMessage.from, show: true, messageObj: dataMessage })
+        setNewMessageIndicator({
+          chatId: dataMessage.from,
+          show: true,
+          messageObj: dataMessage,
+        })
       );
     }
     if (
@@ -190,11 +196,11 @@ function ChatComponent() {
 
   useEffect(() => {
     arrivalMsg && setMessage((prev) => [...prev, arrivalMsg]);
-    setDoScroll(true)
+    setDoScroll(true);
   }, [arrivalMsg]);
 
   useEffect(() => {
-    if (scrollableContainerRef.current  && doScroll) {
+    if (scrollableContainerRef.current && doScroll) {
       scrollableContainerRef.current.scrollTop =
         scrollableContainerRef.current.scrollHeight;
     }
@@ -218,8 +224,8 @@ function ChatComponent() {
       direction={isSmallScreen ? "column" : "row"}
       sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "auto" }}
     >
-      <Grid xs={12} md={4}>
-      <Typography sx={{ fontSize: "xl", fontWeight: "700", mb: 2.5 }}>
+      <Grid xs={12} md={4} sx={{ bgcolor: "#F1F4F8" }}>
+        <Typography sx={{ fontSize: "xl", fontWeight: "700", mb: 2.5 }}>
           Chats
         </Typography>
         <Input
@@ -227,54 +233,54 @@ function ChatComponent() {
           placeholder="Search..."
           variant="outlined"
         />
-        {filteredUsers ? (<List
-          orientation={isSmallScreen ? "horizontal" : "vertical"}
-          sx={{
-            width:isSmallScreen ? '100vw' :'auto',
-            height:isSmallScreen ? 'auto' :'87vh',
-            overflow: "auto",
-            bgcolor: "#F1F4F8",
-            "&::-webkit-scrollbar": { maxWidth: "6px", maxHeight: "4px" },
-            "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
-              backgroundColor: "#DDE7EE",
-              minHeight: 3,
-              minWidth: 3,
-            },
-            padding:2
-          }}
-        >
-          {filteredUsers.map((contact) => {
-            return (
-              <ContactCard
-                key={contact._id}
-                contact={contact}
-                lastMessage={
-                  lastMessage ? lastMessage[contact._id]?.message?.text : null
-                }
-                selectedUser={handleChangeUser}
-                selected={currentChat}
-              />
-            );
-          })}
-        </List> ):
-        (
+        {filteredUsers ? (
+          <List
+            orientation={isSmallScreen ? "horizontal" : "vertical"}
+            sx={{
+              width: isSmallScreen ? "100vw" : "auto",
+              height: isSmallScreen ? "auto" : "87vh",
+              overflow: "auto",
+              bgcolor: "#F1F4F8",
+              "&::-webkit-scrollbar": { maxWidth: "6px", maxHeight: "4px" },
+              "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
+                backgroundColor: "#DDE7EE",
+                minHeight: 3,
+                minWidth: 3,
+              },
+              padding: 2,
+            }}
+          >
+            {filteredUsers.map((contact) => {
+              return (
+                <ContactCard
+                  key={contact._id}
+                  contact={contact}
+                  lastMessage={
+                    lastMessage ? lastMessage[contact._id]?.message?.text : null
+                  }
+                  selectedUser={handleChangeUser}
+                  selected={currentChat}
+                />
+              );
+            })}
+          </List>
+        ) : (
           <Typography>No users found</Typography>
         )}
       </Grid>
-      <Grid xs={12} md={8} sx={{pl:2, pr:2}}>
+      <Grid xs={12} md={8} sx={{ pl: 2, pr: 2 }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            minHeight: "100vh",
+            height: "100vh",
           }}
         >
-          {!isSmallScreen && (
-            <Box>
-              <HeaderChatProfileUser chat={currentChat} />
-            </Box>
-          )}
+          <Box>
+            <HeaderChatProfileUser chat={currentChat} />
+          </Box>
+
           <Box
             ref={scrollableContainerRef}
             sx={{
