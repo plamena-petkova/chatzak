@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Grid, Input, List, Typography } from "@mui/joy";
+import { Box, Grid } from "@mui/joy";
 import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
@@ -19,12 +19,12 @@ import {
   setNewMessageIndicator,
 } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
-import ContactCard from "../components/ContactCard";
 import { v4 as uuidv4 } from "uuid";
 import { socket } from "../socket";
 import MessageComponent from "./MessageComponent";
 import { useMediaQuery } from "@mui/material";
 import HeaderChatProfileUser from "./HeaderChatProfileUser";
+import UserList from "./UserList";
 
 function ChatComponent() {
   const dispatch = useDispatch();
@@ -36,7 +36,6 @@ function ChatComponent() {
   const newMessageIndicator = useSelector(
     (state) => state.chat.newMessageIndicator
   );
-  const lastMessage = useSelector((state) => state.chat.lastMessage);
   const isLoadingDeleteEditMessage = useSelector(
     (state) => state.chat.isLoadingDeleteEditMessage
   );
@@ -46,7 +45,6 @@ function ChatComponent() {
   const scrollableContainerRef = useRef(null);
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
@@ -91,10 +89,6 @@ function ChatComponent() {
     };
     socket.emit("edit-msg", data);
     setDoScroll(false);
-  };
-
-  const handleChangeUser = (data) => {
-    dispatch(setCurrentChat(data));
   };
 
   useEffect(() => {
@@ -206,17 +200,6 @@ function ChatComponent() {
     }
   }, [handleSendMsg, doScroll]);
 
-  const handleSearch = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchQuery(value);
-  };
-
-  const filteredUsers = allUsers.filter(
-    (user) =>
-      user?.username?.toLowerCase().includes(searchQuery) ||
-      user?.email?.toLowerCase().includes(searchQuery) ||
-      user?.name?.toLowerCase().includes(searchQuery)
-  );
 
   return (
     <Grid
@@ -225,48 +208,7 @@ function ChatComponent() {
       sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "auto" }}
     >
       <Grid xs={12} md={4} sx={{ bgcolor: "#F1F4F8" }}>
-        <Typography sx={{ fontSize: "xl", fontWeight: "700", mb: 2.5 }}>
-          Chats
-        </Typography>
-        <Input
-          onChange={(e) => handleSearch(e)}
-          placeholder="Search..."
-          variant="outlined"
-        />
-        {filteredUsers ? (
-          <List
-            orientation={isSmallScreen ? "horizontal" : "vertical"}
-            sx={{
-              width: isSmallScreen ? "100vw" : "auto",
-              height: isSmallScreen ? "auto" : "87vh",
-              overflow: "auto",
-              bgcolor: "#F1F4F8",
-              "&::-webkit-scrollbar": { maxWidth: "6px", maxHeight: "4px" },
-              "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
-                backgroundColor: "#DDE7EE",
-                minHeight: 3,
-                minWidth: 3,
-              },
-              padding: 2,
-            }}
-          >
-            {filteredUsers.map((contact) => {
-              return (
-                <ContactCard
-                  key={contact._id}
-                  contact={contact}
-                  lastMessage={
-                    lastMessage ? lastMessage[contact._id]?.message?.text : null
-                  }
-                  selectedUser={handleChangeUser}
-                  selected={currentChat}
-                />
-              );
-            })}
-          </List>
-        ) : (
-          <Typography>No users found</Typography>
-        )}
+        <UserList headerText={'Chats'}/>
       </Grid>
       <Grid xs={12} md={8} sx={{ pl: 2, pr: 2 }}>
         <Box

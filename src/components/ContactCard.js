@@ -14,8 +14,7 @@ function ContactCard({ contact, lastMessage, selectedUser, selected }) {
   const newMessageIndicator = useSelector(
     (state) => state.chat.newMessageIndicator
   );
-
-
+  
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
   return (

@@ -1,109 +1,27 @@
 import {
   Avatar,
   Box,
-  Button,
   Grid,
-  Input,
-  List,
-  ListItem,
   Typography,
 } from "@mui/joy";
 import { useSelector } from "react-redux";
-import { useMediaQuery } from "@mui/material";
 import { useState } from "react";
 import Divider from "@mui/joy/Divider";
 import PersonIcon from "@mui/icons-material/Person";
+import UserList from "./UserList";
 
 function UsersComponent() {
   const allUsers = useSelector((state) => state.auth.allUsers);
-  const isSmallScreen = useMediaQuery("(max-width:899px)");
-
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentContact, setCurrentContact] = useState(allUsers[0]);
-  const [selectedContact, setSelectedContact] = useState(null);
 
-  const handleSearch = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchQuery(value);
-  };
-
-  const filteredUsers = allUsers.filter(
-    (user) =>
-      user?.username?.toLowerCase().includes(searchQuery) ||
-      user?.email?.toLowerCase().includes(searchQuery) ||
-      user?.name?.toLowerCase().includes(searchQuery)
-  );
+  const handleCurrentContact = (contact) => {
+    setCurrentContact(contact);
+  }
 
   return (
     <Grid container sx={{ height: "100%" }}>
-      <Grid xs={12} md={4} sx={{ p: 1 }}>
-        <Typography sx={{ fontSize: "xl", fontWeight: "700", mb: 2.5 }}>
-          Users
-        </Typography>
-        <Input
-          onChange={(e) => handleSearch(e)}
-          placeholder="Search..."
-          variant="soft"
-        />
-        <Box
-          sx={{
-            height: isSmallScreen ? "20vh" : "85vh",
-            overflow: "auto",
-            "&::-webkit-scrollbar": { maxWidth: "6px", maxHeight: "4px" },
-            "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
-              backgroundColor: "#DDE7EE",
-              minHeight: 3,
-              minWidth: 3,
-            },
-          }}
-        >
-          {filteredUsers ? (
-            <List
-              orientation={isSmallScreen ? "horizontal" : "vertical"}
-              sx={{ mt: 5 }}
-            >
-              {filteredUsers.map((contact) => {
-                const isSelected = selectedContact?._id === contact._id;
-                return (
-                  <ListItem variant="plain" key={contact._id}>
-                    <Button
-                      sx={{
-                        alignContent: "start",
-                        justifyContent: "start",
-                        width: "100%",
-                        color: "black",
-                        background: isSelected ? "#CADEF6" : "transparent",
-                        
-                      }}
-                      variant="plain"
-                      key={contact?._id}
-                      onClick={() => {
-                        setSelectedContact(contact);
-                        setCurrentContact(contact);
-                      }}
-                    >
-                      <Avatar
-                        key={contact._id}
-                        src={`${contact?.avatarImg}`}
-                        sx={{ mr: 1 }}
-                      >
-                        {contact && contact.avatarImg
-                          ? contact.avatar
-                          : contact.names[0]}
-                      </Avatar>
-
-                      {isSmallScreen
-                        ? contact.names.split(" ")[0]
-                        : contact.names}
-                    </Button>
-                  </ListItem>
-                );
-              })}
-            </List>
-          ) : (
-            <Typography>No users found</Typography>
-          )}
-        </Box>
+      <Grid xs={12} md={4}>
+        <UserList headerText={'Users'} currentContactSelect={handleCurrentContact} />
       </Grid>
       <Grid xs={12} md={8}>
         <Box
