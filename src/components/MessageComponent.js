@@ -105,7 +105,7 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
                 wordBreak: "break-word",
               }}
             >
-              {msg.message.includes("data:image") ? (
+              {msg.message.includes("https://firebasestorage") ? (
                 <img
                   height={"150px"}
                   width={"auto"}

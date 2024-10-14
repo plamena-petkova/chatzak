@@ -49,6 +49,7 @@ function ChatComponent() {
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
   const handleSendMsg = async (msg) => {
+
     await axios.post(sendMessageRoute, {
       from: currentUser?._id,
       to: currentChat?._id,
