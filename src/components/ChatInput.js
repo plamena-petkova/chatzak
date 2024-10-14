@@ -1,4 +1,14 @@
-import { Box, Button, DialogTitle, Input, Modal, ModalDialog, styled, Tooltip, Typography } from "@mui/joy";
+import {
+  Box,
+  Button,
+  DialogTitle,
+  Input,
+  Modal,
+  ModalDialog,
+  styled,
+  Tooltip,
+  Typography,
+} from "@mui/joy";
 import SendIcon from "@mui/icons-material/Send";
 import { useEffect, useState } from "react";
 import Picker from "emoji-picker-react";
@@ -21,7 +31,7 @@ const VisuallyHiddenInput = styled("input")({
   minWidth: 265,
 });
 
-function ChatInput({ handleSendMsg, socket }) {
+function ChatInput({ handleSendMsg }) {
   const [msg, setMsg] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [error, setError] = useState(false);
@@ -30,20 +40,22 @@ function ChatInput({ handleSendMsg, socket }) {
   const handleFileChange = async (e) => {
     console.log(e.target.files[0]);
     const file = e.target.files[0];
-    if(e.target.files[0].size > 5000000) {
+    if (e.target.files[0].size > 5000000) {
       setError(true);
       return;
     }
 
+    try {
+      const image = await uploadFile(file);
+      setMsg(image);
 
-    const image = await uploadFile(file);
-    
-    setMsg(image)
- 
-    setIsOpen(false);
+      setIsOpen(false);
+    } catch (e) {
+      console.log("Error", e);
+    }
   };
   useEffect(() => {
-    if(error) {
+    if (error) {
       setIsOpen(false);
     }
   }, [error]);
@@ -116,29 +128,28 @@ function ChatInput({ handleSendMsg, socket }) {
               </Button>
             </Tooltip>
             <Tooltip title="Add picture" variant="soft">
-              <Button  sx={{ ml: "2px" }} variant="soft"  onClick={() => setIsOpen(true)}>
-              <AddCircleIcon />
-               
-                  <Modal open={isOpen} onClose={() => setIsOpen(false)}>
-                    <ModalDialog>
-                      <DialogTitle sx={{ justifyContent: "center" }}>
-                        Upload File
-                      </DialogTitle>
-                      <Typography>Max Size: 5MB</Typography>
-                      <Button
-                        sx={{ ml: "2px" }}
-                        variant="soft"
-                        component="label"
-                      >
-                        <AddCircleIcon />
-                        <VisuallyHiddenInput
-                          onChange={handleFileChange}
-                          type="file"
-                        />
-                      </Button>
-                    </ModalDialog>
-                  </Modal>
-           
+              <Button
+                sx={{ ml: "2px" }}
+                variant="soft"
+                onClick={() => setIsOpen(true)}
+              >
+                <AddCircleIcon />
+
+                <Modal open={isOpen} onClose={() => setIsOpen(false)}>
+                  <ModalDialog>
+                    <DialogTitle sx={{ justifyContent: "center" }}>
+                      Upload File
+                    </DialogTitle>
+                    <Typography>Max Size: 5MB</Typography>
+                    <Button sx={{ ml: "2px" }} variant="soft" component="label">
+                      <AddCircleIcon />
+                      <VisuallyHiddenInput
+                        onChange={handleFileChange}
+                        type="file"
+                      />
+                    </Button>
+                  </ModalDialog>
+                </Modal>
               </Button>
             </Tooltip>
           </>
