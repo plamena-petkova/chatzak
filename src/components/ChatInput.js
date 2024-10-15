@@ -38,7 +38,6 @@ function ChatInput({ handleSendMsg }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleFileChange = async (e) => {
-    console.log(e.target.files[0]);
     const file = e.target.files[0];
     if (e.target.files[0].size > 5000000) {
       setError(true);
@@ -47,9 +46,11 @@ function ChatInput({ handleSendMsg }) {
 
     try {
       const image = await uploadFile(file);
-      setMsg(image);
-
       setIsOpen(false);
+      if(image) {
+        sendChat(image)
+      }
+
     } catch (e) {
       console.log("Error", e);
     }
@@ -74,8 +75,7 @@ function ChatInput({ handleSendMsg }) {
     setMsg(event.target.value);
   };
 
-  const sendChat = (event) => {
-    event.preventDefault();
+  const sendChat = (msg) => {
     handleSendMsg(msg);
     setMsg("");
   };

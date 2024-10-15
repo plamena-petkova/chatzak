@@ -21,7 +21,7 @@ const uploadFile = async (file) => {
             () => {
               getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 resolve(downloadURL);
-                console.log('File available at', downloadURL);
+                //console.log('File available at', downloadURL);
               });
             }
           );
