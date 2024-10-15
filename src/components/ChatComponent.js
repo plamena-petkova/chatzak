@@ -25,6 +25,7 @@ import MessageComponent from "./MessageComponent";
 import { useMediaQuery } from "@mui/material";
 import HeaderChatProfileUser from "./HeaderChatProfileUser";
 import UserList from "./UserList";
+import { format, isSameDay } from "date-fns";
 
 function ChatComponent() {
   const dispatch = useDispatch();
@@ -48,8 +49,9 @@ function ChatComponent() {
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
-  const handleSendMsg = async (msg) => {
+  const formatDate = (date) => format(new Date(date), "d MMMM yyyy");
 
+  const handleSendMsg = async (msg) => {
     await axios.post(sendMessageRoute, {
       from: currentUser?._id,
       to: currentChat?._id,
@@ -201,7 +203,6 @@ function ChatComponent() {
     }
   }, [handleSendMsg, doScroll]);
 
-
   return (
     <Grid
       container
@@ -209,7 +210,7 @@ function ChatComponent() {
       sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "auto" }}
     >
       <Grid xs={12} md={4} sx={{ bgcolor: "#F1F4F8" }}>
-        <UserList headerText={'Chats'}/>
+        <UserList headerText={"Chats"} />
       </Grid>
       <Grid xs={12} md={8} sx={{ pl: 2, pr: 2 }}>
         <Box
@@ -243,7 +244,13 @@ function ChatComponent() {
             }}
           >
             {messages.length > 0 &&
-              messages.map((msg) => {
+              messages.map((msg, index) => {
+                const currentMessageDate = new Date(msg.date);
+                const previousMessageDate =
+                  index > 0 ? new Date(messages[index - 1].date) : null;
+                const showDateDivider =
+                  !previousMessageDate ||
+                  !isSameDay(currentMessageDate, previousMessageDate);
                 if (msg.fromSelf) {
                   return (
                     <MessageComponent
@@ -252,6 +259,8 @@ function ChatComponent() {
                       onDeleteHandler={onDeleteHandler}
                       onEditHandler={onEditHandler}
                       alignItems={"end"}
+                      dateDivider={showDateDivider}
+                      currentDate={formatDate(msg?.date)}
                     />
                   );
                 } else {
@@ -261,6 +270,8 @@ function ChatComponent() {
                       msg={msg}
                       onDeleteHandler={onDeleteHandler}
                       alignItems={"start"}
+                      dateDivider={showDateDivider}
+                      currentDate={formatDate(msg?.date)}
                     />
                   );
                 }

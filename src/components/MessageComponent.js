@@ -1,12 +1,13 @@
-import { Box, Button, Typography, Input } from "@mui/joy";
+import { Box, Button, Typography, Input, Divider } from "@mui/joy";
 import { FormControl, Modal, Paper } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import PositionedMenu from "./PositionedMenu";
+import { isToday } from "date-fns";
 
-function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
+function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems, dateDivider, currentDate }) {
   const [editMessage, setEditMessage] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +26,8 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
     onEditHandler(messageId, newMessage);
     setEditMessage(false);
   };
+
+
 
   const editMessageInput = (
     <FormControl>
@@ -62,6 +65,11 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
         alignItems: { alignItems },
       }}
     >
+      
+        {dateDivider && 
+             <Divider sx={{ "--Divider-childPosition": "50%" }}>
+           {isToday(currentDate) ? 'Today' : currentDate}
+        </Divider>}
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         {editMessage && editMessageInput}
 
@@ -102,7 +110,7 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
               }}
             >
               {msg.message.includes("https://firebasestorage") ? (
-                <Button variant="plain" onClick={() => setIsOpen(true)}> 
+                <Button variant="plain" onClick={() => setIsOpen(true)}>
                   <img
                     height={"150px"}
                     width={"auto"}
@@ -128,52 +136,48 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems }) {
       </Box>
 
       <Modal
-  open={isOpen}
-  onClose={() => setIsOpen(false)}
-  sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
->
-  <Paper
-    sx={{
-      p:1,
-      maxWidth: "80vw",
-      maxHeight: "80vh",
-      display: "flex",
-      flexDirection: "column", // Layout items vertically
-    }}
-  >
-    {/* Header Section for Close Button */}
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "flex-end", // Align button to the right
-      }}
-    >
-      <Button
-      variant="plain"
-        onClick={() => setIsOpen(false)}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
-        <CloseIcon />
-      </Button>
-    </Box>
+        <Paper
+          sx={{
+            p: 1,
+            maxWidth: "80vw",
+            maxHeight: "80vh",
+            display: "flex",
+            flexDirection: "column", // Layout items vertically
+          }}
+        >
+          {/* Header Section for Close Button */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end", // Align button to the right
+            }}
+          >
+            <Button variant="plain" onClick={() => setIsOpen(false)}>
+              <CloseIcon />
+            </Button>
+          </Box>
 
-    {/* Image Section */}
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center", // Center the image horizontally
-        alignItems: "center",
-        height: "100%",
-      }}
-    >
-      <img
-        src={msg.message}
-        alt="Larger View"
-        style={{ maxWidth: "100%", maxHeight: "80vh", height: "auto" }}
-      />
-    </Box>
-  </Paper>
-</Modal>
-
+          {/* Image Section */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center", // Center the image horizontally
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <img
+              src={msg.message}
+              alt="Larger View"
+              style={{ maxWidth: "100%", maxHeight: "80vh", height: "auto" }}
+            />
+          </Box>
+        </Paper>
+      </Modal>
     </Box>
   );
 }
