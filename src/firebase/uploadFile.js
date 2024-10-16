@@ -2,7 +2,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "./firebase";
 
 
-const uploadFile = async (file) => {
+const uploadFile = async (file, onProgress) => {
 
     const storageRef = ref(storage, `images/${file.name}`);
     
@@ -13,7 +13,9 @@ const uploadFile = async (file) => {
         uploadTask.on('state_changed', 
             (snapshot) => {
               const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log('Upload is ' + progress + '% done');
+              if (onProgress) {
+                onProgress(progress);
+            }
             }, 
             (error) => {
              reject('Something went wrong' + error)
@@ -21,7 +23,6 @@ const uploadFile = async (file) => {
             () => {
               getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 resolve(downloadURL);
-                //console.log('File available at', downloadURL);
               });
             }
           );

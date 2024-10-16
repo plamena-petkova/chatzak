@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   DialogTitle,
   Input,
   Modal,
@@ -36,6 +37,7 @@ function ChatInput({ handleSendMsg }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [error, setError] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [imageProgress, setImageProgress] = useState(0);
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -44,17 +46,25 @@ function ChatInput({ handleSendMsg }) {
       return;
     }
 
-    try {
-      const image = await uploadFile(file);
-      setIsOpen(false);
-      if(image) {
-        sendChat(image)
-      }
 
-    } catch (e) {
-      console.log("Error", e);
+    if (file) {
+      try {
+        const downloadURL = await uploadFile(file, (progressValue) => {
+          setImageProgress(progressValue); 
+        });
+
+        setImageProgress(0);
+        setIsOpen(false);
+        if (downloadURL) {
+        sendChat(downloadURL);
+      }
+      } catch (err) {
+        setError(err);
+      }
     }
   };
+
+
   useEffect(() => {
     if (error) {
       setIsOpen(false);
@@ -112,7 +122,7 @@ function ChatInput({ handleSendMsg }) {
       )}
       {error && (
         <ErrorAlert
-          message="The picture is too large"
+          message="The file is too big"
           onCloseHandler={onCloseHandler}
         />
       )}
@@ -137,17 +147,31 @@ function ChatInput({ handleSendMsg }) {
 
                 <Modal open={isOpen} onClose={() => setIsOpen(false)}>
                   <ModalDialog>
-                    <DialogTitle sx={{ justifyContent: "center" }}>
-                      Upload File
-                    </DialogTitle>
-                    <Typography>Max Size: 5MB</Typography>
-                    <Button sx={{ ml: "2px" }} variant="soft" component="label">
-                      <AddCircleIcon />
-                      <VisuallyHiddenInput
-                        onChange={handleFileChange}
-                        type="file"
-                      />
-                    </Button>
+                  <DialogTitle sx={{ justifyContent: "center" }}>
+                          Upload File
+                        </DialogTitle>
+                    {imageProgress ? (
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
+
+                        <CircularProgress progress={imageProgress} />
+                      </Box>
+                    ) : (
+                      <>
+                        
+                        <Typography>Max Size: 5MB</Typography>
+                        <Button
+                          sx={{ ml: "2px" }}
+                          variant="soft"
+                          component="label"
+                        >
+                          <AddCircleIcon />
+                          <VisuallyHiddenInput
+                            onChange={handleFileChange}
+                            type="file"
+                          />
+                        </Button>
+                      </>
+                    )}
                   </ModalDialog>
                 </Modal>
               </Button>

@@ -11,6 +11,7 @@ const initialState = {
   isLoadingDeleteEditMessage:false,
   error: null,
   newMessageIndicator: {},
+  imageUploadProgress:''
 };
 
 export const getAllMessages = createAsyncThunk(
@@ -65,6 +66,9 @@ export const chatSlice = createSlice({
           state.newMessageIndicator[chatId] = action.payload;
         }
       }
+    },
+    setImageUploadProgress: (state, action) => {
+      state.imageUploadProgress = action.payload;
     },
   },
   extraReducers(builder) {
