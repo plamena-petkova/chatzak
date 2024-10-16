@@ -156,7 +156,7 @@ function ChatInput({ handleSendMsg }) {
         }
         endDecorator={
           <Button
-            onClick={sendChat}
+            onClick={() => sendChat(msg)}
             variant="soft"
             endDecorator={<SendIcon />}
             disabled={msg.length < 1}
