@@ -269,6 +269,7 @@ function ChatComponent() {
                       key={uuidv4()}
                       msg={msg}
                       onDeleteHandler={onDeleteHandler}
+                      onEditHandler={onEditHandler}
                       alignItems={"start"}
                       dateDivider={showDateDivider}
                       currentDate={formatDate(msg?.date)}

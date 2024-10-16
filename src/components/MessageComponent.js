@@ -1,16 +1,30 @@
-import { Box, Button, Typography, Input, Divider } from "@mui/joy";
+import { Box, Button, Typography, Input, Divider, Avatar } from "@mui/joy";
 import { FormControl, Modal, Paper } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useState } from "react";
 import PositionedMenu from "./PositionedMenu";
-import { isToday } from "date-fns";
+import { format, isToday } from "date-fns";
+import { useSelector } from "react-redux";
 
-function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems, dateDivider, currentDate }) {
+function MessageComponent({
+  msg,
+  onDeleteHandler,
+  onEditHandler,
+  alignItems,
+  dateDivider,
+  currentDate,
+}) {
+  const currentChat = useSelector((state) => state.chat.currentChat);
+  const currentUser = useSelector((state) => state.auth.user);
+
   const [editMessage, setEditMessage] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  const formatDate = (date) => format(new Date(date), "HH:mm");
 
   const onEditMode = () => {
     setEditMessage(true);
@@ -26,8 +40,6 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems, dat
     onEditHandler(messageId, newMessage);
     setEditMessage(false);
   };
-
-
 
   const editMessageInput = (
     <FormControl>
@@ -53,6 +65,189 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems, dat
     </FormControl>
   );
 
+  const messageFromSelf = (
+    <Box sx={{ display: "flex", flexDirection: "row" }}>
+      {editMessage && editMessageInput}
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
+        <Box
+          sx={{ display: "flex", flexDirection: "row", alignItems: "start" }}
+        >
+          <PositionedMenu
+            message={msg}
+            onDelete={() => onDeleteHandler(msg.id)}
+            onEdit={() => onEditMode()}
+          />
+          {msg.message.includes("https://firebasestorage") ? (
+            <Button
+              sx={{
+                "&:hover": {
+                  background: "transparent",
+                },
+              }}
+              variant="plain"
+              onClick={() => setIsOpen(true)}
+            >
+              <img
+                height={"150px"}
+                width={"auto"}
+                maxwidth={"28vw"}
+                alt="imageSend"
+                src={msg.message}
+              />
+            </Button>
+          ) : (
+            <Paper
+              variant="outlined"
+              sx={{
+                whiteSpace: "normal",
+                maxWidth: 700,
+                borderRadius: "10px",
+                p: 0.5,
+                pl: 1,
+                pr: 1,
+                cursor: "pointer",
+                bgcolor: "white",
+              }}
+              disabled={msg.isRemoved}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "end",
+                  alignItems: "end",
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: msg?.isRemoved ? "lightgrey" : "#32383E",
+                    fontWeight: "lg",
+                    fontSize: "md",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {msg.message}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    fontSize: "11px",
+                    alignContent: "center",
+                    color: "grey",
+                  }}
+                  startDecorator={
+                    <AccessTimeIcon color="grey" fontSize="11px" />
+                  }
+                >
+                  {formatDate(msg.date)}{" "}
+                </Typography>
+              </Box>
+            </Paper>
+          )}
+        </Box>
+        <Typography sx={{ fontSize: "14px", pt: 1, pr: 1 }}>
+          {currentUser.username}
+        </Typography>
+      </Box>
+      <Box sx={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+        <Avatar
+          size="sm"
+          key={currentUser._id}
+          src={`${currentUser.avatarImg}`}
+        />
+      </Box>
+    </Box>
+  );
+
+  const messageFromUser = (
+    <Box sx={{ display: "flex", flexDirection: "row" }}>
+      {editMessage && editMessageInput}
+      <Box sx={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+        <Avatar
+          size="sm"
+          key={currentUser._id}
+          src={`${currentChat.avatarImg}`}
+        />
+      </Box>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", alignItems: "start" }}
+      >
+        <Box
+          sx={{ display: "flex", flexDirection: "row", alignItems: "start" }}
+        >
+          {msg.message.includes("https://firebasestorage") ? (
+            <Button
+              sx={{
+                "&:hover": {
+                  background: "transparent",
+                },
+              }}
+              variant="plain"
+              onClick={() => setIsOpen(true)}
+            >
+              <img
+                height={"150px"}
+                width={"auto"}
+                maxwidth={"28vw"}
+                alt="imageSend"
+                src={msg.message}
+              />
+            </Button>
+          ) : (
+            <Paper
+              variant="outlined"
+              sx={{
+                whiteSpace: "normal",
+                maxWidth: 700,
+                borderRadius: "10px",
+                p: 0.5,
+                pl: 1,
+                pr: 1,
+                cursor: "pointer",
+                bgcolor: "#465CA2",
+              }}
+              disabled={msg.isRemoved}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "end",
+                  alignItems: "end",
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: msg?.isRemoved ? "lightgrey" : "#FBFCFE",
+                    fontWeight: "lg",
+                    fontSize: "md",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {msg.message}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    fontSize: "11px",
+                    alignContent: "center",
+                    color: "lightgrey",
+                  }}
+                  startDecorator={<AccessTimeIcon fontSize="11px" />}
+                >
+                  {formatDate(msg.date)}{" "}
+                </Typography>
+              </Box>
+            </Paper>
+          )}
+        </Box>
+        <Typography sx={{ fontSize: "14px", pt: 1, pl: 1 }}>
+          {currentChat.username}
+        </Typography>
+      </Box>
+    </Box>
+  );
+
   return (
     <Box
       key={uuidv4()}
@@ -65,75 +260,13 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems, dat
         alignItems: { alignItems },
       }}
     >
-      
-        {dateDivider && 
-             <Divider sx={{ "--Divider-childPosition": "50%" }}>
-           {isToday(currentDate) ? 'Today' : currentDate}
-        </Divider>}
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
-        {editMessage && editMessageInput}
+      {dateDivider && (
+        <Divider sx={{ "--Divider-childPosition": "50%" }}>
+          {isToday(currentDate) ? "Today" : currentDate}
+        </Divider>
+      )}
 
-        <Paper
-          variant="outlined"
-          sx={{
-            whiteSpace: "normal",
-            maxWidth: 700,
-            borderRadius: "10px",
-            p: 0.5,
-            cursor: "pointer",
-            bgcolor: alignItems.includes("start") ? "#465CA2" : "white",
-          }}
-          disabled={msg.isRemoved}
-        >
-          {msg.isRemoved ? (
-            <Typography
-              sx={{
-                mr: 1,
-                ml: 1,
-                color: "lightgrey",
-                fontWeight: "lg",
-                fontSize: "md",
-                wordBreak: "break-word",
-              }}
-            >
-              {msg.message}
-            </Typography>
-          ) : (
-            <Typography
-              sx={{
-                mr: 1,
-                ml: 1,
-                color: alignItems.includes("start") ? "#FBFCFE" : "#32383E",
-                fontWeight: "lg",
-                fontSize: "md",
-                wordBreak: "break-word",
-              }}
-            >
-              {msg.message.includes("https://firebasestorage") ? (
-                <Button variant="plain" onClick={() => setIsOpen(true)}>
-                  <img
-                    height={"150px"}
-                    width={"auto"}
-                    maxwidth={"28vw"}
-                    alt="imageSend"
-                    src={msg.message}
-                  />
-                </Button>
-              ) : (
-                msg.message
-              )}
-            </Typography>
-          )}
-        </Paper>
-
-        {msg.fromSelf && !msg.isRemoved ? (
-          <PositionedMenu
-            message={msg}
-            onDelete={() => onDeleteHandler(msg.id)}
-            onEdit={() => onEditMode()}
-          />
-        ) : null}
-      </Box>
+      {msg.fromSelf ? messageFromSelf : messageFromUser}
 
       <Modal
         open={isOpen}
@@ -146,14 +279,13 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems, dat
             maxWidth: "80vw",
             maxHeight: "80vh",
             display: "flex",
-            flexDirection: "column", // Layout items vertically
+            flexDirection: "column",
           }}
         >
-          {/* Header Section for Close Button */}
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-end", // Align button to the right
+              justifyContent: "flex-end",
             }}
           >
             <Button variant="plain" onClick={() => setIsOpen(false)}>
@@ -161,11 +293,10 @@ function MessageComponent({ msg, onDeleteHandler, onEditHandler, alignItems, dat
             </Button>
           </Box>
 
-          {/* Image Section */}
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center", // Center the image horizontally
+              justifyContent: "center",
               alignItems: "center",
               height: "100%",
             }}

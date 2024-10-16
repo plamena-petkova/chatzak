@@ -14,13 +14,15 @@ function PositionedMenu({ onDelete, onEdit }) {
   return (
     <Dropdown>
       <MenuButton
-        sx={{":hover":'none'}}
+        sx={{  "&:hover": {
+          background: "transparent",
+        },}}
         slots={{ root: IconButton }}
-        slotProps={{ root: { variant: "plain", color: "neutral", size:'5px' } }}
+        slotProps={{ root: { variant: "plain", color: "neutral", size:'5px', pt:1 } }}
       >
         <MoreVert fontSize="5px" sx={{alignSelf:'start'}} />
       </MenuButton>
-      <Menu placement="bottom-end">
+      <Menu placement="auto">
         <MenuItem onClick={() => onEdit()}>
           <ListItemDecorator>
             <Edit />
