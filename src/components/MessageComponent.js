@@ -17,10 +17,12 @@ function MessageComponent({
   dateDivider,
   currentDate,
   assignRef, 
-  isActive
 }) {
   const currentChat = useSelector((state) => state.chat.currentChat);
   const currentUser = useSelector((state) => state.auth.user);
+  const searchString = useSelector(
+    (state) => state.chat.searchString
+  );
 
   const [editMessage, setEditMessage] = useState(false);
   const [newMessage, setNewMessage] = useState("");
@@ -43,13 +45,29 @@ function MessageComponent({
     setEditMessage(false);
   };
 
+  function highlightText(message, searchString) {
+    if (!searchString) return message;
+  
+    // Create a case-insensitive regular expression with global match
+    const regex = new RegExp(`(${searchString})`, 'gi');
+  
+    // Split the message based on the regex matches
+    const parts = message.split(regex);
+  
+    return parts.map((part, index) => 
+      regex.test(part) ? (
+        <span key={index} style={{ backgroundColor: 'orange' }}>{part}</span>
+      ) : part
+    );
+  }
+
   const editMessageInput = (
     <FormControl>
       <Input
         key={uuidv4()}
         sx={{ "--Input-focused": 1, width: 256 }}
         defaultValue={newMessage}
-        onBlur={(event) => editHandler(msg.id, event)}
+        onChange={(event) => editHandler(msg.id, event)}
         endDecorator={
           <Button
             onClick={(event) => onSubmitHandler(event, msg.id)}
@@ -108,7 +126,7 @@ function MessageComponent({
                 pl: 1,
                 pr: 1,
                 cursor: "pointer",
-                bgcolor: isActive ? "lightgreen" : "white", 
+                bgcolor: "white", 
               }}
               disabled={msg.isRemoved}
             >
@@ -129,7 +147,7 @@ function MessageComponent({
                   }}
                   ref={(el) => assignRef(el, msg.id)}
                 >
-                  {msg.message}
+                {searchString ? <span>{highlightText(msg.message, searchString)}</span> : msg.message}
                 </Typography>
 
                 <Typography
@@ -207,7 +225,7 @@ function MessageComponent({
                 pl: 1,
                 pr: 1,
                 cursor: "pointer",
-                bgcolor: isActive ? "green" : "#465CA2",
+                bgcolor:"#465CA2",
               }}
               disabled={msg.isRemoved}
             >
@@ -228,7 +246,7 @@ function MessageComponent({
                   }}
                   ref={(el) => assignRef(el, msg.id)} // Assign ref to the message
                 >
-                  {msg.message}
+                 {searchString ? <span>{highlightText(msg.message, searchString)}</span> : msg.message}
                 </Typography>
 
                 <Typography

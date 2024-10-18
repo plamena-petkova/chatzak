@@ -39,15 +39,15 @@ function ChatComponent() {
   const isLoadingDeleteEditMessage = useSelector(
     (state) => state.chat.isLoadingDeleteEditMessage
   );
-  const searchString = useSelector(
-    (state) => state.chat.searchString
-  );
+  const searchString = useSelector((state) => state.chat.searchString);
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
   const scrollableContainerRef = useRef(null);
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
+  const [arrayFoundMessages, setArrayFoundMessages] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(null);
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
@@ -205,47 +205,65 @@ function ChatComponent() {
     }
   }, [handleSendMsg, doScroll]);
 
-
   const messageRefs = useRef({}); // Store refs in the parent component
-  const [activeIndex, setActiveIndex] = useState(null); // Active message index
 
   const scrollToMessage = (msgId) => {
     const messageRef = messageRefs.current[msgId];
     if (messageRef) {
-
       setTimeout(() => {
         messageRef.scrollIntoView({
           behavior: "smooth",
-          block: "start",
+          block: "center",
         });
       }, 0);
-     
-      //dispatch(setSearchString(''));
-      //setActiveIndex(null)
-
     } else {
       console.log("Message ref not found for ID:", msgId);
     }
   };
 
-
   const searchMessages = () => {
-    const foundIndex = messages.findIndex((msg) => msg.message.includes(searchString));
-  
-    if (foundIndex !== -1 && searchString) {
-      const foundMessage = messages[foundIndex];
-      setActiveIndex(foundIndex); // Highlight the message
-      scrollToMessage(foundMessage.id); // Scroll to the message
+    let arrayMsgs = [];
+    let allFoundMessages = {};
+
+    messages.forEach((msg, index) => {
+      if (msg.message.toLowerCase().includes(searchString.toLowerCase())) {
+        allFoundMessages = { msg, index };
+        arrayMsgs.push(allFoundMessages);
+      }
+    });
+
+    setArrayFoundMessages(arrayMsgs);
+
+    if (arrayFoundMessages.length && searchString) {
+      arrayFoundMessages.forEach((searchedMessage, index) => {
+        scrollToMessage(searchedMessage.msg.id);
+        setCurrentIndex(index);
+      });
     }
   };
-  
+
+  const goToPreviousMessage = () => {
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      scrollToMessage(arrayFoundMessages[newIndex].msg.id);
+    }
+  };
+
+  const goToNextMessage = () => {
+    if (currentIndex < arrayFoundMessages.length - 1) {
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      scrollToMessage(arrayFoundMessages[newIndex].msg.id);
+    }
+  };
+
   // Assign ref when rendering messages
   const assignRef = (el, msgId) => {
     if (el && !messageRefs.current[msgId]) {
       messageRefs.current[msgId] = el;
     }
   };
-
 
   return (
     <Grid
@@ -266,7 +284,14 @@ function ChatComponent() {
           }}
         >
           <Box>
-            <HeaderChatProfileUser chat={currentChat} search={searchMessages} />
+            <HeaderChatProfileUser
+              chat={currentChat}
+              search={searchMessages}
+              goNext={goToNextMessage}
+              goPrevious={goToPreviousMessage}
+              currentIndex={currentIndex}
+              indexes={arrayFoundMessages.length}
+            />
           </Box>
 
           <Box
@@ -307,7 +332,6 @@ function ChatComponent() {
                     currentDate={formatDate(msg?.date)}
                     index={index}
                     assignRef={assignRef} // Pass ref assignment function
-                    isActive={activeIndex === index} // Highlight active message
                   />
                 );
               })}
