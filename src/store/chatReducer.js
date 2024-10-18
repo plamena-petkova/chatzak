@@ -11,7 +11,7 @@ const initialState = {
   isLoadingDeleteEditMessage:false,
   error: null,
   newMessageIndicator: {},
-  imageUploadProgress:''
+  searchString:'',
 };
 
 export const getAllMessages = createAsyncThunk(
@@ -67,8 +67,8 @@ export const chatSlice = createSlice({
         }
       }
     },
-    setImageUploadProgress: (state, action) => {
-      state.imageUploadProgress = action.payload;
+    setSearchString: (state, action) => {
+      state.searchString = action.payload;
     },
   },
   extraReducers(builder) {
@@ -140,7 +140,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator } =
+export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator, setSearchString } =
   chatSlice.actions;
 
 export default chatSlice.reducer;

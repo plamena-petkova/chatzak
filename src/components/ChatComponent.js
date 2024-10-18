@@ -19,7 +19,6 @@ import {
   setNewMessageIndicator,
 } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
-import { v4 as uuidv4 } from "uuid";
 import { socket } from "../socket";
 import MessageComponent from "./MessageComponent";
 import { useMediaQuery } from "@mui/material";
@@ -39,6 +38,9 @@ function ChatComponent() {
   );
   const isLoadingDeleteEditMessage = useSelector(
     (state) => state.chat.isLoadingDeleteEditMessage
+  );
+  const searchString = useSelector(
+    (state) => state.chat.searchString
   );
 
   const [message, setMessage] = useState("");
@@ -203,6 +205,48 @@ function ChatComponent() {
     }
   }, [handleSendMsg, doScroll]);
 
+
+  const messageRefs = useRef({}); // Store refs in the parent component
+  const [activeIndex, setActiveIndex] = useState(null); // Active message index
+
+  const scrollToMessage = (msgId) => {
+    const messageRef = messageRefs.current[msgId];
+    if (messageRef) {
+
+      setTimeout(() => {
+        messageRef.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 0);
+     
+      //dispatch(setSearchString(''));
+      //setActiveIndex(null)
+
+    } else {
+      console.log("Message ref not found for ID:", msgId);
+    }
+  };
+
+
+  const searchMessages = () => {
+    const foundIndex = messages.findIndex((msg) => msg.message.includes(searchString));
+  
+    if (foundIndex !== -1 && searchString) {
+      const foundMessage = messages[foundIndex];
+      setActiveIndex(foundIndex); // Highlight the message
+      scrollToMessage(foundMessage.id); // Scroll to the message
+    }
+  };
+  
+  // Assign ref when rendering messages
+  const assignRef = (el, msgId) => {
+    if (el && !messageRefs.current[msgId]) {
+      messageRefs.current[msgId] = el;
+    }
+  };
+
+
   return (
     <Grid
       container
@@ -222,7 +266,7 @@ function ChatComponent() {
           }}
         >
           <Box>
-            <HeaderChatProfileUser chat={currentChat} />
+            <HeaderChatProfileUser chat={currentChat} search={searchMessages} />
           </Box>
 
           <Box
@@ -251,31 +295,21 @@ function ChatComponent() {
                 const showDateDivider =
                   !previousMessageDate ||
                   !isSameDay(currentMessageDate, previousMessageDate);
-                if (msg.fromSelf) {
-                  return (
-                    <MessageComponent
-                      key={uuidv4()}
-                      msg={msg}
-                      onDeleteHandler={onDeleteHandler}
-                      onEditHandler={onEditHandler}
-                      alignItems={"end"}
-                      dateDivider={showDateDivider}
-                      currentDate={formatDate(msg?.date)}
-                    />
-                  );
-                } else {
-                  return (
-                    <MessageComponent
-                      key={uuidv4()}
-                      msg={msg}
-                      onDeleteHandler={onDeleteHandler}
-                      onEditHandler={onEditHandler}
-                      alignItems={"start"}
-                      dateDivider={showDateDivider}
-                      currentDate={formatDate(msg?.date)}
-                    />
-                  );
-                }
+
+                return (
+                  <MessageComponent
+                    key={msg.id}
+                    msg={msg}
+                    onDeleteHandler={onDeleteHandler}
+                    onEditHandler={onEditHandler}
+                    alignItems={msg.fromSelf ? "end" : "start"}
+                    dateDivider={showDateDivider}
+                    currentDate={formatDate(msg?.date)}
+                    index={index}
+                    assignRef={assignRef} // Pass ref assignment function
+                    isActive={activeIndex === index} // Highlight active message
+                  />
+                );
               })}
           </Box>
           <Box>

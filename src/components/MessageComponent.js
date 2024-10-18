@@ -16,6 +16,8 @@ function MessageComponent({
   alignItems,
   dateDivider,
   currentDate,
+  assignRef, 
+  isActive
 }) {
   const currentChat = useSelector((state) => state.chat.currentChat);
   const currentUser = useSelector((state) => state.auth.user);
@@ -106,7 +108,7 @@ function MessageComponent({
                 pl: 1,
                 pr: 1,
                 cursor: "pointer",
-                bgcolor: "white",
+                bgcolor: isActive ? "lightgreen" : "white", 
               }}
               disabled={msg.isRemoved}
             >
@@ -125,6 +127,7 @@ function MessageComponent({
                     fontSize: "md",
                     wordBreak: "break-word",
                   }}
+                  ref={(el) => assignRef(el, msg.id)}
                 >
                   {msg.message}
                 </Typography>
@@ -204,7 +207,7 @@ function MessageComponent({
                 pl: 1,
                 pr: 1,
                 cursor: "pointer",
-                bgcolor: "#465CA2",
+                bgcolor: isActive ? "green" : "#465CA2",
               }}
               disabled={msg.isRemoved}
             >
@@ -223,6 +226,7 @@ function MessageComponent({
                     fontSize: "md",
                     wordBreak: "break-word",
                   }}
+                  ref={(el) => assignRef(el, msg.id)} // Assign ref to the message
                 >
                   {msg.message}
                 </Typography>
@@ -250,7 +254,6 @@ function MessageComponent({
 
   return (
     <Box
-      key={uuidv4()}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -304,7 +307,7 @@ function MessageComponent({
             <img
               src={msg.message}
               alt="Larger View"
-              style={{ maxWidth: "100%", maxHeight: "80vh", height: "auto" }}
+              style={{ maxWidth: "100%", maxHeight: "70vh", height: "auto" }}
             />
           </Box>
         </Paper>
