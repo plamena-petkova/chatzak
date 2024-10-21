@@ -12,6 +12,8 @@ const initialState = {
   error: null,
   newMessageIndicator: {},
   searchString:'',
+  currentIndex:0,
+  indexes:0
 };
 
 export const getAllMessages = createAsyncThunk(
@@ -69,6 +71,12 @@ export const chatSlice = createSlice({
     },
     setSearchString: (state, action) => {
       state.searchString = action.payload;
+    },
+    setCurrentIndex: (state, action) => {
+      state.currentIndex = action.payload;
+    },
+    setIndexes: (state, action) => {
+      state.indexes = action.payload;
     },
   },
   extraReducers(builder) {
@@ -140,7 +148,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator, setSearchString } =
+export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator, setSearchString, setCurrentIndex, setIndexes } =
   chatSlice.actions;
 
 export default chatSlice.reducer;

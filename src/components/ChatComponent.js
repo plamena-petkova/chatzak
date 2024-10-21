@@ -16,6 +16,8 @@ import {
   getAllMessages,
   getLastMessages,
   setCurrentChat,
+  setCurrentIndex,
+  setIndexes,
   setNewMessageIndicator,
 } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
@@ -40,6 +42,7 @@ function ChatComponent() {
     (state) => state.chat.isLoadingDeleteEditMessage
   );
   const searchString = useSelector((state) => state.chat.searchString);
+  const currentIndex = useSelector((state) => state.chat.currentIndex);
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
@@ -47,7 +50,7 @@ function ChatComponent() {
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
   const [arrayFoundMessages, setArrayFoundMessages] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(null);
+  //const [currentIndex, setCurrentIndex] = useState(null);
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
@@ -223,41 +226,52 @@ function ChatComponent() {
 
   const searchMessages = () => {
     let arrayMsgs = [];
-    let allFoundMessages = {};
-
+  
     messages.forEach((msg, index) => {
       if (msg.message.toLowerCase().includes(searchString.toLowerCase())) {
-        allFoundMessages = { msg, index };
-        arrayMsgs.push(allFoundMessages);
+        arrayMsgs.push({ msg, index });
       }
     });
-
+  
     setArrayFoundMessages(arrayMsgs);
-
-    if (arrayFoundMessages.length && searchString) {
-      arrayFoundMessages.forEach((searchedMessage, index) => {
-        scrollToMessage(searchedMessage.msg.id);
-        setCurrentIndex(index);
-      });
+  
+    if (arrayMsgs.length && searchString) {
+      // Set to first result initially
+      const firstIndex = 0;
+      dispatch(setCurrentIndex(firstIndex));
+      dispatch(setIndexes(arrayMsgs.length));
+  
+      // Scroll to the first message found
+      scrollToMessage(arrayMsgs[firstIndex].msg.id);
+    } else {
+      // If no results found, reset the index to 0 and show that
+      dispatch(setCurrentIndex(0));
+      dispatch(setIndexes(0));
+      console.log('No results found');
     }
   };
+  
 
   const goToPreviousMessage = () => {
     if (currentIndex > 0) {
       const newIndex = currentIndex - 1;
-      setCurrentIndex(newIndex);
+      dispatch(setCurrentIndex(newIndex));
       scrollToMessage(arrayFoundMessages[newIndex].msg.id);
+    } else {
+      console.log('Already at the first message');
     }
   };
 
   const goToNextMessage = () => {
     if (currentIndex < arrayFoundMessages.length - 1) {
       const newIndex = currentIndex + 1;
-      setCurrentIndex(newIndex);
+      dispatch(setCurrentIndex(newIndex));
       scrollToMessage(arrayFoundMessages[newIndex].msg.id);
+    } else {
+      console.log('Already at the last message');
     }
   };
-
+  
   // Assign ref when rendering messages
   const assignRef = (el, msgId) => {
     if (el && !messageRefs.current[msgId]) {
@@ -289,8 +303,7 @@ function ChatComponent() {
               search={searchMessages}
               goNext={goToNextMessage}
               goPrevious={goToPreviousMessage}
-              currentIndex={currentIndex}
-              indexes={arrayFoundMessages.length}
+      
             />
           </Box>
 

@@ -2,8 +2,13 @@ import { Avatar, Box, Divider, Typography } from "@mui/joy";
 import DrawerUserProfile from "./DrawerUserProfile";
 import SearchBarMessages from "./SearchBarMessages";
 
-function HeaderChatProfileUser({ chat, search, goNext, goPrevious, currentIndex, indexes }) {
-
+function HeaderChatProfileUser({
+  chat,
+  search,
+  goNext,
+  goPrevious,
+  currentIndex,
+}) {
   return (
     <>
       <Box
@@ -34,8 +39,16 @@ function HeaderChatProfileUser({ chat, search, goNext, goPrevious, currentIndex,
             {chat?.names}
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "row", flexWrap:'no-wrap' }}>
-          <SearchBarMessages searchMessages={search} goNext={goNext} goPrevious={goPrevious} currentIndex={currentIndex} indexes={indexes} />
+        <Box
+          sx={{ display: "flex", flexDirection: "row", flexWrap: "no-wrap" }}
+        >
+          <SearchBarMessages
+            searchMessages={search}
+            goNext={goNext}
+            goPrevious={goPrevious}
+
+
+          />
           <DrawerUserProfile currentContact={chat} />
         </Box>
       </Box>
