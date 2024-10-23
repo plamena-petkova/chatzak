@@ -5,6 +5,7 @@ import {
   deleteUserByIdRoute,
   editUserByIdRoute,
   getUserByIdRoute,
+  invitationRoute,
   loginRoute,
   registerRoute,
   updateAvatarRoute,
@@ -102,6 +103,12 @@ export const deleteUserById = createAsyncThunk("user/delete-user", async (userId
   const response = await axios.delete(`${deleteUserByIdRoute}${userId}`,);
 
   return response.status;
+});
+export const sendEmailInvite = createAsyncThunk("user/send-invitation", async (data) => {
+
+  const response = await axios.post(`${invitationRoute}`, data);
+
+  return response;
 });
 
 export const authSlice = createSlice({
@@ -217,6 +224,17 @@ export const authSlice = createSlice({
       state.user = action.payload;
     });
     builder.addCase(deleteUserById.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(sendEmailInvite.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(sendEmailInvite.fulfilled, (state, action) => {
+      state.isLoading = false;
+      console.log('ActionPayload', action.payload);
+    });
+    builder.addCase(sendEmailInvite.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });

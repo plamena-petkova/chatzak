@@ -13,3 +13,4 @@ export const getUserByIdRoute = `${host}/api/auth/users/`;
 export const deleteMessageRoute = `${host}/api/messages/message/`
 export const editUserByIdRoute = `${host}/api/auth/users/edit/`
 export const deleteUserByIdRoute = `${host}/api/auth/users/delete/`
+export const invitationRoute = `${host}/api/auth/send-invitation`
