@@ -32,7 +32,7 @@ const VisuallyHiddenInput = styled("input")({
   minWidth: 265,
 });
 
-function ChatInput({ handleSendMsg }) {
+function ChatInput({ handleSendMsg, isBlocked }) {
   const [msg, setMsg] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [error, setError] = useState(false);
@@ -183,7 +183,7 @@ function ChatInput({ handleSendMsg }) {
             onClick={() => sendChat(msg)}
             variant="soft"
             endDecorator={<SendIcon />}
-            disabled={msg.length < 1}
+            disabled={msg.length < 1 || isBlocked}
           ></Button>
         }
       />

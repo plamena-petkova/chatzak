@@ -48,12 +48,17 @@ function ChatView() {
 
   const onCloseHandler = () => {
     setOpenNewSnack(false);
-  }
+  };
 
   return (
-    <Grid container sx={{ height: "100%", width:'100%' }}>
-      <Grid xs={12} md={0.75} sx={{flexWrap:'wrap'}}>
-      <SnackbarComponent messageFromUser={messageForSnack} onCloseHandler={onCloseHandler} open={openNewSnack} handleClose={handleCloseSnack} />
+    <Grid container sx={{ height: "100%", width: "100%" }}>
+      <Grid xs={12} md={0.75} sx={{ flexWrap: "wrap" }}>
+        <SnackbarComponent
+          messageFromUser={messageForSnack}
+          onCloseHandler={onCloseHandler}
+          open={openNewSnack}
+          handleClose={handleCloseSnack}
+        />
         <List
           sx={{
             minHeight: isSmallScreen ? null : "100vh",
@@ -61,7 +66,7 @@ function ChatView() {
             display: "flex",
             flexDirection: isSmallScreen ? "row" : "column",
             justifyContent: "space-between",
-            
+
             p: 1,
             gap: 1,
             pt: 7,
@@ -132,4 +137,3 @@ function ChatView() {
 }
 
 export default ChatView;
-

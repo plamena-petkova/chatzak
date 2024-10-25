@@ -12,5 +12,7 @@ export const updateAvatarRoute = `${host}/api/auth/users/`;
 export const getUserByIdRoute = `${host}/api/auth/users/`;
 export const deleteMessageRoute = `${host}/api/messages/message/`
 export const editUserByIdRoute = `${host}/api/auth/users/edit/`
+export const blockUserByIdRoute =  `${host}/api/auth/users/block/`
+export const unblockUserByIdRoute =  `${host}/api/auth/users/unblock/`
 export const deleteUserByIdRoute = `${host}/api/auth/users/delete/`
 export const invitationRoute = `${host}/api/auth/send-invitation`

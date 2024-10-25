@@ -303,7 +303,9 @@ function ChatComponent() {
               search={searchMessages}
               goNext={goToNextMessage}
               goPrevious={goToPreviousMessage}
-      
+              blocked={currentUser.blockedUsers?.includes(currentChat._id)}
+              beenBlocked={currentChat.blockedUsers?.includes(currentUser._id)}
+
             />
           </Box>
 
@@ -350,7 +352,7 @@ function ChatComponent() {
               })}
           </Box>
           <Box>
-            <ChatInput socket={socket} handleSendMsg={handleSendMsg} />
+            <ChatInput socket={socket} handleSendMsg={handleSendMsg} isBlocked={currentUser.blockedUsers?.includes(currentChat._id) || currentChat.blockedUsers?.includes(currentUser._id)} />
           </Box>
         </Box>
       </Grid>

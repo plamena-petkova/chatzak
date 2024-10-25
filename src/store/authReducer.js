@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import {
   allUsersRoute,
+  blockUserByIdRoute,
   createAvatarRoute,
   deleteUserByIdRoute,
   editUserByIdRoute,
@@ -8,6 +9,7 @@ import {
   invitationRoute,
   loginRoute,
   registerRoute,
+  unblockUserByIdRoute,
   updateAvatarRoute,
 } from "../utils/apiRoutes";
 import axios from "axios";
@@ -100,10 +102,35 @@ export const editUserById = createAsyncThunk("user/edit-user", async (data) => {
 
 export const deleteUserById = createAsyncThunk("user/delete-user", async (userId) => {
 
-  const response = await axios.delete(`${deleteUserByIdRoute}${userId}`,);
+  const response = await axios.delete(`${deleteUserByIdRoute}${userId}`);
 
   return response.status;
 });
+
+export const blockUserById = createAsyncThunk(
+  "user/block-user",
+  async ({userId, blockUser}) => {
+
+    const userForBlock = {"blockedUser":blockUser._id}
+
+    const response = await axios.put(`${blockUserByIdRoute}${userId}`, userForBlock);
+    
+    return response.data.user;
+  }
+);
+
+export const unblockUserById = createAsyncThunk(
+  "user/unblock-user",
+  async ({userId, blockedUser}) => {
+
+    const userForUnblock = {"blockedUser":blockedUser._id}
+
+    const response = await axios.put(`${unblockUserByIdRoute}${userId}`, userForUnblock);
+
+    return response.data.user;
+  }
+);
+
 export const sendEmailInvite = createAsyncThunk("user/send-invitation", async (data) => {
 
   const response = await axios.post(`${invitationRoute}`, data);
@@ -232,7 +259,6 @@ export const authSlice = createSlice({
     });
     builder.addCase(sendEmailInvite.fulfilled, (state, action) => {
       state.isLoading = false;
-      console.log('ActionPayload', action.payload);
     });
     builder.addCase(sendEmailInvite.rejected, (state, action) => {
       state.isLoading = false;
