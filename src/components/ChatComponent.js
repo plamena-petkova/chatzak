@@ -50,7 +50,6 @@ function ChatComponent() {
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
   const [arrayFoundMessages, setArrayFoundMessages] = useState([]);
-  //const [currentIndex, setCurrentIndex] = useState(null);
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
@@ -113,7 +112,8 @@ function ChatComponent() {
   }, [currentUser, dispatch]);
 
   useEffect(() => {
-    if (!currentChat) {
+    if (!currentChat._id) {
+
       dispatch(setCurrentChat(allUsers[0]));
     }
   }, []);
@@ -304,7 +304,7 @@ function ChatComponent() {
               goNext={goToNextMessage}
               goPrevious={goToPreviousMessage}
               blocked={currentUser.blockedUsers?.includes(currentChat._id)}
-              beenBlocked={currentChat.blockedUsers?.includes(currentUser._id)}
+              beenBlocked={currentChat?.blockedUsers?.includes(currentUser._id)}
 
             />
           </Box>

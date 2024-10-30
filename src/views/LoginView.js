@@ -4,7 +4,7 @@ import logo from "../assets/chatzakLogo.png";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../store/authReducer";
+import { fetchUsers, login } from "../store/authReducer";
 import { socket } from "../socket";
 import ErrorAlert from "../components/ErrorAlert";
 import { LoadingButton } from "@mui/lab";
@@ -52,23 +52,33 @@ function LoginView() {
     const data = { username, password };
 
     if (credentials) {
-      dispatch(login(data))
-        .unwrap()
-        .then(() => {
-          socket.connect();
-          navigate("/chat");
-        })
-        .catch((error) => {
-          console.error("Error", error.message);
-          if (error.message === "Request failed with status code 404") {
+      try {
+        const result = await dispatch(login(data));
+        if (result.error) {
+          if (result.error.message === "Request failed with status code 404") {
             setErrorMsg("Incorrect username or password");
           } else {
-            setErrorMsg(error.message);
+            setErrorMsg(result.error.message);
           }
           setOpen(true);
           return;
-        });
-    }
+        }
+
+        await dispatch(fetchUsers());
+        socket.connect();
+        navigate("/chat");
+
+      } catch (error) {
+        console.error("Error", error.message);
+        if (error.message === "Request failed with status code 404") {
+          setErrorMsg("Incorrect username or password");
+        } else {
+          setErrorMsg(error.message);
+        }
+        setOpen(true);
+        return;
+      }
+    };
   };
 
   return (

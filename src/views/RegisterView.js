@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import logo from "../assets/chatzakLogo.png";
 import { useNavigate } from "react-router-dom";
-import { register } from "../store/authReducer";
+import { fetchUsers, register } from "../store/authReducer";
 import { useDispatch } from "react-redux";
 import { socket } from "../socket";
 import ErrorAlert from "../components/ErrorAlert";
@@ -49,22 +49,35 @@ function RegisterView() {
 
     setLoading(true);
 
-    dispatch(register(registerValues))
-      .unwrap()
-      .then(() => {
-        socket.connect();
-        navigate("/chat");
-      })
-      .catch((error) => {
-        if (error.message === "Request failed with status code 409") {
-          setErrorMsg("Username or email is already used!");
+   
+    try {
+      const result = await  dispatch(register(registerValues));
+      if (result.error) {
+        if (result.error.message === "Request failed with status code 404") {
+          setErrorMsg("Incorrect username or password");
         } else {
-          setErrorMsg(error.message);
+          setErrorMsg(result.error.message);
         }
-
         setOpen(true);
         return;
-      });
+      }
+
+      await dispatch(fetchUsers());
+      socket.connect();
+      navigate("/chat");
+
+    } catch (error) {
+      console.error("Error", error.message);
+      if (error.message === "Request failed with status code 404") {
+        setErrorMsg("Incorrect username or password");
+      } else {
+        setErrorMsg(error.message);
+      }
+      setOpen(true);
+      return;
+    } 
+
+
   };
 
   const onCloseHandler = () => {
