@@ -7,9 +7,10 @@ function HeaderChatProfileUser({
   search,
   goNext,
   goPrevious,
-  blocked, 
-  beenBlocked
+  isBlocked
 }) {
+
+
   return (
     <>
       <Box
@@ -40,8 +41,7 @@ function HeaderChatProfileUser({
             {chat?.names}
           </Typography>
         </Box>
-        {blocked && <Typography color="danger">You blocked this user</Typography>}
-        {beenBlocked && <Typography color="danger">You've been blocked</Typography>}
+        {isBlocked && <Typography color="danger">You cannot write to this user</Typography>}
         <Box
           sx={{ display: "flex", flexDirection: "row", flexWrap: "no-wrap" }}
         >

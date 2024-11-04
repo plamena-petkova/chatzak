@@ -3,5 +3,5 @@ import { host } from './utils/apiRoutes';
 
 
 export const socket = io(host, {
-    autoConnect: false
+    autoConnect: true
 });

@@ -11,7 +11,6 @@ import logo from "../assets/chatzakLogo.png";
 import { useNavigate } from "react-router-dom";
 import { fetchUsers, register } from "../store/authReducer";
 import { useDispatch } from "react-redux";
-import { socket } from "../socket";
 import ErrorAlert from "../components/ErrorAlert";
 import { LoadingButton } from "@mui/lab";
 
@@ -63,7 +62,6 @@ function RegisterView() {
       }
 
       await dispatch(fetchUsers());
-      socket.connect();
       navigate("/chat");
 
     } catch (error) {

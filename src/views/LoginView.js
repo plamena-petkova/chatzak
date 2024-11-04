@@ -5,7 +5,6 @@ import logo from "../assets/chatzakLogo.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchUsers, login } from "../store/authReducer";
-import { socket } from "../socket";
 import ErrorAlert from "../components/ErrorAlert";
 import { LoadingButton } from "@mui/lab";
 
@@ -65,7 +64,6 @@ function LoginView() {
         }
 
         await dispatch(fetchUsers());
-        socket.connect();
         navigate("/chat");
 
       } catch (error) {

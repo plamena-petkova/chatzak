@@ -4,15 +4,25 @@ import { useState } from "react";
 import Divider from "@mui/joy/Divider";
 import PersonIcon from "@mui/icons-material/Person";
 import UserList from "./UserList";
-import { blockUserById, getUserById, unblockUserById } from "../store/authReducer";
+import {
+  blockUserById,
+  getUserById,
+  unblockUserById,
+} from "../store/authReducer";
+import { useSocket } from "../App";
 
 function UsersComponent() {
   const dispatch = useDispatch();
 
+  const socket = useSocket();
+
   const allUsers = useSelector((state) => state.auth.allUsers);
   const currentUser = useSelector((state) => state.auth.user);
   const [currentContact, setCurrentContact] = useState(allUsers[0]);
-  const [isBlocked, setIsBlocked] = useState(currentUser.blockedUsers?.includes(currentContact._id));
+
+  const [isBlocked, setIsBlocked] = useState(
+    currentUser.blockedUsers?.includes(currentContact._id)
+  );
 
   const handleCurrentContact = (contact) => {
     setCurrentContact(contact);
@@ -21,26 +31,30 @@ function UsersComponent() {
 
   const onBlockUser = () => {
     const data = { userId: currentUser._id, blockUser: currentContact };
-    dispatch(blockUserById(data))
-      .then(() => {
-        setIsBlocked(true);
-        dispatch(getUserById(currentUser._id)); // Fetch updated user data
-      });
+    dispatch(blockUserById(data)).then(async () => {
+      setIsBlocked(true);
+      await dispatch(getUserById(currentUser._id)); // Fetch updated user data
+      socket.emit('block-user', data);
+    });
   };
 
   const onUnblockUser = () => {
     const data = { userId: currentUser._id, blockedUser: currentContact };
-    dispatch(unblockUserById(data))
-      .then(() => {
-        setIsBlocked(false);
-        dispatch(getUserById(currentUser._id)); // Fetch updated user data
-      });
+    dispatch(unblockUserById(data)).then(async () => {
+      //socket.emit('unblock-user', data);
+      setIsBlocked(false);
+      await dispatch(getUserById(currentUser._id)); // Fetch updated user data
+    });
   };
+
 
   return (
     <Grid container sx={{ height: "100%" }}>
       <Grid xs={12} md={4}>
-        <UserList headerText={"Users"} currentContactSelect={handleCurrentContact} />
+        <UserList
+          headerText={"Users"}
+          currentContactSelect={handleCurrentContact}
+        />
       </Grid>
       <Grid xs={12} md={8}>
         <Box
@@ -58,7 +72,9 @@ function UsersComponent() {
             key={currentContact._id}
             src={`${currentContact.avatarImg}`}
           >
-            {currentContact && currentContact.avatarImg ? currentContact.avatar : currentContact.names}
+            {currentContact && currentContact.avatarImg
+              ? currentContact.avatar
+              : currentContact.names}
           </Avatar>
           <Typography sx={{ fontSize: "xl", fontWeight: 700, marginBottom: 2 }}>
             {currentContact.names}
@@ -135,7 +151,14 @@ function UsersComponent() {
               {currentContact.email}
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', mt: 3 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              mt: 3,
+            }}
+          >
             <Button
               variant="solid"
               color="danger"

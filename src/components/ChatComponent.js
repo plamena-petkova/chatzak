@@ -21,20 +21,24 @@ import {
   setNewMessageIndicator,
 } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
-import { socket } from "../socket";
 import MessageComponent from "./MessageComponent";
 import { useMediaQuery } from "@mui/material";
 import HeaderChatProfileUser from "./HeaderChatProfileUser";
 import UserList from "./UserList";
 import { format, isSameDay } from "date-fns";
+import { useSocket } from "../App";
 
 function ChatComponent() {
   const dispatch = useDispatch();
+
+  const socket = useSocket();
 
   const currentChat = useSelector((state) => state.chat.currentChat);
   const currentUser = useSelector((state) => state.auth.user);
   const messages = useSelector((state) => state.chat.messages);
   const allUsers = useSelector((state) => state.auth.allUsers);
+
+
   const newMessageIndicator = useSelector(
     (state) => state.chat.newMessageIndicator
   );
@@ -43,6 +47,8 @@ function ChatComponent() {
   );
   const searchString = useSelector((state) => state.chat.searchString);
   const currentIndex = useSelector((state) => state.chat.currentIndex);
+
+
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
@@ -54,6 +60,7 @@ function ChatComponent() {
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
   const formatDate = (date) => format(new Date(date), "d MMMM yyyy");
+
 
   const handleSendMsg = async (msg) => {
     await axios.post(sendMessageRoute, {
@@ -105,23 +112,14 @@ function ChatComponent() {
   }, [currentChat, arrivalMsg, message]);
 
   useEffect(() => {
-    if (currentUser._id && !socket.connected) {
-      socket.connect();
-    }
     dispatch(fetchUsers());
   }, [currentUser, dispatch]);
 
   useEffect(() => {
     if (!currentChat._id) {
-
       dispatch(setCurrentChat(allUsers[0]));
     }
-  }, []);
-
-  useEffect(() => {
-    if (currentChat._id) {
-      dispatch(getAllMessages({ from: currentUser._id, to: currentChat._id }));
-    }
+    dispatch(getAllMessages({ from: currentUser._id, to: currentChat._id }));
   }, [
     currentChat,
     currentUser,
@@ -162,6 +160,7 @@ function ChatComponent() {
       setDataMessage({});
     }
   }, [currentChat, setDataMessage, dataMessage]);
+  
 
   useEffect(() => {
     if (socket) {
@@ -175,6 +174,11 @@ function ChatComponent() {
       socket.on("update-users", (users) => {
         dispatch(setOnlineUsers(users));
       });
+      socket.on("user-blocked", () => {
+        alert('You have been blocked!')
+        console.log('You have been blocked!')
+      });
+     
     }
 
     if (!currentUser.avatarImg)
@@ -186,7 +190,7 @@ function ChatComponent() {
       socket.off("msg-receive");
       socket.off("msg-edited");
       socket.off("update-users");
-      socket.disconnect();
+      socket.off("user-blocked");
     };
   }, []);
 
@@ -226,31 +230,30 @@ function ChatComponent() {
 
   const searchMessages = () => {
     let arrayMsgs = [];
-  
+
     messages.forEach((msg, index) => {
       if (msg.message.toLowerCase().includes(searchString.toLowerCase())) {
         arrayMsgs.push({ msg, index });
       }
     });
-  
+
     setArrayFoundMessages(arrayMsgs);
-  
+
     if (arrayMsgs.length && searchString) {
       // Set to first result initially
       const firstIndex = 0;
       dispatch(setCurrentIndex(firstIndex));
       dispatch(setIndexes(arrayMsgs.length));
-  
+
       // Scroll to the first message found
       scrollToMessage(arrayMsgs[firstIndex].msg.id);
     } else {
       // If no results found, reset the index to 0 and show that
       dispatch(setCurrentIndex(0));
       dispatch(setIndexes(0));
-      console.log('No results found');
+      console.log("No results found");
     }
   };
-  
 
   const goToPreviousMessage = () => {
     if (currentIndex > 0) {
@@ -258,7 +261,7 @@ function ChatComponent() {
       dispatch(setCurrentIndex(newIndex));
       scrollToMessage(arrayFoundMessages[newIndex].msg.id);
     } else {
-      console.log('Already at the first message');
+      console.log("Already at the first message");
     }
   };
 
@@ -268,16 +271,19 @@ function ChatComponent() {
       dispatch(setCurrentIndex(newIndex));
       scrollToMessage(arrayFoundMessages[newIndex].msg.id);
     } else {
-      console.log('Already at the last message');
+      console.log("Already at the last message");
     }
   };
-  
+
   // Assign ref when rendering messages
   const assignRef = (el, msgId) => {
     if (el && !messageRefs.current[msgId]) {
       messageRefs.current[msgId] = el;
     }
   };
+
+
+
 
   return (
     <Grid
@@ -286,7 +292,7 @@ function ChatComponent() {
       sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "auto" }}
     >
       <Grid xs={12} md={4} sx={{ bgcolor: "#F1F4F8" }}>
-        <UserList headerText={"Chats"} />
+        <UserList headerText={"Chats"}/>
       </Grid>
       <Grid xs={12} md={8} sx={{ pl: 2, pr: 2 }}>
         <Box
@@ -303,9 +309,7 @@ function ChatComponent() {
               search={searchMessages}
               goNext={goToNextMessage}
               goPrevious={goToPreviousMessage}
-              blocked={currentUser.blockedUsers?.includes(currentChat._id)}
-              beenBlocked={currentChat?.blockedUsers?.includes(currentUser._id)}
-
+              isBlocked={currentChat?.blockedUsers?.includes(currentUser._id) || currentUser?.blockedUsers?.includes(currentChat._id)}
             />
           </Box>
 
@@ -352,7 +356,14 @@ function ChatComponent() {
               })}
           </Box>
           <Box>
-            <ChatInput socket={socket} handleSendMsg={handleSendMsg} isBlocked={currentUser.blockedUsers?.includes(currentChat._id) || currentChat.blockedUsers?.includes(currentUser._id)} />
+            <ChatInput
+              socket={socket}
+              handleSendMsg={handleSendMsg}
+              isBlocked={
+                currentUser.blockedUsers?.includes(currentChat._id) ||
+                currentChat.blockedUsers?.includes(currentUser._id)
+              }
+            />
           </Box>
         </Box>
       </Grid>
