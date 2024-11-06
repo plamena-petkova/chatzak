@@ -18,6 +18,7 @@ import { useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import SnackbarComponent from "../components/SnackbarComponent";
 
+
 function ChatView() {
 
   const [menuOpen, setMenuOpen] = useState({

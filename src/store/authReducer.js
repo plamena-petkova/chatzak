@@ -22,7 +22,8 @@ const initialState = {
   error: null,
   avatarUrl: "",
   onlineUsers:{},
-  accessToken:""
+  accessToken:"",
+  blockAlert:{}
 };
 
 export const login = createAsyncThunk("user/login", async (data, thunkAPI) => {
@@ -109,19 +110,23 @@ export const deleteUserById = createAsyncThunk("user/delete-user", async (userId
 
 export const blockUserById = createAsyncThunk(
   "user/block-user",
-  async ({userId, blockUser}) => {
+  async ({user, blockedUser}) => {
 
-    const userForBlock = {"blockedUser":blockUser._id}
+    const userId = user._id;
+
+    const userForBlock = {"blockedUser":blockedUser._id}
 
     const response = await axios.put(`${blockUserByIdRoute}${userId}`, userForBlock);
-    
+
     return response.data.user;
   }
 );
 
 export const unblockUserById = createAsyncThunk(
   "user/unblock-user",
-  async ({userId, blockedUser}) => {
+  async ({user, blockedUser}) => {
+
+    const userId = user._id;
 
     const userForUnblock = {"blockedUser":blockedUser._id}
 
@@ -148,6 +153,9 @@ export const authSlice = createSlice({
     setOnlineUsers: (state, action) => {
       state.onlineUsers = action.payload;
     },
+    setBlockAlert: (state, action) => {
+      state.blockAlert = action.payload.blockedUser;
+    },
     logout: (state, action) => {
       state.allUsers = [];
       state.user = {};
@@ -155,6 +163,8 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.avatarUrl = "";
       state.error = null;
+      state.onlineUsers = {};
+      state.accessToken = "";
     },
   },
   extraReducers(builder) {
@@ -267,6 +277,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout, setAvatar, setContacts, setErrorClear, setOnlineUsers } = authSlice.actions;
+export const { logout, setAvatar, setContacts, setErrorClear, setOnlineUsers, setBlockAlert } = authSlice.actions;
 
 export default authSlice.reducer;

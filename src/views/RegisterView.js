@@ -13,9 +13,12 @@ import { fetchUsers, register } from "../store/authReducer";
 import { useDispatch } from "react-redux";
 import ErrorAlert from "../components/ErrorAlert";
 import { LoadingButton } from "@mui/lab";
+import { useSocket } from "../App";
 
 function RegisterView() {
   const dispatch = useDispatch();
+
+  const socket = useSocket();
 
   const navigate = useNavigate();
 
@@ -62,6 +65,10 @@ function RegisterView() {
       }
 
       await dispatch(fetchUsers());
+      socket.connect();
+      if(result.payload._id) {
+        socket.emit("add-user", result.payload._id);
+      }
       navigate("/chat");
 
     } catch (error) {

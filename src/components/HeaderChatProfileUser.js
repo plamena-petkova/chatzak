@@ -1,15 +1,16 @@
 import { Avatar, Box, Divider, Typography } from "@mui/joy";
 import DrawerUserProfile from "./DrawerUserProfile";
 import SearchBarMessages from "./SearchBarMessages";
+import { useSelector } from "react-redux";
 
 function HeaderChatProfileUser({
   chat,
   search,
   goNext,
   goPrevious,
-  isBlocked
+  isBlocked,
 }) {
-
+  const currentUser = useSelector((state) => state.auth.user);
 
   return (
     <>
@@ -41,7 +42,13 @@ function HeaderChatProfileUser({
             {chat?.names}
           </Typography>
         </Box>
-        {isBlocked && <Typography color="danger">You cannot write to this user</Typography>}
+        {currentUser.blockedUsers?.includes(chat._id) ? (
+          <Typography color="danger">You block this user</Typography>
+        ) : null}
+        {isBlocked ? (
+          <Typography color="danger">You were blocked</Typography>
+        ) : null}
+
         <Box
           sx={{ display: "flex", flexDirection: "row", flexWrap: "no-wrap" }}
         >
@@ -49,8 +56,6 @@ function HeaderChatProfileUser({
             searchMessages={search}
             goNext={goNext}
             goPrevious={goPrevious}
-
-
           />
           <DrawerUserProfile currentContact={chat} />
         </Box>
@@ -62,3 +67,5 @@ function HeaderChatProfileUser({
 }
 
 export default HeaderChatProfileUser;
+//        {(blockAlert && currentUser && (blockAlert?._id === currentUser._id)) ? <Typography color="danger">You were blocked</Typography> : null}
+//{isBlocked ? <Typography color="danger">You blocked the user</Typography> : null}

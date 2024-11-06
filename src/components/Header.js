@@ -13,13 +13,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { setClearMessages } from "../store/chatReducer";
 import {  logout } from "../store/authReducer";
 import { useNavigate } from "react-router-dom";
-import { socket } from "../socket";
 import { useState } from "react";
 import ProfileModal from "./ProfileModal";
+import { useSocket } from "../App";
 
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const socket = useSocket();
 
   const currentUser = useSelector((state) => state.auth.user);
 

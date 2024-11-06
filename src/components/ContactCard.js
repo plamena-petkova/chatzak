@@ -8,6 +8,7 @@ function ContactCard({ contact, lastMessage, selectedUser, selected }) {
   const onlineUsers = useSelector((state) => state.auth.onlineUsers);
 
   const onlineUser = Object.values(onlineUsers).includes(contact._id);
+
   const newMessageIndicator = useSelector(
     (state) => state.chat.newMessageIndicator
   );

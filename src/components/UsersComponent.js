@@ -29,24 +29,29 @@ function UsersComponent() {
     setIsBlocked(currentUser.blockedUsers?.includes(contact._id));
   };
 
-  const onBlockUser = () => {
-    const data = { userId: currentUser._id, blockUser: currentContact };
-    dispatch(blockUserById(data)).then(async () => {
+  const onBlockUser = async () => {
+    const data = { user: currentUser, blockedUser: currentContact };
+    try {
+      await dispatch(blockUserById(data));
       setIsBlocked(true);
-      await dispatch(getUserById(currentUser._id)); // Fetch updated user data
-      socket.emit('block-user', data);
-    });
+      dispatch(getUserById(currentUser._id));
+      socket.emit("block-user", data);
+    } catch (e) {
+      console.error("Error", e);
+    }
   };
 
-  const onUnblockUser = () => {
-    const data = { userId: currentUser._id, blockedUser: currentContact };
-    dispatch(unblockUserById(data)).then(async () => {
-      //socket.emit('unblock-user', data);
+  const onUnblockUser = async () => {
+    const data = { user: currentUser, blockedUser: currentContact };
+    try {
+      await dispatch(unblockUserById(data));
       setIsBlocked(false);
-      await dispatch(getUserById(currentUser._id)); // Fetch updated user data
-    });
+      await dispatch(getUserById(currentUser._id));
+      socket.emit("unblock-user", data);
+    } catch (e) {
+      console.error("Error", e);
+    }
   };
-
 
   return (
     <Grid container sx={{ height: "100%" }}>

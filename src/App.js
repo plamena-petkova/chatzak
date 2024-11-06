@@ -1,40 +1,46 @@
-// App.js
 import ChatView from "./views/ChatView";
 import LoginView from "./views/LoginView";
 import "./App.css";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect} from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RegisterView from "./views/RegisterView";
 import PrivateRoutes from "./components/PrivateRoutes";
 import HomeView from "./views/HomeView";
 import { socket } from "./socket";
+import { useSelector } from "react-redux";
 
 const SocketContext = createContext();
 
 export const useSocket = () => useContext(SocketContext);
 
 function SocketProvider({ children }) {
-  const [socketId, setSocketId] = useState(null);
+  const user = useSelector((state) => state.auth.user);
+
+  const socketConnection = socket;
 
   useEffect(() => {
-    const socketConnection = socket; // replace with your server URL
-    setSocketId(socketConnection);
 
-    socketConnection.on("connect", () => {
-      console.log("Socket connected:", socketConnection.id);
-    });
+    if (socketConnection) {
+      socketConnection.on("connect", () => {
+        if (user) {
+          socketConnection.emit("add-user", user._id);
+        }
+      });
 
-    socketConnection.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
+      socketConnection.on("disconnect", () => {});
+    }
 
     return () => {
+      socketConnection.off("connect");
+      socketConnection.off("disconnect");
       socketConnection.disconnect();
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <SocketContext.Provider value={socketId}>
+    <SocketContext.Provider value={socketConnection}>
       {children}
     </SocketContext.Provider>
   );

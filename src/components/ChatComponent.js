@@ -8,6 +8,7 @@ import {
   createAvatar,
   fetchUsers,
   getUserById,
+  setBlockAlert,
   setOnlineUsers,
 } from "../store/authReducer";
 import {
@@ -38,7 +39,6 @@ function ChatComponent() {
   const messages = useSelector((state) => state.chat.messages);
   const allUsers = useSelector((state) => state.auth.allUsers);
 
-
   const newMessageIndicator = useSelector(
     (state) => state.chat.newMessageIndicator
   );
@@ -47,8 +47,7 @@ function ChatComponent() {
   );
   const searchString = useSelector((state) => state.chat.searchString);
   const currentIndex = useSelector((state) => state.chat.currentIndex);
-
-
+  const blockAlert = useSelector((state) => state.auth.blockAlert);
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
@@ -61,8 +60,9 @@ function ChatComponent() {
 
   const formatDate = (date) => format(new Date(date), "d MMMM yyyy");
 
-
   const handleSendMsg = async (msg) => {
+    if (!socket || !currentChat || !currentUser) return;
+
     await axios.post(sendMessageRoute, {
       from: currentUser?._id,
       to: currentChat?._id,
@@ -83,6 +83,8 @@ function ChatComponent() {
   };
 
   const onDeleteHandler = (messageId) => {
+    if (!socket || !currentChat || !currentUser) return;
+
     dispatch(deleteMessage(messageId));
     const data = {
       from: currentUser._id,
@@ -95,6 +97,8 @@ function ChatComponent() {
   };
 
   const onEditHandler = (messageId, newMessage) => {
+    if (!socket || !currentChat || !currentUser) return;
+
     dispatch(editMessage({ messageId, newMessage }));
     const data = {
       from: currentUser._id,
@@ -160,7 +164,7 @@ function ChatComponent() {
       setDataMessage({});
     }
   }, [currentChat, setDataMessage, dataMessage]);
-  
+
 
   useEffect(() => {
     if (socket) {
@@ -174,11 +178,12 @@ function ChatComponent() {
       socket.on("update-users", (users) => {
         dispatch(setOnlineUsers(users));
       });
-      socket.on("user-blocked", () => {
-        alert('You have been blocked!')
-        console.log('You have been blocked!')
+      socket.on("user-blocked", (data) => {
+        dispatch(setBlockAlert(data));
       });
-     
+      socket.on("user-unblocked", (data) => {
+        dispatch(setBlockAlert(""));
+      });
     }
 
     if (!currentUser.avatarImg)
@@ -191,6 +196,7 @@ function ChatComponent() {
       socket.off("msg-edited");
       socket.off("update-users");
       socket.off("user-blocked");
+      socket.off("user-unblocked");
     };
   }, []);
 
@@ -282,9 +288,6 @@ function ChatComponent() {
     }
   };
 
-
-
-
   return (
     <Grid
       container
@@ -292,7 +295,7 @@ function ChatComponent() {
       sx={{ height: "100%", width: "100%", flexGrow: 1, overflow: "auto" }}
     >
       <Grid xs={12} md={4} sx={{ bgcolor: "#F1F4F8" }}>
-        <UserList headerText={"Chats"}/>
+        <UserList headerText={"Chats"} />
       </Grid>
       <Grid xs={12} md={8} sx={{ pl: 2, pr: 2 }}>
         <Box
@@ -309,7 +312,10 @@ function ChatComponent() {
               search={searchMessages}
               goNext={goToNextMessage}
               goPrevious={goToPreviousMessage}
-              isBlocked={currentChat?.blockedUsers?.includes(currentUser._id) || currentUser?.blockedUsers?.includes(currentChat._id)}
+              isBlocked={
+                blockAlert?._id === currentUser?._id ||
+                currentChat?.blockedUsers?.includes(currentUser._id)
+              }
             />
           </Box>
 
@@ -361,8 +367,11 @@ function ChatComponent() {
               handleSendMsg={handleSendMsg}
               isBlocked={
                 currentUser.blockedUsers?.includes(currentChat._id) ||
-                currentChat.blockedUsers?.includes(currentUser._id)
+                currentChat.blockedUsers?.includes(currentUser._id) ||
+                blockAlert?._id === currentUser?._id ||
+                currentChat?.blockedUsers?.includes(currentUser._id)
               }
+              currentUser={currentUser}
             />
           </Box>
         </Box>
