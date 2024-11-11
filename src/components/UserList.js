@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentChat } from "../store/chatReducer";
 import ContactCard from "./ContactCard";
 import { sendEmailInvite } from "../store/authReducer";
+import { isValidEmail } from "../utils/validEmail";
 
 function UserList({ headerText, currentContactSelect }) {
   const dispatch = useDispatch();
@@ -86,9 +87,7 @@ function UserList({ headerText, currentContactSelect }) {
     setError(false);
   };
 
-  function isValidEmail(email) {
-    return /\S+@\S+\.\S+/.test(email);
-  }
+
 
   return (
     <>
