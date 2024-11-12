@@ -6,11 +6,11 @@ import {
   Link,
   Typography,
 } from "@mui/joy";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../assets/chatzakLogo.png";
 import { useNavigate } from "react-router-dom";
-import { fetchUsers, register } from "../store/authReducer";
-import { useDispatch } from "react-redux";
+import { fetchUsers, register, setEmailHomePage } from "../store/authReducer";
+import { useDispatch, useSelector } from "react-redux";
 import ErrorAlert from "../components/ErrorAlert";
 import { LoadingButton } from "@mui/lab";
 import { useSocket } from "../App";
@@ -21,6 +21,8 @@ function RegisterView() {
   const socket = useSocket();
 
   const navigate = useNavigate();
+
+  const emailHomePage = useSelector((state) => state.auth.emailHomePage)
 
   const [open, setOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -70,9 +72,11 @@ function RegisterView() {
         socket.emit("add-user", result.payload._id);
       }
       navigate("/chat");
+      dispatch(setEmailHomePage(''));
 
     } catch (error) {
       console.error("Error", error.message);
+      dispatch(setEmailHomePage(''));
       if (error.message === "Request failed with status code 404") {
         setErrorMsg("Incorrect username or password");
       } else {
@@ -81,14 +85,19 @@ function RegisterView() {
       setOpen(true);
       return;
     } 
-
-
   };
 
   const onCloseHandler = () => {
     setOpen(false);
     setRegisterValues({ email: "", names: "", username: "", password: "" });
+    dispatch(setEmailHomePage(''));
   };
+
+useEffect(() => {
+  if(emailHomePage) {
+    setRegisterValues({email:emailHomePage})
+  }
+}, [emailHomePage])
 
   return (
     <>
@@ -126,6 +135,7 @@ function RegisterView() {
                 placeholder="Email"
                 name="email"
                 type="email"
+                defaultValue={emailHomePage}
                 required
                 sx={{ m: 1 }}
                 onChange={handleChange}
