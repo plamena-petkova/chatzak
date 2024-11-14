@@ -23,8 +23,7 @@ const initialState = {
   avatarUrl: "",
   onlineUsers:{},
   accessToken:"",
-  blockAlert:{},
-  emailHomePage:'',
+  blockAlert:{}
 };
 
 export const login = createAsyncThunk("user/login", async (data, thunkAPI) => {
@@ -157,9 +156,6 @@ export const authSlice = createSlice({
     setBlockAlert: (state, action) => {
       state.blockAlert = action.payload.blockedUser;
     },
-    setEmailHomePage: (state, action) => {
-      state.emailHomePage = action.payload;
-    },
     logout: (state, action) => {
       state.allUsers = [];
       state.user = {};
@@ -281,6 +277,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout, setAvatar, setContacts, setErrorClear, setOnlineUsers, setBlockAlert, setEmailHomePage } = authSlice.actions;
+export const { logout, setAvatar, setContacts, setErrorClear, setOnlineUsers, setBlockAlert } = authSlice.actions;
 
 export default authSlice.reducer;

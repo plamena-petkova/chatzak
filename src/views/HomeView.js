@@ -12,11 +12,9 @@ import homePic from "../assets/remote-5491798_1280.png";
 import { useEffect, useState } from "react";
 import { isValidEmail } from "../utils/validEmail";
 import { useNavigate } from "react-router-dom";
-import { setEmailHomePage } from "../store/authReducer";
-import { useDispatch, useSelector } from "react-redux";
 
 function HomeView() {
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -25,8 +23,6 @@ function HomeView() {
 
   const text = "Chat Now. Connect Always.";
   const speed = 500;
-
-  const emailHomePage = useSelector((state) => state.auth.emailHomePage);
 
   const [displayedText, setDisplayedText] = useState("");
   const words = text.split(" ");
@@ -53,7 +49,6 @@ function HomeView() {
     }
 
     setEmail(e.target.value);
-    dispatch(setEmailHomePage(e.target.value))
   };
 
   console.log('error', error);
@@ -63,13 +58,6 @@ function HomeView() {
       navigate("/register");
     }
   };
-
-  useEffect(() => {
-    if(emailHomePage) {
-      dispatch(setEmailHomePage(''))
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <Box
@@ -139,7 +127,7 @@ function HomeView() {
           placeholder="Email"
           endDecorator={
             <Button
-              onClick={() => handleRegister()}
+              onClick={handleRegister}
               sx={{ pr: "1rem", mr: "0.25rem" }}
               variant="soft"
             >
