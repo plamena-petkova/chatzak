@@ -11,6 +11,7 @@ import { isValidEmail } from "../utils/validEmail";
 import { useNavigate } from "react-router-dom";
 import { setEmailHomePage } from "../store/authReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { useMediaQuery } from "@mui/material";
 
 function HomeView() {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function HomeView() {
   const navigate = useNavigate();
 
   //const isLargeScreen = useMediaQuery("(min-width:900px)");
-  //const isSmallScreen = useMediaQuery("(max-width:899px)");
+  const isSmallScreen = useMediaQuery("(max-width:899px)");
 
   const text = "Chat Now. Connect Always.";
   const speed = 500;
@@ -145,7 +146,7 @@ function HomeView() {
             </Button>
           }
           sx={{
-            maxWidth: "50%",
+            maxWidth: isSmallScreen ? "70%" : "50%",
             justifyContent: "center",
             textAlign: "center",
             borderRadius: "2rem",
@@ -164,7 +165,15 @@ function HomeView() {
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "center", pt: "1rem" }}>
-        <img src={homePic} alt="homePicture" width={"600px"} height={"600px"} />
+        <img
+          src={homePic}
+          alt="homePicture"
+          style={{
+            width: "50%",
+            height: "auto",
+            maxWidth: { xs: "80px", sm: "100px", md: "300px" },
+          }}
+        />
       </Box>
       <Grid
         container
