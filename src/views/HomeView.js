@@ -1,13 +1,10 @@
-import {
-  Box,
-  Button,
-  Input,
-  Typography,
-} from "@mui/joy";
+import { Box, Button, Grid, Input, Typography } from "@mui/joy";
 import logo from "../assets/chatzakLogo.png";
 import "../App.css";
 import SendIcon from "@mui/icons-material/Send";
-
+import chatBubbleIcon from "../assets/chatBubble_icon.png";
+import emojiIcon from "../assets/emoji_icon_heart.png";
+import shareIcon from "../assets/share_icon.png";
 import homePic from "../assets/remote-5491798_1280.png";
 import { useEffect, useState } from "react";
 import { isValidEmail } from "../utils/validEmail";
@@ -53,10 +50,10 @@ function HomeView() {
     }
 
     setEmail(e.target.value);
-    dispatch(setEmailHomePage(e.target.value))
+    dispatch(setEmailHomePage(e.target.value));
   };
 
-  console.log('error', error);
+  console.log("error", error);
 
   const handleRegister = () => {
     if (isValidEmail(email)) {
@@ -65,11 +62,11 @@ function HomeView() {
   };
 
   useEffect(() => {
-    if(emailHomePage) {
-      dispatch(setEmailHomePage(''))
+    if (emailHomePage) {
+      dispatch(setEmailHomePage(""));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box
@@ -154,8 +151,8 @@ function HomeView() {
             borderRadius: "2rem",
             pl: "1rem",
             pr: "1rem",
-            pb:"0.5rem",
-            pt:"0.5rem",
+            pb: "0.5rem",
+            pt: "0.5rem",
             alignItems: "center",
             mx: "auto",
             alignContent: "center",
@@ -165,9 +162,75 @@ function HomeView() {
           data-testid="email-input"
         />
       </Box>
-     <Box sx={{display:'flex', justifyContent:'center', pt:'1rem'}}>
-      <img src={homePic} alt="homePicture" width={'600px'} height={'600px'} />
-     </Box>
+
+      <Box sx={{ display: "flex", justifyContent: "center", pt: "1rem" }}>
+        <img src={homePic} alt="homePicture" width={"600px"} height={"600px"} />
+      </Box>
+      <Grid
+        container
+        spacing={4}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          marginTop: "2rem",
+          maxWidth: "70vw",
+          margin: "0 auto",
+        }}
+      >
+        <Grid md={4} xs={12}>
+          <Box>
+            <img
+              src={chatBubbleIcon}
+              alt="chat_bubble"
+              width={"100px"}
+              height={"100px"}
+            />
+            <Typography sx={{ fontSize: "xl", fontWeight: "bold" }}>
+              Instant Messaging
+            </Typography>
+            <Typography fontSize={"md"}>
+              Chat instantly with your friends or community members through a
+              quick and seamless one-on-one messaging experience.
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid md={4} xs={12}>
+          <Box>
+            <img
+              src={emojiIcon}
+              alt="emoji_icon_heart"
+              width={"100px"}
+              height={"100px"}
+            />
+            <Typography sx={{ fontSize: "xl", fontWeight: "bold" }}>
+              Send Emojis
+            </Typography>
+            <Typography fontSize={"md"}>
+              Express yourself better with a variety of fun and creative emojis.
+              Add a personal touch to your conversations effortlessly!
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid md={4} xs={12}>
+          <Box>
+            <img
+              src={shareIcon}
+              alt="share_icon"
+              width={"100px"}
+              height={"100px"}
+            />
+            <Typography sx={{ fontSize: "xl", fontWeight: "bold" }}>
+              Share Pictures
+            </Typography>
+            <Typography fontSize={"md"}>
+              Easily share your favorite moments by sending pictures to your
+              friends or community. Keep your memories alive with just a click!
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 }
