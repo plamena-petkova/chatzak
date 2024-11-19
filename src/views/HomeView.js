@@ -6,6 +6,9 @@ import chatBubbleIcon from "../assets/chatBubble_icon.png";
 import emojiIcon from "../assets/emoji_icon_heart.png";
 import shareIcon from "../assets/share_icon.png";
 import homePic from "../assets/remote-5491798_1280.png";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import { useEffect, useState } from "react";
 import { isValidEmail } from "../utils/validEmail";
 import { useNavigate } from "react-router-dom";
@@ -74,7 +77,7 @@ function HomeView() {
       sx={{
         height: "100vh",
         width: "98.93vw",
-        background: "linear-gradient(26deg, #26a1df 20%, #29a5ae 74%)",
+        background: "linear-gradient(136deg, #26a1df 20%, #1b4680)",
       }}
     >
       <Box
@@ -164,12 +167,12 @@ function HomeView() {
         />
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "center", pt: "1rem" }}>
+      <Box sx={{ display: "flex", justifyContent: "center", pt: "1rem", mb: isSmallScreen ? '5rem' : '1rem' }}>
         <img
           src={homePic}
           alt="homePicture"
           style={{
-            width: "50%",
+            width: isSmallScreen ? "80%" :'50%',
             height: "auto",
             maxWidth: { xs: "80px", sm: "100px", md: "300px" },
           }}
@@ -183,9 +186,9 @@ function HomeView() {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          marginTop: "2rem",
           maxWidth: "70vw",
           margin: "0 auto",
+          pb:"2rem"
         }}
       >
         <Grid md={4} xs={12}>
@@ -237,6 +240,46 @@ function HomeView() {
               Easily share your favorite moments by sending pictures to your
               friends or community. Keep your memories alive with just a click!
             </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        spacing={10}
+        sx={{ background: "#1b4680", margin: "0 auto" }}
+      >
+        <Grid xs={12} md={6}>
+          <Typography sx={{ color: "white" }}>
+            Stay connected anytime, anywhere with ChatZak. Send messages,
+            emojis, and more—all users in one place. Try it
+            today! ChatZak keeps everyone together—effortlessly connect, share,
+            and communicate in one platform. Whether for friends, family,
+            or colleagues, experience modern chatting like never before. Sign up
+            and join the conversation today!
+          </Typography>
+        </Grid>
+        <Grid xs={12} md={3}>
+          <Box>
+            <Typography sx={{ color: "white" }}>About</Typography>
+            <Typography sx={{ color: "white" }}>Pricing</Typography>
+            <Typography sx={{ color: "white" }}>Cookie Policy</Typography>
+          </Box>
+        </Grid>
+        <Grid xs={12} md={3}>
+          <Box>
+            <Typography sx={{ color: "white" }}>Contact Us:</Typography>
+            <Typography sx={{ color: "white" }}>chatzak@gmail.com</Typography>
+            <Box>
+              <Button variant="plain">
+                <InstagramIcon color="action" />
+              </Button>
+              <Button variant="plain">
+                <FacebookIcon color="action" />
+              </Button>
+              <Button variant="plain">
+                <GitHubIcon color="action" />
+              </Button>
+            </Box>
           </Box>
         </Grid>
       </Grid>
