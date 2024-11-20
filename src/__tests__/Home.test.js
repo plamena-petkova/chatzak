@@ -6,6 +6,21 @@ import HomeView from "../views/HomeView";
 import { setEmailHomePage } from "../store/authReducer";
 import '@testing-library/jest-dom';
 
+
+// Mocking SwiperComponent and other necessary components
+jest.mock('../components/SwiperComponent', () => () => <div>Mocked Swiper Component</div>);
+jest.mock('../components/CardComponentHome', () => {
+  return function MockCardComponentHome({ cardText, cardHeading, cardIcon }) {
+    return (
+      <div>
+        <h2>{cardHeading}</h2>
+        <p>{cardText}</p>
+        {cardIcon}
+      </div>
+    );
+  };
+});
+
 // Mock the Redux hooks
 jest.mock("react-redux", () => ({
   useDispatch: jest.fn(),
@@ -17,6 +32,8 @@ jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: jest.fn(),
 }));
+
+jest.mock('swiper');
 
 describe("HomeView Component", () => {
   let mockDispatch;
@@ -46,6 +63,7 @@ describe("HomeView Component", () => {
     // Assert on initial elements
     expect(screen.getByRole('textbox')).toBeInTheDocument();
     expect(screen.getAllByTestId("button").length).toBe(2); // Login and Sign Up buttons
+    expect(screen.getByText(/Mocked Swiper Component/i)).toBeInTheDocument();
   });
 
   test("updates the email input and calls dispatch on input change", () => {

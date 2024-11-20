@@ -189,16 +189,16 @@ function HomeView() {
           }}
         />
       </Box>
+      <Box sx={{backgroundColor:'#F0F0F0'}}>
       <Grid
         container
         spacing={4}
         sx={{
-          display: "flex",
-          justifyContent: "space-around",
+          maxWidth:'90vw',
+          margin:'0 auto',
           alignItems: "center",
           textAlign: "center",
           pb: "2rem",
-          backgroundColor:'#F0F0F0'
         }}
       >
         <Grid md={4} xs={12}>
@@ -253,6 +253,8 @@ function HomeView() {
           </Box>
         </Grid>
       </Grid>
+      </Box>
+
       <Box
         sx={{
           display: "flex",
