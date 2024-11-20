@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { setEmailHomePage } from "../store/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mui/material";
+import SwiperComponent from "../components/SwiperComponent";
 
 function HomeView() {
   const dispatch = useDispatch();
@@ -75,8 +76,8 @@ function HomeView() {
   return (
     <Box
       sx={{
-        height: "100vh",
-        width: "98.93vw",
+        height: "600px",
+        width: "100vw",
         background: "linear-gradient(136deg, #26a1df 20%, #1b4680)",
       }}
     >
@@ -98,6 +99,7 @@ function HomeView() {
           <Button
             component="a"
             variant="solid"
+            color="success"
             sx={{ mr: 4 }}
             href="/login"
             data-testid="button"
@@ -107,6 +109,7 @@ function HomeView() {
           <Button
             component="a"
             variant="solid"
+            color="danger"
             sx={{ mr: 4 }}
             href="/register"
             data-testid="button"
@@ -167,12 +170,20 @@ function HomeView() {
         />
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "center", pt: "1rem", mb: isSmallScreen ? '5rem' : '1rem' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          pt: "1rem",
+          mb: isSmallScreen ? "5rem" : "1rem",
+          background:'#FFFFF'
+        }}
+      >
         <img
           src={homePic}
           alt="homePicture"
           style={{
-            width: isSmallScreen ? "80%" :'50%',
+            width: isSmallScreen ? "80%" : "50%",
             height: "auto",
             maxWidth: { xs: "80px", sm: "100px", md: "300px" },
           }}
@@ -183,12 +194,11 @@ function HomeView() {
         spacing={4}
         sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-around",
           alignItems: "center",
           textAlign: "center",
-          maxWidth: "70vw",
-          margin: "0 auto",
-          pb:"2rem"
+          pb: "2rem",
+          backgroundColor:'#F0F0F0'
         }}
       >
         <Grid md={4} xs={12}>
@@ -243,6 +253,46 @@ function HomeView() {
           </Box>
         </Grid>
       </Grid>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+           backgroundColor:'#F0F0F0'
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "30px",
+            fontWeight: "600",
+            alignSelf: "center",
+            pt: "4rem",
+          }}
+        >
+          Amazing Features
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignContent: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "20px",
+              fontWeight: "400",
+              alignSelf: "center",
+              p: "1.5rem",
+            }}
+          >
+            Features that every chat application needs! Whether you want to send
+            a 1:1 message, send a picture or emojis.{" "}
+          </Typography>
+        </Box>
+
+        <SwiperComponent />
+      </Box>
       <Grid
         container
         spacing={10}
@@ -251,13 +301,12 @@ function HomeView() {
         <Grid xs={12} md={6}>
           <Typography sx={{ color: "white" }}>
             Stay connected anytime, anywhere with ChatZak. Send messages,
-            emojis, and more—all users in one place. Try it
-            today! ChatZak keeps everyone together—effortlessly connect, share,
-            and communicate in one platform. Whether for friends, family,
-            or colleagues, experience modern chatting like never before. Sign up
-            and join the conversation today!
+            emojis, and more—all users in one place. Try it today! ChatZak keeps
+            everyone together—effortlessly connect, share, and communicate in
+            one platform.
           </Typography>
         </Grid>
+
         <Grid xs={12} md={3}>
           <Box>
             <Typography sx={{ color: "white" }}>About</Typography>
