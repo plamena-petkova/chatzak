@@ -8,6 +8,7 @@ import PrivateRoutes from "./components/PrivateRoutes";
 import HomeView from "./views/HomeView";
 import { socket } from "./socket";
 import { useSelector } from "react-redux";
+import CallView from "./views/CallView";
 
 const SocketContext = createContext();
 
@@ -56,6 +57,7 @@ function App() {
           <Route path="/register" element={<RegisterView />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/chat" element={<ChatView />} />
+            <Route path="/call/:chatId" element={<CallView />} />
           </Route>
         </Routes>
       </BrowserRouter>

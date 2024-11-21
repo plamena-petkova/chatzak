@@ -1,7 +1,22 @@
-import { Avatar, Box, Divider, Typography } from "@mui/joy";
+import {
+  Avatar,
+  Box,
+  Button,
+  DialogActions,
+  Divider,
+  Modal,
+  ModalDialog,
+  Typography,
+} from "@mui/joy";
 import DrawerUserProfile from "./DrawerUserProfile";
 import SearchBarMessages from "./SearchBarMessages";
+import CallIcon from "@mui/icons-material/Call";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import { IconButton } from "@mui/joy";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import { useNavigate } from "react-router-dom";
 
 function HeaderChatProfileUser({
   chat,
@@ -10,10 +25,63 @@ function HeaderChatProfileUser({
   goPrevious,
   isBlocked,
 }) {
+  const navigate = useNavigate();
+
   const currentUser = useSelector((state) => state.auth.user);
+  const onlineUsers = useSelector((state) => state.auth.onlineUsers);
+
+  const onlineUser = Object.values(onlineUsers).includes(chat._id);
+
+  const [openVideoCallModal, setOpenVideoCallModal] = useState(false);
+
+  const handleCallMeeting = () => {
+    setOpenVideoCallModal(false);
+    const chatId = chat._id;
+    navigate("/call/" + chatId);
+  };
 
   return (
     <>
+      {openVideoCallModal && (
+        <Modal
+          open={openVideoCallModal}
+          onClose={() => setOpenVideoCallModal(!openVideoCallModal)}
+        >
+          <ModalDialog
+            variant="outlined"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Avatar size="lg" key={chat?._id} src={`${chat?.avatarImg}`}>
+              {chat._id && chat?.avatarImg ? chat?.avatar : chat.names[0]}
+            </Avatar>
+            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+              {chat?.names}
+            </Typography>
+            <Typography>Start video call</Typography>
+
+            <DialogActions>
+              <IconButton
+                variant="solid"
+                color="success"
+                onClick={handleCallMeeting}
+              >
+                <VideocamIcon />
+              </IconButton>
+              <IconButton
+                variant="solid"
+                color="danger"
+                onClick={() => setOpenVideoCallModal(false)}
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogActions>
+          </ModalDialog>
+        </Modal>
+      )}
       <Box
         sx={{
           display: "flex",
@@ -52,6 +120,18 @@ function HeaderChatProfileUser({
         <Box
           sx={{ display: "flex", flexDirection: "row", flexWrap: "no-wrap" }}
         >
+          <Box>
+            {" "}
+              <Button
+                variant="plain"
+                onClick={() => {
+                  setOpenVideoCallModal(!openVideoCallModal);
+                }}
+                disabled={!onlineUser}
+              >
+                <CallIcon sx={{ color: onlineUser ? "#0B0D0E" : "gray" }} />
+              </Button>
+          </Box>
           <SearchBarMessages
             searchMessages={search}
             goNext={goNext}
@@ -67,5 +147,4 @@ function HeaderChatProfileUser({
 }
 
 export default HeaderChatProfileUser;
-//        {(blockAlert && currentUser && (blockAlert?._id === currentUser._id)) ? <Typography color="danger">You were blocked</Typography> : null}
-//{isBlocked ? <Typography color="danger">You blocked the user</Typography> : null}
+

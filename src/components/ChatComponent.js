@@ -165,7 +165,6 @@ function ChatComponent() {
     }
   }, [currentChat, setDataMessage, dataMessage]);
 
-
   useEffect(() => {
     if (socket) {
       socket.on("msg-receive", (data) => {
@@ -318,7 +317,6 @@ function ChatComponent() {
               }
             />
           </Box>
-
           <Box
             ref={scrollableContainerRef}
             sx={{
