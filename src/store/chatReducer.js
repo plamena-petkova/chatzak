@@ -13,7 +13,9 @@ const initialState = {
   newMessageIndicator: {},
   searchString:'',
   currentIndex:0,
-  indexes:0
+  indexes:0,
+  isMeetingActive:false,
+  currentRoom:''
 };
 
 export const getAllMessages = createAsyncThunk(
@@ -78,6 +80,12 @@ export const chatSlice = createSlice({
     },
     setIndexes: (state, action) => {
       state.indexes = action.payload;
+    },
+    setIsMeetingActive: (state, action) => {
+      state.isMeetingActive = action.payload;
+    },
+    setCurrentRoom: (state, action) => {
+      state.currentRoom = action.payload;
     },
   },
   extraReducers(builder) {
@@ -149,7 +157,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator, setSearchString, setCurrentIndex, setIndexes } =
+export const { setCurrentChat, setMessages, setClearMessages, setNewMessageIndicator, setSearchString, setCurrentIndex, setIndexes, setIsMeetingActive, setCurrentRoom } =
   chatSlice.actions;
 
 export default chatSlice.reducer;

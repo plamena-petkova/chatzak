@@ -13,10 +13,12 @@ import SearchBarMessages from "./SearchBarMessages";
 import CallIcon from "@mui/icons-material/Call";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import { IconButton } from "@mui/joy";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../App";
+import { setCurrentRoom } from "../store/chatReducer";
 
 function HeaderChatProfileUser({
   chat,
@@ -26,18 +28,28 @@ function HeaderChatProfileUser({
   isBlocked,
 }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const socket = useSocket();
 
   const currentUser = useSelector((state) => state.auth.user);
   const onlineUsers = useSelector((state) => state.auth.onlineUsers);
+;
 
   const onlineUser = Object.values(onlineUsers).includes(chat._id);
 
   const [openVideoCallModal, setOpenVideoCallModal] = useState(false);
 
   const handleCallMeeting = () => {
+    const roomName = `Room-${currentUser._id}-${chat._id}`;
     setOpenVideoCallModal(false);
-    const chatId = chat._id;
-    navigate("/call/" + chatId);
+    const data =  { to: chat, from: currentUser, roomName }
+    dispatch(setCurrentRoom(roomName))
+    socket.emit("call-user", data);
+    if(roomName) {
+      navigate(`/call/${roomName}`);
+    }
+    
   };
 
   return (
@@ -127,7 +139,7 @@ function HeaderChatProfileUser({
                 onClick={() => {
                   setOpenVideoCallModal(!openVideoCallModal);
                 }}
-                disabled={!onlineUser}
+                
               >
                 <CallIcon sx={{ color: onlineUser ? "#0B0D0E" : "gray" }} />
               </Button>

@@ -1,5 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Grid } from "@mui/joy";
+import {
+  Avatar,
+  Box,
+  Button,
+  Grid,
+  Modal,
+  ModalDialog,
+  Typography,
+} from "@mui/joy";
 import { useEffect, useRef, useState } from "react";
 import { sendMessageRoute } from "../utils/apiRoutes";
 import axios from "axios";
@@ -18,27 +26,32 @@ import {
   getLastMessages,
   setCurrentChat,
   setCurrentIndex,
+  setCurrentRoom,
   setIndexes,
+  setIsMeetingActive,
   setNewMessageIndicator,
 } from "../store/chatReducer";
 import ChatInput from "../components/ChatInput";
 import MessageComponent from "./MessageComponent";
-import { useMediaQuery } from "@mui/material";
+import { DialogActions, useMediaQuery } from "@mui/material";
 import HeaderChatProfileUser from "./HeaderChatProfileUser";
 import UserList from "./UserList";
 import { format, isSameDay } from "date-fns";
 import { useSocket } from "../App";
+import { JitsiMeeting } from "@jitsi/react-sdk";
+import { useNavigate } from "react-router-dom";
 
 function ChatComponent() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const socket = useSocket();
 
+  //const jitsiContainerRef = useRef(null);
   const currentChat = useSelector((state) => state.chat.currentChat);
   const currentUser = useSelector((state) => state.auth.user);
   const messages = useSelector((state) => state.chat.messages);
   const allUsers = useSelector((state) => state.auth.allUsers);
-
   const newMessageIndicator = useSelector(
     (state) => state.chat.newMessageIndicator
   );
@@ -48,6 +61,8 @@ function ChatComponent() {
   const searchString = useSelector((state) => state.chat.searchString);
   const currentIndex = useSelector((state) => state.chat.currentIndex);
   const blockAlert = useSelector((state) => state.auth.blockAlert);
+  const isMeetingActive = useSelector((state) => state.chat.isMeetingActive);
+  const currentRoom = useSelector((state) => state.chat.currentRoom)
 
   const [message, setMessage] = useState("");
   const [arrivalMsg, setArrivalMsg] = useState("");
@@ -55,6 +70,8 @@ function ChatComponent() {
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
   const [arrayFoundMessages, setArrayFoundMessages] = useState([]);
+  const [incomingCall, setIncomingCall] = useState(null);
+  //const [currentRoom, setCurrentRoom] = useState(null);
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
@@ -183,6 +200,11 @@ function ChatComponent() {
       socket.on("user-unblocked", (data) => {
         dispatch(setBlockAlert(""));
       });
+      socket.on("call-received", (data) => {
+        console.log("Data", data);
+        setIncomingCall(true);
+        dispatch(setCurrentRoom(data.roomName));
+      });
     }
 
     if (!currentUser.avatarImg)
@@ -195,6 +217,7 @@ function ChatComponent() {
       socket.off("msg-edited");
       socket.off("update-users");
       socket.off("user-blocked");
+      socket.off("call-received");
       socket.off("user-unblocked");
     };
   }, []);
@@ -287,6 +310,24 @@ function ChatComponent() {
     }
   };
 
+  const acceptCall = () => {
+    console.log("Accepted call");
+
+    if (incomingCall) {
+      dispatch(setIsMeetingActive(true));
+      navigate("/call/"+currentRoom);
+    }
+  };
+
+  const declineCall = () => {
+    console.log("declined call");
+
+    if (incomingCall) {
+      dispatch(setIsMeetingActive(false));
+    }
+    return;
+  };
+
   return (
     <Grid
       container
@@ -297,6 +338,43 @@ function ChatComponent() {
         <UserList headerText={"Chats"} />
       </Grid>
       <Grid xs={12} md={8} sx={{ pl: 2, pr: 2 }}>
+        {incomingCall && (
+          <>
+            <Modal
+              open={incomingCall}
+              onClose={() => setIncomingCall(!incomingCall)}
+            >
+              <ModalDialog
+                variant="outlined"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar
+                  size="lg"
+                  key={currentChat?._id}
+                  src={`${currentChat?.avatarImg}`}
+                >
+                  {currentChat._id && currentChat?.avatarImg
+                    ? currentChat?.avatar
+                    : currentChat.names[0]}
+                </Avatar>
+                <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+                  {currentChat?.names}
+                </Typography>
+                <Typography>Start video call</Typography>
+
+                <DialogActions>
+                  <Button onClick={acceptCall}>Accept</Button>
+                  <Button onClick={declineCall}>Decline</Button>
+                </DialogActions>
+              </ModalDialog>
+            </Modal>
+          </>
+        )}
+
         <Box
           sx={{
             display: "flex",
