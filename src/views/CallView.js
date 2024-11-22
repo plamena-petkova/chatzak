@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function CallView() {
+
+  const navigate = useNavigate();
+
   const jitsiContainerRef = useRef(null);
   const roomName = useSelector((state) => state.chat.currentRoom);
   const currentUser = useSelector((state) => state.auth.user);
@@ -25,10 +29,15 @@ function CallView() {
 
     const api = new window.JitsiMeetExternalAPI(domain, options);
 
+    api.addListener('readyToClose', () => {
+      console.log('Meeting has ended or iframe is about to close');
+      navigate('/chat');
+    });
+
     return () => {
       api.dispose(); // Clean up on component unmount
     };
-  }, [roomName, currentUser]);
+  }, [roomName, currentUser,navigate]);
 
   return (
     <div
