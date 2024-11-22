@@ -38,7 +38,6 @@ import HeaderChatProfileUser from "./HeaderChatProfileUser";
 import UserList from "./UserList";
 import { format, isSameDay } from "date-fns";
 import { useSocket } from "../App";
-import { JitsiMeeting } from "@jitsi/react-sdk";
 import { useNavigate } from "react-router-dom";
 
 function ChatComponent() {
@@ -47,7 +46,6 @@ function ChatComponent() {
 
   const socket = useSocket();
 
-  //const jitsiContainerRef = useRef(null);
   const currentChat = useSelector((state) => state.chat.currentChat);
   const currentUser = useSelector((state) => state.auth.user);
   const messages = useSelector((state) => state.chat.messages);
@@ -61,7 +59,6 @@ function ChatComponent() {
   const searchString = useSelector((state) => state.chat.searchString);
   const currentIndex = useSelector((state) => state.chat.currentIndex);
   const blockAlert = useSelector((state) => state.auth.blockAlert);
-  const isMeetingActive = useSelector((state) => state.chat.isMeetingActive);
   const currentRoom = useSelector((state) => state.chat.currentRoom)
 
   const [message, setMessage] = useState("");
@@ -70,8 +67,7 @@ function ChatComponent() {
   const [dataMessage, setDataMessage] = useState({});
   const [doScroll, setDoScroll] = useState(true);
   const [arrayFoundMessages, setArrayFoundMessages] = useState([]);
-  const [incomingCall, setIncomingCall] = useState(null);
-  //const [currentRoom, setCurrentRoom] = useState(null);
+  const [incomingCall, setIncomingCall] = useState({});
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
@@ -202,7 +198,7 @@ function ChatComponent() {
       });
       socket.on("call-received", (data) => {
         console.log("Data", data);
-        setIncomingCall(true);
+        setIncomingCall(data);
         dispatch(setCurrentRoom(data.roomName));
       });
     }
@@ -315,7 +311,7 @@ function ChatComponent() {
 
     if (incomingCall) {
       dispatch(setIsMeetingActive(true));
-      navigate("/call/"+currentRoom);
+      navigate("/call/" + currentRoom);
     }
   };
 
@@ -338,11 +334,11 @@ function ChatComponent() {
         <UserList headerText={"Chats"} />
       </Grid>
       <Grid xs={12} md={8} sx={{ pl: 2, pr: 2 }}>
-        {incomingCall && (
+        {incomingCall?.from && (
           <>
             <Modal
-              open={incomingCall}
-              onClose={() => setIncomingCall(!incomingCall)}
+              open={incomingCall.from}
+              onClose={() => setIncomingCall({})}
             >
               <ModalDialog
                 variant="outlined"
@@ -354,15 +350,15 @@ function ChatComponent() {
               >
                 <Avatar
                   size="lg"
-                  key={currentChat?._id}
-                  src={`${currentChat?.avatarImg}`}
+                  key={incomingCall?.from._id}
+                  src={`${incomingCall?.from?.avatarImg}`}
                 >
-                  {currentChat._id && currentChat?.avatarImg
-                    ? currentChat?.avatar
-                    : currentChat.names[0]}
+                  {incomingCall?.from?._id && incomingCall?.from?.avatarImg
+                    ? incomingCall?.from?.avatarImg
+                    : incomingCall?.from?.names[0]}
                 </Avatar>
                 <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-                  {currentChat?.names}
+                  {incomingCall?.from?.names}
                 </Typography>
                 <Typography>Start video call</Typography>
 

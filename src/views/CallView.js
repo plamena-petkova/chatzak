@@ -1,65 +1,42 @@
-import { JitsiMeeting } from "@jitsi/react-sdk";
-import { Box, Typography } from "@mui/joy";
-import { useDispatch, useSelector } from "react-redux";
-import { setIsMeetingActive } from "../store/chatReducer";
+import React, { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 
 function CallView() {
-  const dispatch = useDispatch();
+  const jitsiContainerRef = useRef(null);
+  const roomName = useSelector((state) => state.chat.currentRoom);
+  const currentUser = useSelector((state) => state.auth.user);
 
-  const currentRoom = useSelector((state) => state.chat.currentRoom);
-  const currentUser = useSelector((state) => state.auth.currentUser);
+
+  useEffect(() => {
+    const domain = "8x8.vc"; // Jitsi domain for JaaS
+    const options = {
+      roomName: roomName,
+      parentNode: jitsiContainerRef.current,
+      userInfo: { displayName: currentUser.names },
+      jwt: currentUser.jitsiAccessToken,
+      interfaceConfigOverwrite: {
+        TOOLBAR_BUTTONS: ["microphone", "camera", "hangup"], // Limit toolbar
+      },
+      configOverwrite: {
+        startWithAudioMuted: true,
+        startWithVideoMuted: true,
+      },
+    };
+
+    const api = new window.JitsiMeetExternalAPI(domain, options);
+
+    return () => {
+      api.dispose(); // Clean up on component unmount
+    };
+  }, [roomName, currentUser]);
 
   return (
-    <Box>
-      <JitsiMeeting
-        domain={'meet.jit.si'}
-        roomName={currentRoom}
-        configOverwrite={{
-          startWithAudioMuted: true,
-          disableModeratorIndicator: true,
-          startScreenSharing: true,
-          enableEmailInStats: false,
-        }}
-        interfaceConfigOverwrite={{
-          DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
-        }}
-        userInfo={{
-          displayName: {currentUser},
-        }}
-        onApiReady={(externalApi) => {
-          // here you can attach custom event listeners to the Jitsi Meet External API
-          // you can also store it locally to execute commands
-        }}
-        getIFrameRef={(iframeRef) => {
-          iframeRef.style.height = "400px";
-        }}
-      />
-    </Box>
+    <div
+      id="jaas-container"
+      style={{ height: "100vh", width: "100%" }}
+      ref={jitsiContainerRef}
+    ></div>
   );
 }
 
 export default CallView;
-
-/*
-<Box sx={{width:'100vw', height:'100vh'}}>
-             <JitsiMeeting
-            roomName={currentRoom}
-            getIFrameRef={(iframe) => {
-              iframe.style.height = "100%";
-              iframe.style.width = "100%";
-            }}
-            userInfo={{
-              displayName: currentUser?.names,
-            }}
-            configOverwrite={{
-              prejoinPageEnabled: false,
-            }}
-            onReadyToClose={() => dispatch(setIsMeetingActive(false))}
-          />
-    
- 
-            
-           
-        </Box>
-    )
-*/

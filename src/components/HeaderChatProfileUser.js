@@ -41,7 +41,7 @@ function HeaderChatProfileUser({
   const [openVideoCallModal, setOpenVideoCallModal] = useState(false);
 
   const handleCallMeeting = () => {
-    const roomName = `Room-${currentUser._id}-${chat._id}`;
+    const roomName = `${process.env.REACT_APP_JITSI_APP_ID}/Room-${currentUser._id}-${chat._id}`;
     setOpenVideoCallModal(false);
     const data =  { to: chat, from: currentUser, roomName }
     dispatch(setCurrentRoom(roomName))
@@ -139,7 +139,7 @@ function HeaderChatProfileUser({
                 onClick={() => {
                   setOpenVideoCallModal(!openVideoCallModal);
                 }}
-                
+              disabled={!onlineUser}    
               >
                 <CallIcon sx={{ color: onlineUser ? "#0B0D0E" : "gray" }} />
               </Button>

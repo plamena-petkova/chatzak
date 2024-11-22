@@ -57,7 +57,7 @@ function App() {
           <Route path="/register" element={<RegisterView />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/chat" element={<ChatView />} />
-            <Route path="/call/:chatId" element={<CallView />} />
+            <Route path="/call/*" element={<CallView />} />
           </Route>
         </Routes>
       </BrowserRouter>
