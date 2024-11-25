@@ -8,6 +8,7 @@ import {
   getUserByIdRoute,
   invitationRoute,
   loginRoute,
+  refreshTokenRoute,
   registerRoute,
   unblockUserByIdRoute,
   updateAvatarRoute,
@@ -23,6 +24,7 @@ const initialState = {
   avatarUrl: "",
   onlineUsers:{},
   accessToken:"",
+  jitsiAccessToken:'',
   blockAlert:{},
   emailHomePage:''
 };
@@ -144,6 +146,13 @@ export const sendEmailInvite = createAsyncThunk("user/send-invitation", async (d
   return response;
 });
 
+export const refreshJitsiAccessToken = createAsyncThunk("user/refresh-jitsi-access-tokebn", async (data) => {
+
+  const response = await axios.post(`${refreshTokenRoute}`, data);
+
+  return response;
+});
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -169,6 +178,7 @@ export const authSlice = createSlice({
       state.error = null;
       state.onlineUsers = {};
       state.accessToken = "";
+      state.jitsiAccessToken = "";
     },
   },
   extraReducers(builder) {
@@ -179,6 +189,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.user = action.payload;
       state.accessToken = action.payload.accessToken;
+      state.jitsiAccessToken = action.payload.sessionUser.jitsiAccessToken;
     });
     builder.addCase(login.rejected, (state, action) => {
       state.isLoading = false;
@@ -190,6 +201,7 @@ export const authSlice = createSlice({
     builder.addCase(register.fulfilled, (state, action) => {
       state.isLoading = false;
       state.user = action.payload;
+      state.jitsiAccessToken = action.payload.sessionUser.jitsiAccessToken;
     });
     builder.addCase(register.rejected, (state, action) => {
       state.isLoading = false;
@@ -275,6 +287,17 @@ export const authSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(sendEmailInvite.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(refreshJitsiAccessToken.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(refreshJitsiAccessToken.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.jitsiAccessToken = action.payload;
+    });
+    builder.addCase(refreshJitsiAccessToken.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });

@@ -16,3 +16,4 @@ export const blockUserByIdRoute =  `${host}/api/auth/users/block/`
 export const unblockUserByIdRoute =  `${host}/api/auth/users/unblock/`
 export const deleteUserByIdRoute = `${host}/api/auth/users/delete/`
 export const invitationRoute = `${host}/api/auth/send-invitation`
+export const refreshTokenRoute = `${host}/api/auth/refresh-token`
