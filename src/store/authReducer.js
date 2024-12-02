@@ -146,11 +146,11 @@ export const sendEmailInvite = createAsyncThunk("user/send-invitation", async (d
   return response;
 });
 
-export const refreshJitsiAccessToken = createAsyncThunk("user/refresh-jitsi-access-tokebn", async (data) => {
+export const refreshJitsiAccessToken = createAsyncThunk("user/refresh-jitsi-access-token", async (data) => {
 
   const response = await axios.post(`${refreshTokenRoute}`, data);
 
-  return response;
+  return response.data;
 });
 
 export const authSlice = createSlice({
@@ -189,7 +189,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.user = action.payload;
       state.accessToken = action.payload.accessToken;
-      state.jitsiAccessToken = action.payload.sessionUser.jitsiAccessToken;
+      state.jitsiAccessToken = action.payload.jitsiAccessToken;
     });
     builder.addCase(login.rejected, (state, action) => {
       state.isLoading = false;
@@ -201,7 +201,7 @@ export const authSlice = createSlice({
     builder.addCase(register.fulfilled, (state, action) => {
       state.isLoading = false;
       state.user = action.payload;
-      state.jitsiAccessToken = action.payload.sessionUser.jitsiAccessToken;
+      state.jitsiAccessToken = action.payload.jitsiAccessToken;
     });
     builder.addCase(register.rejected, (state, action) => {
       state.isLoading = false;
@@ -295,6 +295,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(refreshJitsiAccessToken.fulfilled, (state, action) => {
       state.isLoading = false;
+      console.log('Data', action.payload)
       state.jitsiAccessToken = action.payload;
     });
     builder.addCase(refreshJitsiAccessToken.rejected, (state, action) => {

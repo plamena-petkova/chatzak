@@ -10,7 +10,6 @@ import {
 } from "@mui/joy";
 import DrawerUserProfile from "./DrawerUserProfile";
 import SearchBarMessages from "./SearchBarMessages";
-import CallIcon from "@mui/icons-material/Call";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import { IconButton } from "@mui/joy";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,8 +33,6 @@ function HeaderChatProfileUser({
 
   const currentUser = useSelector((state) => state.auth.user);
   const onlineUsers = useSelector((state) => state.auth.onlineUsers);
-;
-
   const onlineUser = Object.values(onlineUsers).includes(chat._id);
 
   const [openVideoCallModal, setOpenVideoCallModal] = useState(false);
@@ -43,13 +40,12 @@ function HeaderChatProfileUser({
   const handleCallMeeting = () => {
     const roomName = `${process.env.REACT_APP_JITSI_APP_ID}/Room-${currentUser._id}-${chat._id}`;
     setOpenVideoCallModal(false);
-    const data =  { to: chat, from: currentUser, roomName }
-    dispatch(setCurrentRoom(roomName))
+    const data = { to: chat, from: currentUser, roomName };
+    dispatch(setCurrentRoom(roomName));
     socket.emit("call-user", data);
-    if(roomName) {
+    if (roomName) {
       navigate(`/call/${roomName}`);
     }
-    
   };
 
   return (
@@ -94,6 +90,7 @@ function HeaderChatProfileUser({
           </ModalDialog>
         </Modal>
       )}
+
       <Box
         sx={{
           display: "flex",
@@ -134,15 +131,15 @@ function HeaderChatProfileUser({
         >
           <Box>
             {" "}
-              <Button
-                variant="plain"
-                onClick={() => {
-                  setOpenVideoCallModal(!openVideoCallModal);
-                }}
-              disabled={!onlineUser}    
-              >
-                <CallIcon sx={{ color: onlineUser ? "#0B0D0E" : "gray" }} />
-              </Button>
+            <Button
+              variant="plain"
+              onClick={() => {
+                setOpenVideoCallModal(!openVideoCallModal);
+              }}
+              disabled={!onlineUser}
+            >
+              <VideocamIcon sx={{ color: onlineUser ? "#0B0D0E" : "gray" }} />
+            </Button>
           </Box>
           <SearchBarMessages
             searchMessages={search}
@@ -159,4 +156,3 @@ function HeaderChatProfileUser({
 }
 
 export default HeaderChatProfileUser;
-

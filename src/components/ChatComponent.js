@@ -39,6 +39,7 @@ import UserList from "./UserList";
 import { format, isSameDay } from "date-fns";
 import { useSocket } from "../App";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer} from "react-toastify"
 
 function ChatComponent() {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ function ChatComponent() {
   const [doScroll, setDoScroll] = useState(true);
   const [arrayFoundMessages, setArrayFoundMessages] = useState([]);
   const [incomingCall, setIncomingCall] = useState({});
+  const [incomingCallModal, setIncomingCallModal] = useState(false);
 
   const isSmallScreen = useMediaQuery("(max-width:899px)");
 
@@ -199,6 +201,7 @@ function ChatComponent() {
       socket.on("call-received", (data) => {
         console.log("Data", data);
         setIncomingCall(data);
+        setIncomingCallModal(true);
         dispatch(setCurrentRoom(data.roomName));
       });
     }
@@ -307,7 +310,6 @@ function ChatComponent() {
   };
 
   const acceptCall = () => {
-    console.log("Accepted call");
 
     if (incomingCall) {
       dispatch(setIsMeetingActive(true));
@@ -316,10 +318,10 @@ function ChatComponent() {
   };
 
   const declineCall = () => {
-    console.log("declined call");
 
     if (incomingCall) {
       dispatch(setIsMeetingActive(false));
+      setIncomingCallModal(false);
     }
     return;
   };
@@ -334,11 +336,12 @@ function ChatComponent() {
         <UserList headerText={"Chats"} />
       </Grid>
       <Grid xs={12} md={8} sx={{ pl: 2, pr: 2 }}>
-        {incomingCall?.from && (
+        <ToastContainer />
+        {incomingCallModal && (
           <>
             <Modal
-              open={incomingCall.from}
-              onClose={() => setIncomingCall({})}
+              open={incomingCallModal}
+              onClose={() => setIncomingCallModal(!incomingCallModal)}
             >
               <ModalDialog
                 variant="outlined"

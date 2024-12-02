@@ -21,30 +21,27 @@ function CallView() {
       const decoded = JSON.parse(atob(base64));
   
       const currentTime = Math.floor(Date.now() / 1000);
-      return decoded.exp < currentTime; // Returns true if token is expired
+      return decoded.exp < currentTime; 
     } catch (error) {
       console.error("Error decoding token:", error);
-      return true; // Treat as expired if decoding fails
+      return true; 
     }
   }
 
 
   useEffect(() => {
     if (!currentUser?.jitsiAccessToken || isTokenExpired(currentUser.jitsiAccessToken)) {
-      alert("Your session has expired. Creating new token");
       dispatch(refreshJitsiAccessToken(currentUser));
-      
     }
 
-
-    const domain = "8x8.vc"; // Jitsi domain for JaaS
+    const domain = "8x8.vc";
     const options = {
       roomName: roomName,
       parentNode: jitsiContainerRef.current,
       userInfo: { displayName: currentUser.names },
       jwt: jitsiAccessToken,
       interfaceConfigOverwrite: {
-        TOOLBAR_BUTTONS: ["microphone", "camera", "hangup"], // Limit toolbar
+        TOOLBAR_BUTTONS: ["microphone", "camera", "hangup"], 
       },
       configOverwrite: {
         startWithAudioMuted: true,
@@ -67,11 +64,6 @@ function CallView() {
       if (errorMessage.includes("exp") || errorMessage.includes("expired")) {
         console.error("Token expired:", errorMessage);
 
-        // Show user-friendly feedback
-        alert("Your session has expired. Please log in again to join the meeting.");
-
-        // Optionally, redirect the user to a login page
-        navigate("/login");
       } else if (event.error === "connection.passwordRequired") {
         console.error("Authentication error: Password or token issue.");
       } else {
@@ -79,10 +71,8 @@ function CallView() {
       }
     });
 
-
-
     return () => {
-      api.dispose(); // Clean up on component unmount
+      api.dispose(); 
     };
   }, [roomName, currentUser,navigate, dispatch, jitsiAccessToken]);
 
