@@ -2,9 +2,6 @@ import { Box, Button, Grid, Input, Typography } from "@mui/joy";
 import logo from "../assets/chatzakLogo.png";
 import "../App.css";
 import SendIcon from "@mui/icons-material/Send";
-import chatBubbleIcon from "../assets/chatBubble_icon.png";
-import emojiIcon from "../assets/emoji_icon_heart.png";
-import shareIcon from "../assets/share_icon.png";
 import homePic from "../assets/remote-5491798_1280.png";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -16,6 +13,7 @@ import { setEmailHomePage } from "../store/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mui/material";
 import FeaturesComponent from "../components/FeaturesComponent";
+import FunctionalitiesComponent from "../components/FunctionalitiesComponent";
 
 function HomeView() {
   const dispatch = useDispatch();
@@ -190,69 +188,7 @@ function HomeView() {
         />
       </Box>
       <Box sx={{backgroundColor:'#F0F0F0'}}>
-      <Grid
-        container
-        spacing={4}
-        sx={{
-          maxWidth:'90vw',
-          margin:'0 auto',
-          alignItems: "center",
-          textAlign: "center",
-          pb: "2rem",
-        }}
-      >
-        <Grid md={4} xs={12}>
-          <Box>
-            <img
-              src={chatBubbleIcon}
-              alt="chat_bubble"
-              width={"100px"}
-              height={"100px"}
-            />
-            <Typography sx={{ fontSize: "xl", fontWeight: "bold" }}>
-              Instant Messaging
-            </Typography>
-            <Typography fontSize={"md"}>
-              Chat instantly with your friends or community members through a
-              quick and seamless one-on-one messaging experience.
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid md={4} xs={12}>
-          <Box>
-            <img
-              src={emojiIcon}
-              alt="emoji_icon_heart"
-              width={"100px"}
-              height={"100px"}
-            />
-            <Typography sx={{ fontSize: "xl", fontWeight: "bold" }}>
-              Send Emojis
-            </Typography>
-            <Typography fontSize={"md"}>
-              Express yourself better with a variety of fun and creative emojis.
-              Add a personal touch to your conversations effortlessly!
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid md={4} xs={12}>
-          <Box>
-            <img
-              src={shareIcon}
-              alt="share_icon"
-              width={"100px"}
-              height={"100px"}
-            />
-            <Typography sx={{ fontSize: "xl", fontWeight: "bold" }}>
-              Share Pictures
-            </Typography>
-            <Typography fontSize={"md"}>
-              Easily share your favorite moments by sending pictures to your
-              friends or community. Keep your memories alive with just a click!
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
+          <FunctionalitiesComponent />
       </Box>
 
       <Box
