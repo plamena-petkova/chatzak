@@ -1,42 +1,20 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-import { Grid } from "@mui/joy";
+import { Box, Grid } from "@mui/joy";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BlockIcon from "@mui/icons-material/Block";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CardComponentHome from "./CardComponentHome";
-import { useMediaQuery } from "@mui/material";
 
-function SwiperComponent() {
-  const isSmallScreen = useMediaQuery("(max-width:899px)");
+
+function FeaturesComponent() {
+
   return (
     <Grid
     container
-    justifyContent="center"
-    alignItems="center"
-    sx={{
-    display:'flex',
-    justifyContent:'center',
-      width: "97vw", // Optional, to make it fill the viewport
-      pl: '5rem',
-      pb:'2rem'// Padding around the Swiper
-    }}
+    gap={10}
+    sx={{justifyContent:'center', p:'40px'}}
   >
-      <Swiper
-        spaceBetween={80}
-        slidesPerView={isSmallScreen ? 1 : 3}
-        autoplay={{delay:3000}}
-        pagination={{ clickable: true }}
-        scrollbar={{ draggable: true }}
-        modules={[Autoplay, Pagination, Navigation]}
-        onSlideChange={() => console.log("slide change")}
-        onSwiper={(swiper) => console.log(swiper)}
-      >
-        <SwiperSlide>
+        <Box>
           <CardComponentHome
             cardText={
               "Want to make corrections? Yoou can edit you message with ChatZak!"
@@ -44,8 +22,8 @@ function SwiperComponent() {
             cardHeading={"Message Edit"}
             cardIcon={<EditIcon fontSize="large" />}
           />
-        </SwiperSlide>
-        <SwiperSlide>
+        </Box>
+        <Box>
           {" "}
           <CardComponentHome
             cardText={
@@ -54,8 +32,8 @@ function SwiperComponent() {
             cardHeading={"Message Delete"}
             cardIcon={<DeleteIcon fontSize="large" />}
           />{" "}
-        </SwiperSlide>
-        <SwiperSlide>
+        </Box>
+        <Box>
           {" "}
           <CardComponentHome
             cardText={
@@ -64,8 +42,8 @@ function SwiperComponent() {
             cardHeading={"Block User"}
             cardIcon={<BlockIcon fontSize="large" />}
           />
-        </SwiperSlide>
-        <SwiperSlide>
+        </Box>
+        <Box>
           {" "}
           <CardComponentHome
             cardText={
@@ -74,10 +52,10 @@ function SwiperComponent() {
             cardHeading={"Invite User"}
             cardIcon={<PersonAddIcon fontSize="large" />}
           />
-        </SwiperSlide>
-      </Swiper>
+        </Box>
+
     </Grid>
   );
 }
 
-export default SwiperComponent;
+export default FeaturesComponent;

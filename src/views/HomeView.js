@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { setEmailHomePage } from "../store/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mui/material";
-import SwiperComponent from "../components/SwiperComponent";
+import FeaturesComponent from "../components/FeaturesComponent";
 
 function HomeView() {
   const dispatch = useDispatch();
@@ -293,7 +293,7 @@ function HomeView() {
           </Typography>
         </Box>
 
-        <SwiperComponent />
+        <FeaturesComponent />
       </Box>
       <Grid
         container
