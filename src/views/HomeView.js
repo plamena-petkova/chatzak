@@ -77,6 +77,7 @@ function HomeView() {
         height: "600px",
         width: "100vw",
         background: "linear-gradient(136deg, #26a1df 20%, #1b4680)",
+        position: "relative",
       }}
     >
       <Box
@@ -84,10 +85,15 @@ function HomeView() {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
+          background: "linear-gradient(136deg, #26a1df 20%, #1b4680)",
+          width: "100vw",
+          height: "15vh",
           justifyContent: "space-between",
           borderBottom: "1px solid transparent",
           boxShadow: "0px 7px 10px rgba(0, 0, 0, 0.3)",
-          p: "1rem",
+          p: "2rem",
+          bb: "3rem",
+          position: "fixed",
         }}
       >
         <Box>
@@ -124,14 +130,19 @@ function HomeView() {
           minHeight: "30vh",
           justifyContent: "center",
           textAlign: "center",
-          p: "1.5rem",
+          p: "5rem",
           alignItems: "center",
           mx: "auto",
           alignContent: "center",
         }}
       >
         <Typography
-          sx={{ fontSize: "3rem", fontWeight: "bold", color: "white" }}
+          sx={{
+            fontSize: "3rem",
+            fontWeight: "bold",
+            color: "white",
+            pt: "3rem",
+          }}
         >
           {displayedText}
         </Typography>
@@ -174,7 +185,7 @@ function HomeView() {
           justifyContent: "center",
           pt: "1rem",
           mb: isSmallScreen ? "5rem" : "1rem",
-          background:'#FFFFF'
+          background: "#FFFFF",
         }}
       >
         <img
@@ -187,8 +198,8 @@ function HomeView() {
           }}
         />
       </Box>
-      <Box sx={{backgroundColor:'#F0F0F0'}}>
-          <FunctionalitiesComponent />
+      <Box sx={{ backgroundColor: "#F0F0F0" }}>
+        <FunctionalitiesComponent />
       </Box>
 
       <Box
@@ -196,7 +207,7 @@ function HomeView() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-           backgroundColor:'#F0F0F0'
+          backgroundColor: "#F0F0F0",
         }}
       >
         <Typography
