@@ -9,6 +9,8 @@ import HomeView from "./views/HomeView";
 import { socket } from "./socket";
 import { useSelector } from "react-redux";
 import CallView from "./views/CallView";
+import PricingView from "./views/PricingView";
+import AboutView from "./views/AboutView";
 
 const SocketContext = createContext();
 
@@ -55,6 +57,8 @@ function App() {
           <Route path="/" element={<HomeView />} />
           <Route path="/login" element={<LoginView />} />
           <Route path="/register" element={<RegisterView />} />
+          <Route path="/about" element={<AboutView />} />
+          <Route path="/pricing" element={<PricingView />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/chat" element={<ChatView />} />
             <Route path="/call/*" element={<CallView />} />

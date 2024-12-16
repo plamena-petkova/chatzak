@@ -94,10 +94,40 @@ function HomeView() {
           p: "2rem",
           bb: "3rem",
           position: "fixed",
+          zIndex:'100'
         }}
       >
         <Box>
           <img width={"120px"} height={"70px"} src={logo} alt="logo" />
+        </Box>
+        <Box>
+          <Button
+            component="a"
+            variant="plain"
+             href="/about"
+            sx={{
+              mr: 4,
+              color: "white",
+              "&:hover": {
+                background: "#26a1df",
+              },
+            }}
+          >
+            About
+          </Button>
+          <Button
+            component="a"
+            variant="pricing"
+            href="/about"
+            sx={{
+              color: "white",
+              "&:hover": {
+                background: "#26a1df",
+              },
+            }}
+          >
+            Pricing
+          </Button>
         </Box>
         <Box>
           <Button
