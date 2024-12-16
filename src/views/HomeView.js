@@ -117,8 +117,8 @@ function HomeView() {
           </Button>
           <Button
             component="a"
-            variant="pricing"
-            href="/about"
+            variant="plain"
+            href="/pricing"
             sx={{
               color: "white",
               "&:hover": {
