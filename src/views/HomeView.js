@@ -145,7 +145,7 @@ function HomeView() {
             }}
           >Chat</Button>}
         </Box>
-        {!currentUser.names ? (
+        {!currentUser?.names ? (
           <Box>
             <Button
               component="a"
