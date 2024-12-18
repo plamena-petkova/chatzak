@@ -110,6 +110,7 @@ function HomeView() {
             component="a"
             variant="plain"
             href="/about"
+            data-testid="button"
             sx={{
          
               color: "white",
@@ -124,6 +125,7 @@ function HomeView() {
             component="a"
             variant="plain"
             href="/pricing"
+            data-testid="button"
             sx={{
               color: "white",
               "&:hover": {
@@ -133,10 +135,11 @@ function HomeView() {
           >
             Pricing
           </Button>
-          {currentUser.names && <Button
+          {currentUser?.names && <Button
             component="a"
             variant="plain"
             href="/chat"
+            data-testid="chat-button"
             sx={{
               color: "white",
               "&:hover": {
@@ -161,7 +164,6 @@ function HomeView() {
               component="a"
               variant="solid"
               color="danger"
-            
               href="/register"
               data-testid="button"
             >
@@ -173,7 +175,7 @@ function HomeView() {
             <Typography sx={{ fontWeight: 500, color: "white", mr:'10px' }}>
               Hello, {currentUser.names}
             </Typography>
-            <Button color="danger" onClick={handleLogout}>
+            <Button data-testid="logout-button" color="danger" onClick={handleLogout}>
               Log Out
             </Button>
           </Box>

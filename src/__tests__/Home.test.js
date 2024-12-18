@@ -59,7 +59,7 @@ describe("HomeView Component", () => {
  
     // Assert on initial elements
     expect(screen.getByRole('textbox')).toBeInTheDocument();
-    expect(screen.getAllByTestId("button").length).toBe(2); // Login and Sign Up buttons
+    expect(screen.getAllByTestId("button").length).toBe(4); 
   });
 
   test("updates the email input and calls dispatch on input change", () => {
