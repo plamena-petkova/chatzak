@@ -18,9 +18,7 @@ import { useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import SnackbarComponent from "../components/SnackbarComponent";
 
-
 function ChatView() {
-
   const [menuOpen, setMenuOpen] = useState({
     chat: true,
     contacts: false,
@@ -79,7 +77,11 @@ function ChatView() {
             },
           }}
         >
-          <Button variant="plain">
+          <Button
+            variant="plain"
+            component="a"
+            href="/"
+          >
             <ListItemDecorator sx={{ justifyContent: "center" }}>
               <AspectRatio ratio="1" sx={{ minWidth: 30, borderRadius: "50%" }}>
                 <img

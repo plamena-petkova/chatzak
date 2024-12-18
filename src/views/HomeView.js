@@ -9,7 +9,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import { useEffect, useState } from "react";
 import { isValidEmail } from "../utils/validEmail";
 import { useNavigate } from "react-router-dom";
-import { setEmailHomePage } from "../store/authReducer";
+import { logout, setEmailHomePage } from "../store/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mui/material";
 import FeaturesComponent from "../components/FeaturesComponent";
@@ -27,11 +27,13 @@ function HomeView() {
   const speed = 500;
 
   const emailHomePage = useSelector((state) => state.auth.emailHomePage);
+  const currentUser = useSelector((state) => state.auth.user);
 
   const [displayedText, setDisplayedText] = useState("");
   const words = text.split(" ");
   const [index, setIndex] = useState(0);
   const [email, setEmail] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -56,7 +58,6 @@ function HomeView() {
     dispatch(setEmailHomePage(e.target.value));
   };
 
-  console.log("error", error);
 
   const handleRegister = () => {
     if (isValidEmail(email)) {
@@ -70,6 +71,10 @@ function HomeView() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <Box
@@ -94,19 +99,19 @@ function HomeView() {
           p: "2rem",
           bb: "3rem",
           position: "fixed",
-          zIndex:'100'
+          zIndex: "100",
         }}
       >
         <Box>
           <img width={"120px"} height={"70px"} src={logo} alt="logo" />
         </Box>
-        <Box>
+        <Box sx={{display:'flex', justifyContent:'space-between'}}>
           <Button
             component="a"
             variant="plain"
-             href="/about"
+            href="/about"
             sx={{
-              mr: 4,
+         
               color: "white",
               "&:hover": {
                 background: "#26a1df",
@@ -128,29 +133,51 @@ function HomeView() {
           >
             Pricing
           </Button>
-        </Box>
-        <Box>
-          <Button
+          {currentUser.names && <Button
             component="a"
-            variant="solid"
-            color="success"
-            sx={{ mr: 4 }}
-            href="/login"
-            data-testid="button"
-          >
-            Login
-          </Button>
-          <Button
-            component="a"
-            variant="solid"
-            color="danger"
-            sx={{ mr: 4 }}
-            href="/register"
-            data-testid="button"
-          >
-            Sign Up
-          </Button>
+            variant="plain"
+            href="/chat"
+            sx={{
+              color: "white",
+              "&:hover": {
+                background: "#26a1df",
+              },
+            }}
+          >Chat</Button>}
         </Box>
+        {!currentUser.names ? (
+          <Box>
+            <Button
+              component="a"
+              variant="solid"
+              color="success"
+              sx={{mr:'10px'}}
+              href="/login"
+              data-testid="button"
+            >
+              Login
+            </Button>
+            <Button
+              component="a"
+              variant="solid"
+              color="danger"
+            
+              href="/register"
+              data-testid="button"
+            >
+              Sign Up
+            </Button>
+          </Box>
+        ) : (
+          <Box sx={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+            <Typography sx={{ fontWeight: 500, color: "white", mr:'10px' }}>
+              Hello, {currentUser.names}
+            </Typography>
+            <Button color="danger" onClick={handleLogout}>
+              Log Out
+            </Button>
+          </Box>
+        )}
       </Box>
       <Box
         sx={{
