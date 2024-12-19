@@ -88,7 +88,7 @@ function HomeView() {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection:"row",
           alignItems: "center",
           background: "linear-gradient(136deg, #26a1df 20%, #1b4680)",
           width: "100vw",
@@ -97,15 +97,16 @@ function HomeView() {
           borderBottom: "1px solid transparent",
           boxShadow: "0px 7px 10px rgba(0, 0, 0, 0.3)",
           p: "2rem",
-          bb: "3rem",
+          mb: "3rem",
           position: "fixed",
           zIndex: "100",
+        
         }}
       >
         <Box>
           <img width={"120px"} height={"70px"} src={logo} alt="logo" />
         </Box>
-        <Box sx={{display:'flex', justifyContent:'space-between'}}>
+        <Box sx={{display:'flex', flexDirection:isSmallScreen ? "column" : "row", justifyContent:'space-between'}}>
           <Button
             component="a"
             variant="plain"
